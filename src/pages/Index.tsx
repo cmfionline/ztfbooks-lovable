@@ -1,146 +1,178 @@
-import { ArrowRight, Check, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area } from "recharts";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Globe, BookOpen, Download, DollarSign, TrendingUp, Users, BookMarked } from "lucide-react";
 
 const Index = () => {
-  const [activeAccordion, setActiveAccordion] = useState<number | null>(null);
+  // Sample data - replace with real data from your backend
+  const salesData = [
+    { month: "Jan", sales: 65 },
+    { month: "Feb", sales: 59 },
+    { month: "Mar", sales: 80 },
+    { month: "Apr", sales: 81 },
+    { month: "May", sales: 56 },
+    { month: "Jun", sales: 55 },
+  ];
+
+  const downloadData = [
+    { month: "Jan", downloads: 120 },
+    { month: "Feb", downloads: 145 },
+    { month: "Mar", downloads: 190 },
+    { month: "Apr", downloads: 178 },
+    { month: "May", downloads: 210 },
+    { month: "Jun", downloads: 240 },
+  ];
+
+  const bestSellers = [
+    { title: "The Art of Programming", sales: 1234, revenue: "$12,340" },
+    { title: "Data Structures Explained", sales: 956, revenue: "$9,560" },
+    { title: "Machine Learning Basics", sales: 845, revenue: "$8,450" },
+    { title: "Web Development Guide", sales: 789, revenue: "$7,890" },
+    { title: "Python for Beginners", sales: 654, revenue: "$6,540" },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Main content with top padding for navigation */}
-      <main className="pt-16">
-        {/* Hero Section */}
-        <section className="relative overflow-hidden px-6 lg:px-8 py-24 sm:py-32">
-          <div className="mx-auto max-w-7xl text-center">
-            <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-primary mb-6">
-              Change the bank account
-              <br />
-              <span className="bg-gradient-to-r from-[#9EE755] to-[#CFDD3C] bg-clip-text text-transparent">
-                you use
-              </span>
-            </h1>
-            <p className="mx-auto max-w-2xl text-lg text-secondary mb-8">
-              Experience banking reimagined. Simple, secure, and designed for the modern world.
-            </p>
-            <div className="flex justify-center gap-4">
-              <button className="px-6 py-3 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors">
-                Get Started
-              </button>
-              <button className="px-6 py-3 glass rounded-full hover:bg-white/20 transition-colors flex items-center gap-2">
-                Learn More <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
+      <main className="pt-20 px-4 md:px-8">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-3xl font-bold mb-8">ZTF Books Dashboard</h1>
+          
+          {/* Key Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">$45,231</div>
+                <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Total Downloads</CardTitle>
+                <Download className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">2,350</div>
+                <p className="text-xs text-muted-foreground">+15% from last month</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">1,274</div>
+                <p className="text-xs text-muted-foreground">+4.5% from last month</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Total Books</CardTitle>
+                <BookMarked className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">348</div>
+                <p className="text-xs text-muted-foreground">+12 new this month</p>
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Hero Image */}
-          <div className="relative mt-16">
-            <div className="flex justify-center">
-              <img
-                src="https://antimetal.com/images/hero/preview.png"
-                alt="Hero"
-                className="rounded-3xl shadow-2xl max-w-[90%] w-auto h-auto"
-              />
-            </div>
-          </div>
-        </section>
+          {/* Charts Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>Monthly Sales</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer className="h-[300px]" config={{}}>
+                  <AreaChart data={salesData}>
+                    <defs>
+                      <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#9EE755" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#9EE755" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Area type="monotone" dataKey="sales" stroke="#9EE755" fillOpacity={1} fill="url(#salesGradient)" />
+                  </AreaChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
 
-        <section className="py-24 bg-surface px-6 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <h2 className="text-3xl font-bold text-center mb-16">Features designed for you</h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  title: "Secure Transactions",
-                  description: "Bank-grade encryption for all your transactions",
-                  icon: "🔒",
-                },
-                {
-                  title: "Real-time Updates",
-                  description: "Get instant notifications for all account activities",
-                  icon: "⚡",
-                },
-                {
-                  title: "Smart Savings",
-                  description: "AI-powered insights to help you save more",
-                  icon: "💡",
-                },
-              ].map((feature, index) => (
-                <div
-                  key={index}
-                  className="p-6 rounded-2xl bg-background border border-border hover:border-accent transition-colors"
-                >
-                  <div className="text-4xl mb-4">{feature.icon}</div>
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-secondary">{feature.description}</p>
+            <Card>
+              <CardHeader>
+                <CardTitle>Downloads Trend</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer className="h-[300px]" config={{}}>
+                  <LineChart data={downloadData}>
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="downloads" stroke="#CFDD3C" strokeWidth={2} />
+                  </LineChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Best Sellers Table */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Best Sellers</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[300px]">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Book Title</TableHead>
+                      <TableHead>Sales</TableHead>
+                      <TableHead>Revenue</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {bestSellers.map((book, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="font-medium">{book.title}</TableCell>
+                        <TableCell>{book.sales}</TableCell>
+                        <TableCell>{book.revenue}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </ScrollArea>
+            </CardContent>
+          </Card>
+
+          {/* Geographic Distribution */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Geographic Distribution</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[400px] flex items-center justify-center border rounded-lg">
+                <div className="text-center text-muted-foreground">
+                  <Globe className="h-12 w-12 mx-auto mb-4" />
+                  <p>Geographic map visualization would go here</p>
+                  <p className="text-sm">Integration with a mapping library required</p>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="py-24 px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-16">Frequently Asked Questions</h2>
-            <div className="space-y-4">
-              {[
-                {
-                  question: "How secure is my data?",
-                  answer: "We use bank-level encryption to protect all your data and transactions.",
-                },
-                {
-                  question: "What are the fees?",
-                  answer: "We believe in transparent pricing with no hidden fees.",
-                },
-                {
-                  question: "How do I get started?",
-                  answer: "Download our app and follow the simple registration process.",
-                },
-              ].map((faq, index) => (
-                <div
-                  key={index}
-                  className="border border-border rounded-lg overflow-hidden"
-                >
-                  <button
-                    className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-background/50"
-                    onClick={() => setActiveAccordion(activeAccordion === index ? null : index)}
-                  >
-                    <span className="font-medium">{faq.question}</span>
-                    <ChevronDown
-                      className={`w-5 h-5 transition-transform ${
-                        activeAccordion === index ? "transform rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-                  {activeAccordion === index && (
-                    <div className="px-6 py-4 bg-background/50">
-                      <p className="text-secondary">{faq.answer}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-24 bg-primary text-white px-6 lg:px-8">
-          <div className="mx-auto max-w-7xl text-center">
-            <h2 className="text-3xl sm:text-5xl font-bold mb-8">Ready to get started?</h2>
-            <p className="text-white/80 mb-8 max-w-2xl mx-auto">
-              Join thousands of satisfied customers who have already made the switch.
-            </p>
-            <button className="px-8 py-4 bg-accent text-primary rounded-full font-semibold hover:bg-accent/90 transition-colors">
-              Create Account
-            </button>
-          </div>
-        </section>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </main>
-
-      <Footer />
     </div>
   );
 };
