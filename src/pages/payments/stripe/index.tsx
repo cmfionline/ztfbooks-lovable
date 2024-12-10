@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { EnableStripeCard } from "./components/EnableStripeCard";
+import { TestPaymentCard } from "./components/TestPaymentCard";
+import { ApiConfigCard } from "./components/ApiConfigCard";
 
 const StripeSettings = () => {
   const { toast } = useToast();
@@ -89,88 +89,17 @@ const StripeSettings = () => {
       <h1 className="text-3xl font-bold mb-8">Stripe Settings</h1>
       
       <div className="grid gap-6">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>Enable Stripe Payments</CardTitle>
-                <CardDescription>
-                  Accept credit card payments through Stripe
-                </CardDescription>
-              </div>
-              {gateway?.is_active ? (
-                <CheckCircle2 className="w-6 h-6 text-success" />
-              ) : (
-                <XCircle className="w-6 h-6 text-danger" />
-              )}
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center space-x-4">
-              <Switch
-                checked={gateway?.is_active || false}
-                onCheckedChange={handleToggleActive}
-                disabled={isLoading}
-              />
-              <span className="text-sm text-muted-foreground">
-                {gateway?.is_active ? 'Enabled' : 'Disabled'}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Test Payment</CardTitle>
-            <CardDescription>
-              Process a test payment to verify your Stripe integration
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <Button
-                onClick={handleTestPayment}
-                disabled={!gateway?.is_active || isProcessing}
-              >
-                {isProcessing ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  'Process Test Payment ($10.99)'
-                )}
-              </Button>
-              <p className="text-sm text-muted-foreground">
-                This will create a test payment session for $10.99 USD
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>API Configuration</CardTitle>
-            <CardDescription>
-              Configure your Stripe API keys
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  window.open('https://dashboard.stripe.com/apikeys', '_blank');
-                }}
-              >
-                Get Stripe API Keys
-              </Button>
-              <p className="text-sm text-muted-foreground">
-                After getting your API keys, add them to your Supabase Edge Function secrets.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+        <EnableStripeCard
+          isActive={gateway?.is_active || false}
+          isLoading={isLoading}
+          onToggle={handleToggleActive}
+        />
+        <TestPaymentCard
+          isActive={gateway?.is_active || false}
+          isProcessing={isProcessing}
+          onTestPayment={handleTestPayment}
+        />
+        <ApiConfigCard />
       </div>
     </div>
   );

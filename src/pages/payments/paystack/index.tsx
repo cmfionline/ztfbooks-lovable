@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Loader2, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { EnablePayStackCard } from "./components/EnablePayStackCard";
+import { TestPaymentCard } from "./components/TestPaymentCard";
+import { ApiConfigCard } from "./components/ApiConfigCard";
 
 const PayStackSettings = () => {
   const { toast } = useToast();
@@ -105,98 +103,19 @@ const PayStackSettings = () => {
       <h1 className="text-3xl font-bold mb-8">PayStack Settings</h1>
       
       <div className="grid gap-6">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>Enable PayStack Payments</CardTitle>
-                <CardDescription>
-                  Accept payments through PayStack
-                </CardDescription>
-              </div>
-              {gateway?.is_active ? (
-                <CheckCircle2 className="w-6 h-6 text-success" />
-              ) : (
-                <XCircle className="w-6 h-6 text-danger" />
-              )}
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center space-x-4">
-              <Switch
-                checked={gateway?.is_active || false}
-                onCheckedChange={handleToggleActive}
-                disabled={isLoading}
-              />
-              <span className="text-sm text-muted-foreground">
-                {gateway?.is_active ? 'Enabled' : 'Disabled'}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Test Payment</CardTitle>
-            <CardDescription>
-              Process a test payment to verify your PayStack integration
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="grid w-full max-w-sm items-center gap-1.5">
-                <Label htmlFor="testEmail">Test Email</Label>
-                <Input
-                  type="email"
-                  id="testEmail"
-                  placeholder="test@example.com"
-                  value={testEmail}
-                  onChange={(e) => setTestEmail(e.target.value)}
-                />
-              </div>
-              <Button
-                onClick={handleTestPayment}
-                disabled={!gateway?.is_active || isProcessing || !testEmail}
-              >
-                {isProcessing ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  'Process Test Payment (₦10.99)'
-                )}
-              </Button>
-              <p className="text-sm text-muted-foreground">
-                This will create a test payment session for ₦10.99
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>API Configuration</CardTitle>
-            <CardDescription>
-              Configure your PayStack API keys
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  window.open('https://dashboard.paystack.com/#/settings/developer', '_blank');
-                }}
-              >
-                Get PayStack API Keys
-              </Button>
-              <p className="text-sm text-muted-foreground">
-                After getting your API keys, add them to your Supabase Edge Function secrets.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+        <EnablePayStackCard
+          isActive={gateway?.is_active || false}
+          isLoading={isLoading}
+          onToggle={handleToggleActive}
+        />
+        <TestPaymentCard
+          isActive={gateway?.is_active || false}
+          isProcessing={isProcessing}
+          testEmail={testEmail}
+          onEmailChange={setTestEmail}
+          onTestPayment={handleTestPayment}
+        />
+        <ApiConfigCard />
       </div>
     </div>
   );
