@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CreatableCombobox } from "@/components/ui/creatable-combobox";
+import { PlusCircle } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -153,7 +154,16 @@ const AddSeries = () => {
                 name="languageId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-primary">Language</FormLabel>
+                    <div className="flex justify-between items-center">
+                      <FormLabel className="text-primary">Language</FormLabel>
+                      <Link 
+                        to="/books/languages/add"
+                        className="text-sm text-purple hover:text-purple-dark flex items-center gap-1"
+                      >
+                        <PlusCircle className="w-4 h-4" />
+                        Add Language
+                      </Link>
+                    </div>
                     <FormControl>
                       <CreatableCombobox
                         value={field.value}
