@@ -500,6 +500,69 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_settings: {
+        Row: {
+          app_id: string
+          created_at: string
+          id: string
+          rest_key: string
+          updated_at: string
+        }
+        Insert: {
+          app_id: string
+          created_at?: string
+          id?: string
+          rest_key: string
+          updated_at?: string
+        }
+        Update: {
+          app_id?: string
+          created_at?: string
+          id?: string
+          rest_key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          external_link: string | null
+          id: string
+          image_url: string | null
+          message: string
+          post_type: string | null
+          sent_at: string | null
+          status: string | null
+          target_audience: Json | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          external_link?: string | null
+          id?: string
+          image_url?: string | null
+          message: string
+          post_type?: string | null
+          sent_at?: string | null
+          status?: string | null
+          target_audience?: Json | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          external_link?: string | null
+          id?: string
+          image_url?: string | null
+          message?: string
+          post_type?: string | null
+          sent_at?: string | null
+          status?: string | null
+          target_audience?: Json | null
+          title?: string
+        }
+        Relationships: []
+      }
       payment_gateways: {
         Row: {
           config: Json | null
@@ -786,3 +849,24 @@ export type CompositeTypes<
   : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
     ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
+
+export interface NotificationSettings {
+  id: string;
+  app_id: string;
+  rest_key: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  image_url?: string;
+  post_type?: string;
+  external_link?: string;
+  created_at: string;
+  sent_at?: string;
+  status: string;
+  target_audience?: Record<string, any>;
+}
