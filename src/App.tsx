@@ -14,6 +14,7 @@ import Reviews from "./pages/Reviews";
 import Faqs from "./pages/Faqs";
 import Settings from "./pages/Settings";
 import Notifications from "./pages/Notifications";
+import SubscriptionPlans from "./pages/SubscriptionPlans";
 import Navigation from "./components/Navigation";
 import Sidebar from "./components/Sidebar";
 
@@ -91,6 +92,11 @@ const App = () => (
           <Route path="/notifications" element={
             <Layout>
               <Notifications />
+            </Layout>
+          } />
+          <Route path="/subscription-plans" element={
+            <Layout>
+              <SubscriptionPlans />
             </Layout>
           } />
         </Routes>
