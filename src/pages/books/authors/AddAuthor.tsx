@@ -19,7 +19,7 @@ const AddAuthor = () => {
   const form = useForm<AuthorFormValues>({
     resolver: zodResolver(authorFormSchema),
     defaultValues: {
-      name: "", // This is required but can start as empty string
+      name: "", // Required field initialized as empty string
       nationality: "",
       photo: "",
       bio: "",
@@ -33,7 +33,10 @@ const AddAuthor = () => {
 
   const onSubmit = async (values: AuthorFormValues) => {
     try {
-      await createAuthor.mutateAsync(values);
+      await createAuthor.mutateAsync({
+        ...values,
+        name: values.name.trim(), // Ensure name is trimmed before submission
+      });
       toast({
         title: "Success",
         description: `Author "${values.name}" has been created successfully.`,
