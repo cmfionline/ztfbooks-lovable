@@ -72,23 +72,23 @@ export const useBookFormData = () => {
   // Transform the data into the format expected by CreatableCombobox
   // Always return arrays even if data is undefined
   return {
-    series: isLoading ? [] : (seriesData || []).map((item) => ({
+    series: (seriesData || []).map((item) => ({
       label: item.name,
       value: item.id,
     })),
-    authors: isLoading ? [] : (authorsData || []).map((item) => ({
+    authors: (authorsData || []).map((item) => ({
       label: item.name,
       value: item.id,
     })),
-    publishers: isLoading ? [] : (publishersData || []).map((item) => ({
+    publishers: (publishersData || []).map((item) => ({
       label: item.name,
       value: item.id,
     })),
-    tags: isLoading ? [] : (tagsData || []).map((item) => ({
+    tags: (tagsData || []).map((item) => ({
       label: item.name,
       value: item.id,
     })),
-    languages: isLoading ? [] : (languagesData || []).map((item) => ({
+    languages: (languagesData || []).map((item) => ({
       label: item.name,
       value: item.id,
     })),
