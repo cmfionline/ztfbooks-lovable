@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 
 const PayStackSettings = () => {
   const { toast } = useToast();
@@ -107,10 +107,19 @@ const PayStackSettings = () => {
       <div className="grid gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Enable PayStack Payments</CardTitle>
-            <CardDescription>
-              Accept payments through PayStack
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Enable PayStack Payments</CardTitle>
+                <CardDescription>
+                  Accept payments through PayStack
+                </CardDescription>
+              </div>
+              {gateway?.is_active ? (
+                <CheckCircle2 className="w-6 h-6 text-success" />
+              ) : (
+                <XCircle className="w-6 h-6 text-danger" />
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             <div className="flex items-center space-x-4">

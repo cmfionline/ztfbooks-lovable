@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 
 const StripeSettings = () => {
   const { toast } = useToast();
@@ -91,10 +91,19 @@ const StripeSettings = () => {
       <div className="grid gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Enable Stripe Payments</CardTitle>
-            <CardDescription>
-              Accept credit card payments through Stripe
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Enable Stripe Payments</CardTitle>
+                <CardDescription>
+                  Accept credit card payments through Stripe
+                </CardDescription>
+              </div>
+              {gateway?.is_active ? (
+                <CheckCircle2 className="w-6 h-6 text-success" />
+              ) : (
+                <XCircle className="w-6 h-6 text-danger" />
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             <div className="flex items-center space-x-4">
@@ -143,7 +152,7 @@ const StripeSettings = () => {
           <CardHeader>
             <CardTitle>API Configuration</CardTitle>
             <CardDescription>
-              Configure your Stripe API keys and webhook settings
+              Configure your Stripe API keys
             </CardDescription>
           </CardHeader>
           <CardContent>
