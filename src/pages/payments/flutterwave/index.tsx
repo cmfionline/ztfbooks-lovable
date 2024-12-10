@@ -18,22 +18,29 @@ const FlutterwaveSettings = () => {
     queryKey: ['payment-gateway', 'flutterwave'],
     queryFn: async () => {
       try {
+        console.log('Fetching Flutterwave gateway...');
         // First, check if the gateway exists
         const { data, error } = await supabase
           .from('payment_gateways')
           .select('*')
-          .eq('type', 'flutterwave')
+          .eq('type', 'FLUTTERWAVE')  // Changed to uppercase to match the constraint
           .maybeSingle();
         
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching gateway:', error);
+          throw error;
+        }
+        
+        console.log('Existing gateway data:', data);
         
         // If no gateway exists, create it
         if (!data) {
+          console.log('No gateway found, creating new one...');
           const { data: newGateway, error: createError } = await supabase
             .from('payment_gateways')
             .insert({
               name: 'Flutterwave',
-              type: 'flutterwave',
+              type: 'FLUTTERWAVE',  // Changed to uppercase to match the constraint
               is_active: false,
               config: {}
             })
@@ -44,6 +51,8 @@ const FlutterwaveSettings = () => {
             console.error('Error creating gateway:', createError);
             return null;
           }
+          
+          console.log('New gateway created:', newGateway);
           return newGateway;
         }
 
