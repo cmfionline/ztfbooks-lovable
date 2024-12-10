@@ -20,6 +20,27 @@ const mockUser: User = {
   created_at: new Date().toISOString(),
   role: 'authenticated',
   updated_at: new Date().toISOString(),
+  app_metadata: {
+    provider: 'email',
+    providers: ['email'],
+  },
+  user_metadata: {},
+  identities: [],
+  phone: '',
+  confirmed_at: new Date().toISOString(),
+  email_confirmed_at: new Date().toISOString(),
+  banned_until: null,
+  confirmation_sent_at: new Date().toISOString(),
+  recovery_sent_at: null,
+  email_change_sent_at: null,
+  new_email: null,
+  invited_at: null,
+  action_link: null,
+  email_change: null,
+  phone_change: null,
+  phone_confirmed_at: null,
+  factors: [],
+  last_sign_in_at: new Date().toISOString(),
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
