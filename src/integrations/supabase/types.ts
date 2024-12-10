@@ -532,6 +532,9 @@ export type Database = {
           image_url: string | null
           message: string
           post_type: string | null
+          recurring_schedule: Json | null
+          schedule_type: string | null
+          scheduled_for: string | null
           sent_at: string | null
           status: string | null
           target_audience: Json | null
@@ -544,6 +547,9 @@ export type Database = {
           image_url?: string | null
           message: string
           post_type?: string | null
+          recurring_schedule?: Json | null
+          schedule_type?: string | null
+          scheduled_for?: string | null
           sent_at?: string | null
           status?: string | null
           target_audience?: Json | null
@@ -556,6 +562,9 @@ export type Database = {
           image_url?: string | null
           message?: string
           post_type?: string | null
+          recurring_schedule?: Json | null
+          schedule_type?: string | null
+          scheduled_for?: string | null
           sent_at?: string | null
           status?: string | null
           target_audience?: Json | null
