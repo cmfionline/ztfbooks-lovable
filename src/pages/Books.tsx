@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AddBook from "./books/AddBook";
+import AuthorsPage from "./books/authors/AuthorsPage";
 
 const Books = () => {
   return (
@@ -24,7 +25,7 @@ const Books = () => {
             }
           />
           <Route path="/add" element={<AddBook />} />
-          <Route path="/authors" element={<h1>Authors</h1>} />
+          <Route path="/authors" element={<AuthorsPage />} />
           <Route path="/series" element={<h1>Series</h1>} />
           <Route path="/tags" element={<h1>Tags</h1>} />
           <Route path="/publishers" element={<h1>Publishers</h1>} />

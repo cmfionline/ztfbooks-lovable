@@ -163,39 +163,83 @@ export type Database = {
       }
       publishers: {
         Row: {
+          address: string | null
+          city: string | null
+          country: string | null
           created_at: string
+          email: string | null
           id: string
           name: string
+          phone: string | null
+          photo: string | null
+          postcode: string | null
+          social_media_url: string | null
+          website: string | null
         }
         Insert: {
+          address?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          email?: string | null
           id?: string
           name: string
+          phone?: string | null
+          photo?: string | null
+          postcode?: string | null
+          social_media_url?: string | null
+          website?: string | null
         }
         Update: {
+          address?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          email?: string | null
           id?: string
           name?: string
+          phone?: string | null
+          photo?: string | null
+          postcode?: string | null
+          social_media_url?: string | null
+          website?: string | null
         }
         Relationships: []
       }
       series: {
         Row: {
           created_at: string
+          description: string | null
           id: string
+          image: string | null
+          language_id: string | null
           name: string
         }
         Insert: {
           created_at?: string
+          description?: string | null
           id?: string
+          image?: string | null
+          language_id?: string | null
           name: string
         }
         Update: {
           created_at?: string
+          description?: string | null
           id?: string
+          image?: string | null
+          language_id?: string | null
           name?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "series_language_id_fkey"
+            columns: ["language_id"]
+            isOneToOne: false
+            referencedRelation: "languages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tags: {
         Row: {
