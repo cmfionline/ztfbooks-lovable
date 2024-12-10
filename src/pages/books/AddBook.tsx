@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CreatableCombobox } from "@/components/ui/creatable-combobox";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useBookFormData } from "@/hooks/useBookFormData";
+import { useEntityMutations } from "@/hooks/useEntityMutations";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -47,110 +49,22 @@ const formSchema = z.object({
 const AddBook = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  // Fetch existing data
-  const { data: series = [] } = useQuery({
-    queryKey: ["series"],
-    queryFn: async () => {
-      const { data } = await supabase.from("series").select("*");
-      return data?.map(s => ({ value: s.id, label: s.name })) || [];
-    },
-  });
+  const {
+    series,
+    authors,
+    publishers,
+    tags,
+    languages,
+  } = useBookFormData();
 
-  const { data: authors = [] } = useQuery({
-    queryKey: ["authors"],
-    queryFn: async () => {
-      const { data } = await supabase.from("authors").select("*");
-      return data?.map(a => ({ value: a.id, label: a.name })) || [];
-    },
-  });
-
-  const { data: publishers = [] } = useQuery({
-    queryKey: ["publishers"],
-    queryFn: async () => {
-      const { data } = await supabase.from("publishers").select("*");
-      return data?.map(p => ({ value: p.id, label: p.name })) || [];
-    },
-  });
-
-  const { data: tags = [] } = useQuery({
-    queryKey: ["tags"],
-    queryFn: async () => {
-      const { data } = await supabase.from("tags").select("*");
-      return data?.map(t => ({ value: t.id, label: t.name })) || [];
-    },
-  });
-
-  const { data: languages = [] } = useQuery({
-    queryKey: ["languages"],
-    queryFn: async () => {
-      const { data } = await supabase.from("languages").select("*");
-      return data?.map(l => ({ value: l.id, label: l.name })) || [];
-    },
-  });
-
-  // Create new entities mutations
-  const createSeries = useMutation({
-    mutationFn: async (name: string) => {
-      const { data, error } = await supabase
-        .from("series")
-        .insert({ name })
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["series"] });
-    },
-  });
-
-  const createAuthor = useMutation({
-    mutationFn: async (name: string) => {
-      const { data, error } = await supabase
-        .from("authors")
-        .insert({ name })
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["authors"] });
-    },
-  });
-
-  const createPublisher = useMutation({
-    mutationFn: async (name: string) => {
-      const { data, error } = await supabase
-        .from("publishers")
-        .insert({ name })
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["publishers"] });
-    },
-  });
-
-  const createTag = useMutation({
-    mutationFn: async (name: string) => {
-      const { data, error } = await supabase
-        .from("tags")
-        .insert({ name })
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tags"] });
-    },
-  });
+  const {
+    createSeries,
+    createAuthor,
+    createPublisher,
+    createTag,
+  } = useEntityMutations();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
