@@ -107,7 +107,7 @@ export const useBookFormData = () => {
       value: item.id,
     })),
     languages: (languagesData || []).map((item) => ({
-      label: item.name,
+      label: `${item.name} (${item.code})`,
       value: item.id,
     })),
     isLoading,
