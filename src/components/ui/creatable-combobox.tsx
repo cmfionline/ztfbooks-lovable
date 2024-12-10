@@ -42,8 +42,10 @@ export function CreatableCombobox({
   const [open, setOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
 
-  // Ensure options is always an array
-  const safeOptions = Array.isArray(options) ? options : [];
+  // Ensure options is always an array and never undefined
+  const safeOptions = React.useMemo(() => {
+    return Array.isArray(options) ? options : [];
+  }, [options]);
 
   const handleCreateOption = () => {
     if (inputValue) {
@@ -55,6 +57,28 @@ export function CreatableCombobox({
   const selectedOption = React.useMemo(() => {
     return value ? safeOptions.find((option) => option.value === value) : undefined;
   }, [value, safeOptions]);
+
+  // Ensure we have a valid array of CommandItems
+  const commandItems = React.useMemo(() => {
+    return safeOptions.map((option) => (
+      <CommandItem
+        key={option.value}
+        value={option.value}
+        onSelect={() => {
+          onChange(option.value);
+          setOpen(false);
+        }}
+      >
+        <Check
+          className={cn(
+            "mr-2 h-4 w-4",
+            value === option.value ? "opacity-100" : "opacity-0"
+          )}
+        />
+        {option.label}
+      </CommandItem>
+    ));
+  }, [safeOptions, onChange, value]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -88,24 +112,7 @@ export function CreatableCombobox({
             </Button>
           </CommandEmpty>
           <CommandGroup>
-            {safeOptions.map((option) => (
-              <CommandItem
-                key={option.value}
-                value={option.value}
-                onSelect={() => {
-                  onChange(option.value);
-                  setOpen(false);
-                }}
-              >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    value === option.value ? "opacity-100" : "opacity-0"
-                  )}
-                />
-                {option.label}
-              </CommandItem>
-            ))}
+            {commandItems}
           </CommandGroup>
         </Command>
       </PopoverContent>
