@@ -13,7 +13,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useEntityMutations } from "@/hooks/useEntityMutations";
 import { UserPlus, Loader2 } from "lucide-react";
@@ -28,7 +27,6 @@ const formSchema = z.object({
       "Name can only contain letters, spaces, hyphens, apostrophes, and periods"
     )
     .transform((val) => val.trim()),
-  bio: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -42,7 +40,6 @@ const AddAuthor = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      bio: "",
     },
   });
 
@@ -85,27 +82,9 @@ const AddAuthor = () => {
                     <FormControl>
                       <Input
                         {...field}
-                        className="border-purple-light focus:border-purple focus:ring-purple"
+                        className="border-purple-light focus:border-purple"
                         placeholder="Enter author's name"
                         autoFocus
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="bio"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-primary">Biography (Optional)</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        className="min-h-[120px] border-purple-light focus:border-purple focus:ring-purple"
-                        placeholder="Enter author's biography"
                       />
                     </FormControl>
                     <FormMessage />
