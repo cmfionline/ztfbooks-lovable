@@ -726,6 +726,48 @@ export type Database = {
           },
         ]
       }
+      subscription_plans: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration: number
+          duration_unit: Database["public"]["Enums"]["subscription_duration"]
+          features: Json | null
+          id: string
+          is_active: boolean | null
+          name: string
+          price: number
+          stripe_price_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration: number
+          duration_unit: Database["public"]["Enums"]["subscription_duration"]
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          price: number
+          stripe_price_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration?: number
+          duration_unit?: Database["public"]["Enums"]["subscription_duration"]
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          price?: number
+          stripe_price_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tags: {
         Row: {
           created_at: string
@@ -755,6 +797,7 @@ export type Database = {
       ad_placement: "home" | "category" | "checkout" | "series" | "book"
       ad_type: "banner" | "interstitial" | "popup" | "sponsored"
       discount_type: "percentage" | "fixed" | "volume" | "cart"
+      subscription_duration: "day" | "week" | "month" | "year"
     }
     CompositeTypes: {
       [_ in never]: never
