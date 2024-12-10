@@ -101,7 +101,7 @@ const Sidebar = () => {
     <div className="w-64 h-screen bg-white border-r border-border fixed left-0 top-0 overflow-y-auto">
       <div className="p-4">
         <h2 className="text-xl font-bold text-purple mb-6">ZTF Books Admin</h2>
-        <Accordion type="multiple" className="w-full">
+        <Accordion type="single" collapsible className="w-full">
           {menuItems.map((item, index) => (
             <AccordionItem value={`item-${index}`} key={item.path} className="border-none">
               {item.submenu ? (
