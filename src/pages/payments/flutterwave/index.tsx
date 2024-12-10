@@ -23,7 +23,7 @@ const FlutterwaveSettings = () => {
         const { data, error } = await supabase
           .from('payment_gateways')
           .select('*')
-          .eq('type', 'FLUTTERWAVE')  // Changed to uppercase to match the constraint
+          .eq('type', 'flutterwave')  // Changed to lowercase
           .maybeSingle();
         
         if (error) {
@@ -40,7 +40,7 @@ const FlutterwaveSettings = () => {
             .from('payment_gateways')
             .insert({
               name: 'Flutterwave',
-              type: 'FLUTTERWAVE',  // Changed to uppercase to match the constraint
+              type: 'flutterwave',  // Changed to lowercase
               is_active: false,
               config: {}
             })
