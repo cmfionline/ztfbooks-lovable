@@ -9,6 +9,7 @@ import {
   FileText,
   MessageSquare,
   PlusCircle,
+  Bell,
 } from "lucide-react";
 import {
   Accordion,
@@ -89,6 +90,11 @@ const Sidebar = () => {
       title: "FAQs",
       icon: <HelpCircle className="w-4 h-4" />,
       path: "/faqs",
+    },
+    {
+      title: "Notifications",
+      icon: <Bell className="w-4 h-4" />,
+      path: "/notifications",
     },
     {
       title: "Settings",

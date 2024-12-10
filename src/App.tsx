@@ -13,6 +13,7 @@ import Ads from "./pages/Ads";
 import Reviews from "./pages/Reviews";
 import Faqs from "./pages/Faqs";
 import Settings from "./pages/Settings";
+import Notifications from "./pages/Notifications";
 import Navigation from "./components/Navigation";
 import Sidebar from "./components/Sidebar";
 
@@ -85,6 +86,11 @@ const App = () => (
           <Route path="/settings/*" element={
             <Layout>
               <Settings />
+            </Layout>
+          } />
+          <Route path="/notifications" element={
+            <Layout>
+              <Notifications />
             </Layout>
           } />
         </Routes>

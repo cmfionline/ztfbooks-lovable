@@ -849,24 +849,3 @@ export type CompositeTypes<
   : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
     ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
-
-export interface NotificationSettings {
-  id: string;
-  app_id: string;
-  rest_key: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  image_url?: string;
-  post_type?: string;
-  external_link?: string;
-  created_at: string;
-  sent_at?: string;
-  status: string;
-  target_audience?: Record<string, any>;
-}
