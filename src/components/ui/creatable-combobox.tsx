@@ -28,21 +28,22 @@ interface CreatableComboboxProps {
   placeholder?: string;
   emptyText?: string;
   className?: string;
+  disabled?: boolean;
 }
 
 export function CreatableCombobox({
   value,
-  options = [], // Provide default empty array
+  options = [],
   onChange,
   onCreateOption,
   placeholder = "Select an option",
   emptyText = "No options found.",
   className,
+  disabled = false,
 }: CreatableComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
 
-  // Ensure options is always an array and never undefined
   const safeOptions = React.useMemo(() => {
     return Array.isArray(options) ? options : [];
   }, [options]);
@@ -58,7 +59,6 @@ export function CreatableCombobox({
     return value ? safeOptions.find((option) => option.value === value) : undefined;
   }, [value, safeOptions]);
 
-  // Ensure we have a valid array of CommandItems
   const commandItems = React.useMemo(() => {
     return safeOptions.map((option) => (
       <CommandItem
@@ -88,6 +88,7 @@ export function CreatableCombobox({
           role="combobox"
           aria-expanded={open}
           className={cn("w-full justify-between", className)}
+          disabled={disabled}
         >
           {selectedOption?.label || placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -99,6 +100,7 @@ export function CreatableCombobox({
             placeholder={`Search or create...`}
             value={inputValue}
             onValueChange={setInputValue}
+            disabled={disabled}
           />
           <CommandEmpty>
             {emptyText}
@@ -106,6 +108,7 @@ export function CreatableCombobox({
               variant="ghost"
               className="w-full mt-2 justify-start"
               onClick={handleCreateOption}
+              disabled={disabled}
             >
               <PlusCircle className="mr-2 h-4 w-4" />
               Create "{inputValue}"
