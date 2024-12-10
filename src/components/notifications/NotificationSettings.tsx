@@ -67,38 +67,40 @@ export const NotificationSettings = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Settings className="h-5 w-5" />
+    <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-xl flex items-center gap-2 text-primary">
+          <Settings className="h-5 w-5 text-purple" />
           OneSignal Settings
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-muted-foreground">
           Configure your OneSignal integration
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label>App ID</Label>
+          <Label className="text-sm font-medium text-primary">App ID</Label>
           <Input
             placeholder="OneSignal App ID"
             value={appId}
             onChange={(e) => setAppId(e.target.value)}
+            className="border-purple-light focus:border-purple focus:ring-purple"
           />
         </div>
         <div className="space-y-2">
-          <Label>REST API Key</Label>
+          <Label className="text-sm font-medium text-primary">REST API Key</Label>
           <Input
             type="password"
             placeholder="OneSignal REST API Key"
             value={restKey}
             onChange={(e) => setRestKey(e.target.value)}
+            className="border-purple-light focus:border-purple focus:ring-purple"
           />
         </div>
         <Button
           onClick={handleSaveSettings}
           disabled={!appId || !restKey}
-          className="w-full"
+          className="w-full bg-purple hover:bg-purple/90 text-white"
         >
           Save Settings
         </Button>
