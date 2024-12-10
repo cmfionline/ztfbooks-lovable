@@ -8,12 +8,17 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { signIn } = useAuth();
+  const [isLogin, setIsLogin] = useState(true);
+  const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signIn(email, password);
+    if (isLogin) {
+      await signIn(email, password);
+    } else {
+      await signUp(email, password);
+    }
     navigate("/");
   };
 
@@ -21,8 +26,12 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-background">
       <Card className="w-[400px]">
         <CardHeader>
-          <CardTitle>Welcome Back</CardTitle>
-          <CardDescription>Sign in to your account to continue</CardDescription>
+          <CardTitle>{isLogin ? "Welcome Back" : "Create Account"}</CardTitle>
+          <CardDescription>
+            {isLogin 
+              ? "Sign in to your account to continue" 
+              : "Sign up for a new account"}
+          </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
@@ -51,9 +60,19 @@ const Login = () => {
               />
             </div>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full">
-              Sign In
+              {isLogin ? "Sign In" : "Sign Up"}
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              className="w-full"
+              onClick={() => setIsLogin(!isLogin)}
+            >
+              {isLogin 
+                ? "Don't have an account? Sign up" 
+                : "Already have an account? Sign in"}
             </Button>
           </CardFooter>
         </form>
