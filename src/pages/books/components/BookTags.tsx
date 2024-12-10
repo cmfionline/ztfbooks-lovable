@@ -1,21 +1,24 @@
-import { Control } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { PlusCircle } from "lucide-react";
 import { FormLabel } from "@/components/ui/form";
-import { CreatableCombobox } from "@/components/ui/creatable-combobox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface BookTagsProps {
   selectedTags: string[];
   setSelectedTags: (tags: string[]) => void;
   tags: { label: string; value: string; }[];
-  onCreateTag: (name: string) => Promise<{ id: string } | undefined>;
 }
 
 export const BookTags = ({
   selectedTags,
   setSelectedTags,
   tags,
-  onCreateTag,
 }: BookTagsProps) => {
   return (
     <div className="space-y-4">
@@ -32,12 +35,12 @@ export const BookTags = ({
       <div className="flex flex-wrap gap-2">
         {selectedTags.map((tagId) => {
           const tag = tags.find((t) => t.value === tagId);
-          return (
+          return tag ? (
             <span
               key={tagId}
               className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-purple-light text-purple"
             >
-              {tag?.label}
+              {tag.label}
               <button
                 type="button"
                 onClick={() => {
@@ -48,23 +51,29 @@ export const BookTags = ({
                 ×
               </button>
             </span>
-          );
+          ) : null;
         })}
       </div>
-      <CreatableCombobox
-        options={tags}
-        onChange={(value) => {
+      <Select
+        onValueChange={(value) => {
           if (!selectedTags.includes(value)) {
             setSelectedTags([...selectedTags, value]);
           }
         }}
-        onCreateOption={async (name) => {
-          const newTag = await onCreateTag(name);
-          if (newTag?.id) setSelectedTags([...selectedTags, newTag.id]);
-        }}
-        placeholder="Select or create tags"
-        className="border-purple-light focus:border-purple"
-      />
+      >
+        <SelectTrigger className="border-purple-light focus:border-purple">
+          <SelectValue placeholder="Select tags" />
+        </SelectTrigger>
+        <SelectContent>
+          {tags
+            .filter((tag) => !selectedTags.includes(tag.value))
+            .map((tag) => (
+              <SelectItem key={tag.value} value={tag.value}>
+                {tag.label}
+              </SelectItem>
+            ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 };

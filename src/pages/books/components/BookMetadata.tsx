@@ -13,7 +13,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { CreatableCombobox } from "@/components/ui/creatable-combobox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Popover,
   PopoverContent,
@@ -24,16 +30,12 @@ interface BookMetadataProps {
   control: Control<any>;
   authors: { label: string; value: string; }[];
   publishers: { label: string; value: string; }[];
-  onCreateAuthor: (name: string) => Promise<{ id: string } | undefined>;
-  onCreatePublisher: (name: string) => Promise<{ id: string } | undefined>;
 }
 
 export const BookMetadata = ({
   control,
   authors,
   publishers,
-  onCreateAuthor,
-  onCreatePublisher,
 }: BookMetadataProps) => {
   return (
     <div className="space-y-6">
@@ -52,19 +54,20 @@ export const BookMetadata = ({
                 Add Author
               </Link>
             </div>
-            <FormControl>
-              <CreatableCombobox
-                value={field.value}
-                options={authors}
-                onChange={field.onChange}
-                onCreateOption={async (name) => {
-                  const newAuthor = await onCreateAuthor(name);
-                  if (newAuthor?.id) field.onChange(newAuthor.id);
-                }}
-                placeholder="Select or create an author"
-                className="border-purple-light focus:border-purple"
-              />
-            </FormControl>
+            <Select onValueChange={field.onChange} value={field.value}>
+              <FormControl>
+                <SelectTrigger className="border-purple-light focus:border-purple">
+                  <SelectValue placeholder="Select an author" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {authors.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
@@ -85,19 +88,20 @@ export const BookMetadata = ({
                 Add Publisher
               </Link>
             </div>
-            <FormControl>
-              <CreatableCombobox
-                value={field.value}
-                options={publishers}
-                onChange={field.onChange}
-                onCreateOption={async (name) => {
-                  const newPublisher = await onCreatePublisher(name);
-                  if (newPublisher?.id) field.onChange(newPublisher.id);
-                }}
-                placeholder="Select or create a publisher"
-                className="border-purple-light focus:border-purple"
-              />
-            </FormControl>
+            <Select onValueChange={field.onChange} value={field.value}>
+              <FormControl>
+                <SelectTrigger className="border-purple-light focus:border-purple">
+                  <SelectValue placeholder="Select a publisher" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {publishers.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}

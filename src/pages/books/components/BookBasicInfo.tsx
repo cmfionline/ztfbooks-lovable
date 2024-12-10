@@ -9,21 +9,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { CreatableCombobox } from "@/components/ui/creatable-combobox";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface BookBasicInfoProps {
   control: Control<any>;
   series: { label: string; value: string; }[];
   languages: { label: string; value: string; }[];
-  onCreateSeries: (name: string) => Promise<{ id: string } | undefined>;
 }
 
 export const BookBasicInfo = ({
   control,
   series,
   languages,
-  onCreateSeries,
 }: BookBasicInfoProps) => {
   return (
     <div className="space-y-6">
@@ -59,19 +63,20 @@ export const BookBasicInfo = ({
                 Add Series
               </Link>
             </div>
-            <FormControl>
-              <CreatableCombobox
-                value={field.value}
-                options={series}
-                onChange={field.onChange}
-                onCreateOption={async (name) => {
-                  const newSeries = await onCreateSeries(name);
-                  field.onChange(newSeries?.id);
-                }}
-                placeholder="Select or create a series"
-                className="border-purple-light focus:border-purple"
-              />
-            </FormControl>
+            <Select onValueChange={field.onChange} value={field.value}>
+              <FormControl>
+                <SelectTrigger className="border-purple-light focus:border-purple">
+                  <SelectValue placeholder="Select a series" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {series.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
@@ -92,16 +97,20 @@ export const BookBasicInfo = ({
                 Add Language
               </Link>
             </div>
-            <FormControl>
-              <CreatableCombobox
-                value={field.value}
-                options={languages}
-                onChange={field.onChange}
-                onCreateOption={() => {}}
-                placeholder="Select a language"
-                className="border-purple-light focus:border-purple"
-              />
-            </FormControl>
+            <Select onValueChange={field.onChange} value={field.value}>
+              <FormControl>
+                <SelectTrigger className="border-purple-light focus:border-purple">
+                  <SelectValue placeholder="Select a language" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {languages.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}

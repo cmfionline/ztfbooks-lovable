@@ -8,7 +8,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { CreatableCombobox } from "@/components/ui/creatable-combobox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -69,16 +75,20 @@ export const SeriesLanguage = ({ control }: SeriesLanguageProps) => {
               Add Language
             </Link>
           </div>
-          <FormControl>
-            <CreatableCombobox
-              value={field.value}
-              options={languages}
-              onChange={field.onChange}
-              onCreateOption={() => {}}
-              placeholder="Select a language"
-              className="border-purple-light focus:border-purple"
-            />
-          </FormControl>
+          <Select onValueChange={field.onChange} value={field.value}>
+            <FormControl>
+              <SelectTrigger className="border-purple-light focus:border-purple">
+                <SelectValue placeholder="Select a language" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              {languages.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <FormMessage />
         </FormItem>
       )}
