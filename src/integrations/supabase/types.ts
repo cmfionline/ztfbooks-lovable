@@ -9,7 +9,212 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      authors: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      books: {
+        Row: {
+          author_id: string
+          cover_image: string | null
+          created_at: string
+          epub_file: string | null
+          id: string
+          is_free: boolean | null
+          language_id: string
+          page_count: number | null
+          price: number | null
+          publication_date: string | null
+          publisher_id: string | null
+          series_id: string | null
+          synopsis: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          cover_image?: string | null
+          created_at?: string
+          epub_file?: string | null
+          id?: string
+          is_free?: boolean | null
+          language_id: string
+          page_count?: number | null
+          price?: number | null
+          publication_date?: string | null
+          publisher_id?: string | null
+          series_id?: string | null
+          synopsis?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          cover_image?: string | null
+          created_at?: string
+          epub_file?: string | null
+          id?: string
+          is_free?: boolean | null
+          language_id?: string
+          page_count?: number | null
+          price?: number | null
+          publication_date?: string | null
+          publisher_id?: string | null
+          series_id?: string | null
+          synopsis?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "books_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "authors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "books_language_id_fkey"
+            columns: ["language_id"]
+            isOneToOne: false
+            referencedRelation: "languages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "books_publisher_id_fkey"
+            columns: ["publisher_id"]
+            isOneToOne: false
+            referencedRelation: "publishers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "books_series_id_fkey"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "series"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      books_tags: {
+        Row: {
+          book_id: string
+          tag_id: string
+        }
+        Insert: {
+          book_id: string
+          tag_id: string
+        }
+        Update: {
+          book_id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "books_tags_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "books_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      languages: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      publishers: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      series: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      tags: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
