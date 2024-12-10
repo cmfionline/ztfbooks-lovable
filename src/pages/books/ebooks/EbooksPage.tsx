@@ -1,10 +1,7 @@
-import { Routes, Route } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { PlusCircle, Eye, Pencil, Trash2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -13,25 +10,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { format } from "date-fns";
+import { Eye, Pencil, Star, Trash2, MessageSquare } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import AddBook from "./books/AddBook";
-import AuthorsPage from "./books/authors/AuthorsPage";
-import AddAuthor from "./books/authors/AddAuthor";
-import SeriesPage from "./books/series/SeriesPage";
-import AddSeries from "./books/series/AddSeries";
-import PublishersPage from "./books/publishers/PublishersPage";
-import AddPublisher from "./books/publishers/AddPublisher";
-import TagsPage from "./books/tags/TagsPage";
-import AddTag from "./books/tags/AddTag";
-import LanguagesPage from "./books/languages/LanguagesPage";
-import AddLanguage from "./books/languages/AddLanguage";
-import EbooksPage from "./books/ebooks/EbooksPage";
+import { format } from "date-fns";
 
-const BooksListing = () => {
+const EbooksPage = () => {
   const { toast } = useToast();
 
-  const { data: booksData, isLoading, refetch } = useQuery({
+  const { data: books, isLoading, refetch } = useQuery({
     queryKey: ["books"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -78,17 +64,32 @@ const BooksListing = () => {
     refetch();
   };
 
+  const handleToggleFeatured = async (id: string, currentStatus: boolean) => {
+    const { error } = await supabase
+      .from("books")
+      .update({ is_featured: !currentStatus })
+      .eq("id", id);
+
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error updating featured status",
+        description: error.message,
+      });
+      return;
+    }
+
+    toast({
+      title: `Book ${currentStatus ? 'removed from' : 'marked as'} featured`,
+    });
+    refetch();
+  };
+
   return (
     <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Books Management</h1>
-          <Link to="/books/add">
-            <Button className="bg-purple hover:bg-purple/90">
-              <PlusCircle className="w-4 h-4 mr-2" />
-              Add Book
-            </Button>
-          </Link>
+          <h1 className="text-3xl font-bold">eBooks Management</h1>
         </div>
         <Card className="p-6">
           {isLoading ? (
@@ -99,22 +100,22 @@ const BooksListing = () => {
                 <TableRow>
                   <TableHead>Title</TableHead>
                   <TableHead>Author</TableHead>
-                  <TableHead>Series</TableHead>
                   <TableHead>Language</TableHead>
-                  <TableHead>Publisher</TableHead>
+                  <TableHead>Price</TableHead>
                   <TableHead>Created On</TableHead>
                   <TableHead>Updated On</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {booksData?.map((book) => (
+                {books?.map((book) => (
                   <TableRow key={book.id}>
                     <TableCell className="font-medium">{book.title}</TableCell>
                     <TableCell>{book.authors?.name || "N/A"}</TableCell>
-                    <TableCell>{book.series?.name || "N/A"}</TableCell>
                     <TableCell>{book.languages?.name || "N/A"}</TableCell>
-                    <TableCell>{book.publishers?.name || "N/A"}</TableCell>
+                    <TableCell>
+                      {book.is_free ? "Free" : `$${book.price?.toFixed(2) || "N/A"}`}
+                    </TableCell>
                     <TableCell>
                       {format(new Date(book.created_at), "PPP")}
                     </TableCell>
@@ -125,20 +126,31 @@ const BooksListing = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        asChild
+                        onClick={() => handleToggleFeatured(book.id, book.is_featured)}
+                        className={book.is_featured ? "text-yellow-500" : ""}
                       >
-                        <Link to={`/books/${book.id}`}>
-                          <Eye className="h-4 w-4" />
-                        </Link>
+                        <Star className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
                         asChild
                       >
-                        <Link to={`/books/${book.id}/edit`}>
-                          <Pencil className="h-4 w-4" />
-                        </Link>
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        asChild
+                      >
+                        <MessageSquare className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        asChild
+                      >
+                        <Pencil className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"
@@ -159,24 +171,4 @@ const BooksListing = () => {
   );
 };
 
-const Books = () => {
-  return (
-    <Routes>
-      <Route path="/" element={<BooksListing />} />
-      <Route path="/ebooks" element={<EbooksPage />} />
-      <Route path="/add" element={<AddBook />} />
-      <Route path="/authors" element={<AuthorsPage />} />
-      <Route path="/authors/add" element={<AddAuthor />} />
-      <Route path="/series" element={<SeriesPage />} />
-      <Route path="/series/add" element={<AddSeries />} />
-      <Route path="/publishers" element={<PublishersPage />} />
-      <Route path="/publishers/add" element={<AddPublisher />} />
-      <Route path="/tags" element={<TagsPage />} />
-      <Route path="/tags/add" element={<AddTag />} />
-      <Route path="/languages" element={<LanguagesPage />} />
-      <Route path="/languages/add" element={<AddLanguage />} />
-    </Routes>
-  );
-};
-
-export default Books;
+export default EbooksPage;

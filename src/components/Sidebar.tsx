@@ -26,7 +26,7 @@ const Sidebar = () => {
       icon: <BookOpen className="w-4 h-4" />,
       path: "/books",
       submenu: [
-        { title: "Add Book", path: "/books/add" },
+        { title: "eBooks", path: "/books/ebooks" },
         { title: "Authors", path: "/books/authors" },
         { title: "Series", path: "/books/series" },
         { title: "Publishers", path: "/books/publishers" },
