@@ -49,7 +49,7 @@ const FlutterwaveSettings = () => {
 
           if (createError) {
             console.error('Error creating gateway:', createError);
-            return null;
+            throw createError;
           }
           
           console.log('New gateway created:', newGateway);
@@ -59,6 +59,11 @@ const FlutterwaveSettings = () => {
         return data;
       } catch (error) {
         console.error('Error in gateway query:', error);
+        toast({
+          title: "Error",
+          description: "Failed to initialize Flutterwave gateway configuration.",
+          variant: "destructive",
+        });
         return null;
       }
     }
