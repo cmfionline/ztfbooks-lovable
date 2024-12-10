@@ -103,13 +103,22 @@ const AddBook = () => {
         epubFilePath = epubData.path;
       }
 
-      // Create book
+      // Create book with properly mapped field names
       const { data: book, error: bookError } = await supabase
         .from("books")
         .insert({
-          ...values,
+          title: values.title,
+          series_id: values.seriesId,
+          language_id: values.languageId,
           cover_image: coverImagePath,
+          synopsis: values.synopsis,
+          author_id: values.authorId,
+          publisher_id: values.publisherId,
           epub_file: epubFilePath,
+          publication_date: values.publicationDate?.toISOString(),
+          page_count: values.pageCount,
+          is_free: values.isFree,
+          price: values.price,
         })
         .select()
         .single();
