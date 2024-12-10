@@ -1,5 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import StripeSettings from "./payments/stripe";
+import PayStackSettings from "./payments/paystack";
 
 const Payments = () => {
   return (
@@ -9,21 +11,32 @@ const Payments = () => {
           <Route path="/" element={
             <>
               <h1 className="text-3xl font-bold mb-8">Payment Gateways</h1>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Payment Overview</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>Payment gateways dashboard coming soon...</p>
-                </CardContent>
-              </Card>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Stripe</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      Accept credit card payments worldwide
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>PayStack</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      Accept payments in Nigeria and other African countries
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
             </>
           } />
-          <Route path="/stripe" element={<h1>Stripe Settings</h1>} />
-          <Route path="/paystack" element={<h1>Paystack Settings</h1>} />
-          <Route path="/flutterwave" element={<h1>Flutterwave Settings</h1>} />
-          <Route path="/mobile-money" element={<h1>Mobile Money Settings</h1>} />
-          <Route path="/vouchers" element={<h1>Vouchers</h1>} />
+          <Route path="/stripe/*" element={<StripeSettings />} />
+          <Route path="/paystack/*" element={<PayStackSettings />} />
         </Routes>
       </div>
     </div>
