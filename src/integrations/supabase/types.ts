@@ -9,6 +9,128 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      ad_analytics: {
+        Row: {
+          ad_id: string | null
+          clicks: number | null
+          conversions: number | null
+          created_at: string
+          date: string
+          id: string
+          impressions: number | null
+          revenue: number | null
+        }
+        Insert: {
+          ad_id?: string | null
+          clicks?: number | null
+          conversions?: number | null
+          created_at?: string
+          date: string
+          id?: string
+          impressions?: number | null
+          revenue?: number | null
+        }
+        Update: {
+          ad_id?: string | null
+          clicks?: number | null
+          conversions?: number | null
+          created_at?: string
+          date?: string
+          id?: string
+          impressions?: number | null
+          revenue?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_analytics_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ad_books: {
+        Row: {
+          ad_id: string
+          book_id: string
+          discount_percentage: number | null
+        }
+        Insert: {
+          ad_id: string
+          book_id: string
+          discount_percentage?: number | null
+        }
+        Update: {
+          ad_id?: string
+          book_id?: string
+          discount_percentage?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_books_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_books_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ads: {
+        Row: {
+          content: string
+          created_at: string
+          cta_text: string | null
+          end_date: string
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          name: string
+          placement: Database["public"]["Enums"]["ad_placement"]
+          start_date: string
+          target_audience: Json | null
+          type: Database["public"]["Enums"]["ad_type"]
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          cta_text?: string | null
+          end_date: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name: string
+          placement: Database["public"]["Enums"]["ad_placement"]
+          start_date: string
+          target_audience?: Json | null
+          type: Database["public"]["Enums"]["ad_type"]
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          cta_text?: string | null
+          end_date?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name?: string
+          placement?: Database["public"]["Enums"]["ad_placement"]
+          start_date?: string
+          target_audience?: Json | null
+          type?: Database["public"]["Enums"]["ad_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       authors: {
         Row: {
           bio: string | null
@@ -166,6 +288,116 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      discount_analytics: {
+        Row: {
+          created_at: string
+          date: string
+          discount_id: string | null
+          id: string
+          redemptions: number | null
+          revenue_impact: number | null
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          discount_id?: string | null
+          id?: string
+          redemptions?: number | null
+          revenue_impact?: number | null
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          discount_id?: string | null
+          id?: string
+          redemptions?: number | null
+          revenue_impact?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discount_analytics_discount_id_fkey"
+            columns: ["discount_id"]
+            isOneToOne: false
+            referencedRelation: "discounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      discount_books: {
+        Row: {
+          book_id: string
+          discount_id: string
+        }
+        Insert: {
+          book_id: string
+          discount_id: string
+        }
+        Update: {
+          book_id?: string
+          discount_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discount_books_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "discount_books_discount_id_fkey"
+            columns: ["discount_id"]
+            isOneToOne: false
+            referencedRelation: "discounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      discounts: {
+        Row: {
+          created_at: string
+          end_date: string
+          id: string
+          is_active: boolean | null
+          is_stackable: boolean | null
+          min_books_count: number | null
+          min_purchase_amount: number | null
+          name: string
+          start_date: string
+          type: Database["public"]["Enums"]["discount_type"]
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          end_date: string
+          id?: string
+          is_active?: boolean | null
+          is_stackable?: boolean | null
+          min_books_count?: number | null
+          min_purchase_amount?: number | null
+          name: string
+          start_date: string
+          type: Database["public"]["Enums"]["discount_type"]
+          updated_at?: string
+          value: number
+        }
+        Update: {
+          created_at?: string
+          end_date?: string
+          id?: string
+          is_active?: boolean | null
+          is_stackable?: boolean | null
+          min_books_count?: number | null
+          min_purchase_amount?: number | null
+          name?: string
+          start_date?: string
+          type?: Database["public"]["Enums"]["discount_type"]
+          updated_at?: string
+          value?: number
+        }
+        Relationships: []
       }
       faq_groups: {
         Row: {
@@ -430,7 +662,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      ad_placement: "home" | "category" | "checkout" | "series" | "book"
+      ad_type: "banner" | "interstitial" | "popup" | "sponsored"
+      discount_type: "percentage" | "fixed" | "volume" | "cart"
     }
     CompositeTypes: {
       [_ in never]: never
