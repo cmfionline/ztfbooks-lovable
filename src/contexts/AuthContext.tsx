@@ -74,7 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: 'https://ppywzrizeqvtxhbfscki.supabase.co/auth/v1/callback',
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
@@ -102,7 +102,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'apple',
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: 'https://ppywzrizeqvtxhbfscki.supabase.co/auth/v1/callback',
         },
       });
       
@@ -127,7 +127,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email,
         password,
         options: {
-          emailRedirectTo: window.location.origin,
+          emailRedirectTo: 'https://ppywzrizeqvtxhbfscki.supabase.co/auth/v1/callback',
         },
       });
       
