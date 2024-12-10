@@ -17,6 +17,12 @@ interface SeriesLanguageProps {
   control: Control<any>;
 }
 
+interface Language {
+  id: string;
+  name: string;
+  code: string;
+}
+
 export const SeriesLanguage = ({ control }: SeriesLanguageProps) => {
   const { data: languages = [], isLoading } = useQuery({
     queryKey: ["languages"],
@@ -31,7 +37,7 @@ export const SeriesLanguage = ({ control }: SeriesLanguageProps) => {
         return [];
       }
 
-      return (data || []).map((language) => ({
+      return (data || []).map((language: Language) => ({
         label: `${language.name} (${language.code})`,
         value: language.id,
       }));
