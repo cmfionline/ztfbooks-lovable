@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
 interface AuthContextType {
@@ -10,6 +10,7 @@ interface AuthContextType {
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  signInWithApple: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -63,7 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: error.message,
         variant: "destructive",
       });
-      throw error; // Re-throw to handle in the component
+      throw error;
     }
   };
 
@@ -82,6 +83,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log('AuthProvider: Google sign in initiated:', data);
     } catch (error: any) {
       console.error('AuthProvider: Google sign in error:', error);
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+
+  const signInWithApple = async () => {
+    try {
+      console.log('AuthProvider: Attempting Apple sign in...');
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'apple',
+        options: {
+          redirectTo: `${window.location.origin}/`,
+        },
+      });
+      
+      if (error) throw error;
+      
+      console.log('AuthProvider: Apple sign in initiated:', data);
+    } catch (error: any) {
+      console.error('AuthProvider: Apple sign in error:', error);
       toast({
         title: "Error",
         description: error.message,
@@ -144,7 +169,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut, signInWithGoogle }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      loading, 
+      signIn, 
+      signUp, 
+      signOut, 
+      signInWithGoogle,
+      signInWithApple 
+    }}>
       {children}
     </AuthContext.Provider>
   );
