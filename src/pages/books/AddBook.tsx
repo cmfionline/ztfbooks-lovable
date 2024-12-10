@@ -11,6 +11,7 @@ import { CreatableCombobox } from "@/components/ui/creatable-combobox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Form,
   FormControl,
@@ -57,6 +58,7 @@ const AddBook = () => {
     publishers,
     tags,
     languages,
+    isLoading,
   } = useBookFormData();
 
   const {
@@ -154,6 +156,28 @@ const AddBook = () => {
       });
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="container max-w-4xl mx-auto py-8 px-4">
+        <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-primary">Add New Book</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="space-y-2">
+                  <Skeleton className="h-4 w-[100px]" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="container max-w-4xl mx-auto py-8 px-4">
