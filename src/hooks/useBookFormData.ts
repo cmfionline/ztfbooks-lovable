@@ -2,45 +2,83 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 export const useBookFormData = () => {
-  const { data: series = [] } = useQuery({
+  const { data: seriesData, isLoading: isLoadingSeries } = useQuery({
     queryKey: ["series"],
     queryFn: async () => {
-      const { data } = await supabase.from("series").select("*");
-      return data?.map(s => ({ value: s.id, label: s.name })) || [];
+      const { data, error } = await supabase.from("series").select("*");
+      if (error) throw error;
+      return data || [];
     },
   });
 
-  const { data: authors = [] } = useQuery({
+  const { data: authorsData, isLoading: isLoadingAuthors } = useQuery({
     queryKey: ["authors"],
     queryFn: async () => {
-      const { data } = await supabase.from("authors").select("*");
-      return data?.map(a => ({ value: a.id, label: a.name })) || [];
+      const { data, error } = await supabase.from("authors").select("*");
+      if (error) throw error;
+      return data || [];
     },
   });
 
-  const { data: publishers = [] } = useQuery({
+  const { data: publishersData, isLoading: isLoadingPublishers } = useQuery({
     queryKey: ["publishers"],
     queryFn: async () => {
-      const { data } = await supabase.from("publishers").select("*");
-      return data?.map(p => ({ value: p.id, label: p.name })) || [];
+      const { data, error } = await supabase.from("publishers").select("*");
+      if (error) throw error;
+      return data || [];
     },
   });
 
-  const { data: tags = [] } = useQuery({
+  const { data: tagsData, isLoading: isLoadingTags } = useQuery({
     queryKey: ["tags"],
     queryFn: async () => {
-      const { data } = await supabase.from("tags").select("*");
-      return data?.map(t => ({ value: t.id, label: t.name })) || [];
+      const { data, error } = await supabase.from("tags").select("*");
+      if (error) throw error;
+      return data || [];
     },
   });
 
-  const { data: languages = [] } = useQuery({
+  const { data: languagesData, isLoading: isLoadingLanguages } = useQuery({
     queryKey: ["languages"],
     queryFn: async () => {
-      const { data } = await supabase.from("languages").select("*");
-      return data?.map(l => ({ value: l.id, label: l.name })) || [];
+      const { data, error } = await supabase.from("languages").select("*");
+      if (error) throw error;
+      return data || [];
     },
   });
+
+  // Transform the data into the format expected by CreatableCombobox
+  const series = (seriesData || []).map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
+
+  const authors = (authorsData || []).map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
+
+  const publishers = (publishersData || []).map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
+
+  const tags = (tagsData || []).map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
+
+  const languages = (languagesData || []).map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
+
+  const isLoading = 
+    isLoadingSeries || 
+    isLoadingAuthors || 
+    isLoadingPublishers || 
+    isLoadingTags || 
+    isLoadingLanguages;
 
   return {
     series,
@@ -48,5 +86,6 @@ export const useBookFormData = () => {
     publishers,
     tags,
     languages,
+    isLoading,
   };
 };
