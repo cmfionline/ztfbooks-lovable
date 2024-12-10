@@ -1,61 +1,73 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Check, Loader2 } from "lucide-react";
 
-interface SubscriptionPlan {
+interface Plan {
   id: string;
   name: string;
   description: string;
   price: number;
   duration: number;
-  duration_unit: 'day' | 'week' | 'month' | 'year';
+  duration_unit: string;
+  stripe_price_id: string;
   features: string[];
   is_active: boolean;
-  stripe_price_id: string;
 }
 
-export const SubscriptionPlansPage = () => {
+const SubscriptionPlans = () => {
   const { toast } = useToast();
 
   const { data: plans = [], isLoading } = useQuery({
-    queryKey: ['subscription-plans'],
+    queryKey: ["subscription_plans"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('subscription_plans')
-        .select('*')
-        .eq('is_active', true)
-        .order('price');
+        .from("subscription_plans")
+        .select("*")
+        .eq("is_active", true)
+        .order("price");
 
       if (error) throw error;
-      return data as SubscriptionPlan[];
+      return data as Plan[];
     },
   });
 
-  const handleSubscribe = async (plan: SubscriptionPlan) => {
+  const handleSubscribe = async (plan: Plan) => {
     try {
-      const { data: { url }, error } = await supabase.functions.invoke('stripe-subscription', {
+      const { data, error } = await supabase.functions.invoke("stripe-subscription", {
         body: { priceId: plan.stripe_price_id },
       });
 
       if (error) throw error;
-      if (url) {
-        window.location.href = url;
+
+      if (data?.url) {
+        window.location.href = data.url;
       }
     } catch (error) {
-      console.error('Error creating subscription:', error);
+      console.error("Error creating subscription:", error);
       toast({
         title: "Error",
-        description: "Failed to process subscription",
+        description: "Failed to create subscription. Please try again.",
         variant: "destructive",
       });
     }
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
   }
 
   return (
@@ -63,45 +75,47 @@ export const SubscriptionPlansPage = () => {
       <div className="text-center mb-10">
         <h1 className="text-4xl font-bold mb-4">Choose Your Plan</h1>
         <p className="text-muted-foreground">
-          Select the perfect plan for your needs
+          Select the perfect plan for your reading needs
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {plans.map((plan) => (
-          <Card key={plan.id} className="relative">
-            {plan.name === 'Premium Plan' && (
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-purple-600 text-white px-4 py-1 rounded-full text-sm">
-                Most Popular
-              </div>
-            )}
+          <Card
+            key={plan.id}
+            className={`flex flex-col ${
+              plan.name === "Premium Plan" ? "border-purple ring-2 ring-purple" : ""
+            }`}
+          >
             <CardHeader>
-              <CardTitle>{plan.name}</CardTitle>
+              <CardTitle className="text-2xl">{plan.name}</CardTitle>
               <CardDescription>{plan.description}</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex-grow">
               <div className="mb-6">
                 <span className="text-4xl font-bold">${plan.price}</span>
                 <span className="text-muted-foreground">
                   /{plan.duration_unit}
                 </span>
               </div>
-              <ul className="space-y-2 mb-6">
-                {plan.features?.map((feature, index) => (
+              <ul className="space-y-2">
+                {(plan.features || []).map((feature, index) => (
                   <li key={index} className="flex items-center gap-2">
                     <Check className="h-5 w-5 text-green-500" />
                     <span>{feature}</span>
                   </li>
                 ))}
               </ul>
+            </CardContent>
+            <CardFooter>
               <Button
-                className="w-full"
-                variant={plan.name === 'Premium Plan' ? 'default' : 'outline'}
+                className="w-full bg-purple hover:bg-purple/90"
                 onClick={() => handleSubscribe(plan)}
+                disabled={!plan.stripe_price_id}
               >
                 Subscribe Now
               </Button>
-            </CardContent>
+            </CardFooter>
           </Card>
         ))}
       </div>
@@ -109,4 +123,4 @@ export const SubscriptionPlansPage = () => {
   );
 };
 
-export default SubscriptionPlansPage;
+export default SubscriptionPlans;
