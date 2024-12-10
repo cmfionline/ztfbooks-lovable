@@ -20,10 +20,20 @@ export const useEntityMutations = () => {
   });
 
   const createAuthor = useMutation({
-    mutationFn: async (name: string) => {
+    mutationFn: async (values: {
+      name: string;
+      nationality?: string;
+      photo?: string;
+      bio?: string;
+      website?: string;
+      facebook_url?: string;
+      twitter_url?: string;
+      instagram_url?: string;
+      date_of_birth?: string;
+    }) => {
       const { data, error } = await supabase
         .from("authors")
-        .insert({ name })
+        .insert(values)
         .select()
         .single();
       if (error) throw error;

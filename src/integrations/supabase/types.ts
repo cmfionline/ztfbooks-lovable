@@ -11,19 +11,43 @@ export type Database = {
     Tables: {
       authors: {
         Row: {
+          bio: string | null
           created_at: string
+          date_of_birth: string | null
+          facebook_url: string | null
           id: string
+          instagram_url: string | null
           name: string
+          nationality: string | null
+          photo: string | null
+          twitter_url: string | null
+          website: string | null
         }
         Insert: {
+          bio?: string | null
           created_at?: string
+          date_of_birth?: string | null
+          facebook_url?: string | null
           id?: string
+          instagram_url?: string | null
           name: string
+          nationality?: string | null
+          photo?: string | null
+          twitter_url?: string | null
+          website?: string | null
         }
         Update: {
+          bio?: string | null
           created_at?: string
+          date_of_birth?: string | null
+          facebook_url?: string | null
           id?: string
+          instagram_url?: string | null
           name?: string
+          nationality?: string | null
+          photo?: string | null
+          twitter_url?: string | null
+          website?: string | null
         }
         Relationships: []
       }

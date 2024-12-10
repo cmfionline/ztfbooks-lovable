@@ -14,9 +14,12 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useEntityMutations } from "@/hooks/useEntityMutations";
 import { UserPlus, Loader2 } from "lucide-react";
+
+const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
 
 const formSchema = z.object({
   name: z
@@ -28,6 +31,14 @@ const formSchema = z.object({
       "Name can only contain letters, spaces, hyphens, apostrophes, and periods"
     )
     .transform((val) => val.trim()),
+  nationality: z.string().optional(),
+  photo: z.string().optional(),
+  bio: z.string().optional(),
+  website: z.string().url("Invalid website URL").optional().or(z.literal("")),
+  facebook_url: z.string().url("Invalid Facebook URL").optional().or(z.literal("")),
+  twitter_url: z.string().url("Invalid Twitter URL").optional().or(z.literal("")),
+  instagram_url: z.string().url("Invalid Instagram URL").optional().or(z.literal("")),
+  date_of_birth: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -41,12 +52,20 @@ const AddAuthor = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      nationality: "",
+      photo: "",
+      bio: "",
+      website: "",
+      facebook_url: "",
+      twitter_url: "",
+      instagram_url: "",
+      date_of_birth: "",
     },
   });
 
   const onSubmit = async (values: FormValues) => {
     try {
-      await createAuthor.mutateAsync(values.name);
+      await createAuthor.mutateAsync(values);
       toast({
         title: "Success",
         description: `Author "${values.name}" has been created successfully.`,
@@ -79,7 +98,7 @@ const AddAuthor = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-primary">Name</FormLabel>
+                    <FormLabel className="text-primary">Name*</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -88,9 +107,122 @@ const AddAuthor = () => {
                         autoFocus
                       />
                     </FormControl>
-                    <FormDescription>
-                      Enter the author's full name as it should appear on their books.
-                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="nationality"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nationality</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Enter author's nationality" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="date_of_birth"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Date of Birth</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="date" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="bio"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Biography</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder="Enter author's biography"
+                        className="min-h-[100px]"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="photo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Photo URL</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Enter photo URL" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="website"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Website</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Enter website URL" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="facebook_url"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Facebook URL</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Enter Facebook profile URL" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="twitter_url"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Twitter URL</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Enter Twitter profile URL" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="instagram_url"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Instagram URL</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Enter Instagram profile URL" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
