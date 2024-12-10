@@ -23,7 +23,7 @@ const FlutterwaveSettings = () => {
         const { data, error } = await supabase
           .from('payment_gateways')
           .select('*')
-          .eq('type', 'FLUTTERWAVE')  // Changed to uppercase to match enum
+          .eq('type', 'flutterwave')  // Changed to lowercase to match enum
           .maybeSingle();
         
         if (error) {
@@ -40,7 +40,7 @@ const FlutterwaveSettings = () => {
             .from('payment_gateways')
             .insert({
               name: 'Flutterwave',
-              type: 'FLUTTERWAVE',  // Changed to uppercase to match enum
+              type: 'flutterwave',  // Changed to lowercase to match enum
               is_active: false,
               config: {}
             })
