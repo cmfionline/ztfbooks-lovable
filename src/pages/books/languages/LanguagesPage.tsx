@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PlusCircle, Eye, Pencil, Trash2 } from "lucide-react";
@@ -17,6 +17,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 const LanguagesPage = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const { data: languages = [], isLoading, refetch } = useQuery({
     queryKey: ["languages"],
@@ -60,6 +61,14 @@ const LanguagesPage = () => {
     refetch();
   };
 
+  const handleView = (id: string) => {
+    navigate(`/books/languages/${id}`);
+  };
+
+  const handleEdit = (id: string) => {
+    navigate(`/books/languages/${id}/edit`);
+  };
+
   return (
     <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
@@ -97,20 +106,16 @@ const LanguagesPage = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        asChild
+                        onClick={() => handleView(language.id)}
                       >
-                        <Link to={`/books/languages/${language.id}`}>
-                          <Eye className="h-4 w-4" />
-                        </Link>
+                        <Eye className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        asChild
+                        onClick={() => handleEdit(language.id)}
                       >
-                        <Link to={`/books/languages/${language.id}/edit`}>
-                          <Pencil className="h-4 w-4" />
-                        </Link>
+                        <Pencil className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"

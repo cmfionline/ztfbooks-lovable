@@ -9,14 +9,33 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { CreatableCombobox } from "@/components/ui/creatable-combobox";
-import { useBookFormData } from "@/hooks/useBookFormData";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SeriesLanguageProps {
   control: Control<any>;
 }
 
 export const SeriesLanguage = ({ control }: SeriesLanguageProps) => {
-  const { languages = [], isLoading } = useBookFormData();
+  const { data: languages = [], isLoading } = useQuery({
+    queryKey: ["languages"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("languages")
+        .select("*")
+        .order("name");
+      
+      if (error) {
+        console.error("Error fetching languages:", error);
+        return [];
+      }
+
+      return (data || []).map((language) => ({
+        label: language.name,
+        value: language.id,
+      }));
+    },
+  });
 
   return (
     <FormField
@@ -40,8 +59,9 @@ export const SeriesLanguage = ({ control }: SeriesLanguageProps) => {
               options={languages}
               onChange={field.onChange}
               onCreateOption={() => {}}
-              placeholder="Select a language"
+              placeholder={isLoading ? "Loading languages..." : "Select a language"}
               className="border-purple-light focus:border-purple"
+              disabled={isLoading}
             />
           </FormControl>
           <FormMessage />

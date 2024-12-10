@@ -5,7 +5,11 @@ export const useBookFormData = () => {
   const { data: seriesData, isLoading: isLoadingSeries } = useQuery({
     queryKey: ["series"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("series").select("*");
+      const { data, error } = await supabase
+        .from("series")
+        .select("*")
+        .order("name");
+      
       if (error) {
         console.error("Error fetching series:", error);
         return [];
@@ -17,7 +21,11 @@ export const useBookFormData = () => {
   const { data: authorsData, isLoading: isLoadingAuthors } = useQuery({
     queryKey: ["authors"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("authors").select("*");
+      const { data, error } = await supabase
+        .from("authors")
+        .select("*")
+        .order("name");
+      
       if (error) {
         console.error("Error fetching authors:", error);
         return [];
@@ -29,7 +37,11 @@ export const useBookFormData = () => {
   const { data: publishersData, isLoading: isLoadingPublishers } = useQuery({
     queryKey: ["publishers"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("publishers").select("*");
+      const { data, error } = await supabase
+        .from("publishers")
+        .select("*")
+        .order("name");
+      
       if (error) {
         console.error("Error fetching publishers:", error);
         return [];
@@ -41,7 +53,11 @@ export const useBookFormData = () => {
   const { data: tagsData, isLoading: isLoadingTags } = useQuery({
     queryKey: ["tags"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("tags").select("*");
+      const { data, error } = await supabase
+        .from("tags")
+        .select("*")
+        .order("name");
+      
       if (error) {
         console.error("Error fetching tags:", error);
         return [];
@@ -53,7 +69,11 @@ export const useBookFormData = () => {
   const { data: languagesData, isLoading: isLoadingLanguages } = useQuery({
     queryKey: ["languages"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("languages").select("*");
+      const { data, error } = await supabase
+        .from("languages")
+        .select("*")
+        .order("name");
+      
       if (error) {
         console.error("Error fetching languages:", error);
         return [];
@@ -69,26 +89,24 @@ export const useBookFormData = () => {
     isLoadingTags || 
     isLoadingLanguages;
 
-  // Transform the data into the format expected by CreatableCombobox
-  // Return empty arrays during loading or if data is undefined
   return {
-    series: isLoading ? [] : (seriesData || []).map((item) => ({
+    series: (seriesData || []).map((item) => ({
       label: item.name,
       value: item.id,
     })),
-    authors: isLoading ? [] : (authorsData || []).map((item) => ({
+    authors: (authorsData || []).map((item) => ({
       label: item.name,
       value: item.id,
     })),
-    publishers: isLoading ? [] : (publishersData || []).map((item) => ({
+    publishers: (publishersData || []).map((item) => ({
       label: item.name,
       value: item.id,
     })),
-    tags: isLoading ? [] : (tagsData || []).map((item) => ({
+    tags: (tagsData || []).map((item) => ({
       label: item.name,
       value: item.id,
     })),
-    languages: isLoading ? [] : (languagesData || []).map((item) => ({
+    languages: (languagesData || []).map((item) => ({
       label: item.name,
       value: item.id,
     })),
