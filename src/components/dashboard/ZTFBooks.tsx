@@ -12,31 +12,37 @@ const ztfBooks = [
 
 export const ZTFBooks = () => {
   return (
-    <Card className="mb-8">
+    <Card className="mb-8 bg-gradient-to-br from-purple-light/30 to-white">
       <CardHeader>
-        <CardTitle>Books by Zacharias Tanee Fomum</CardTitle>
+        <CardTitle className="text-purple">Books by Zacharias Tanee Fomum</CardTitle>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[300px]">
+        <ScrollArea className="h-[300px] rounded-md">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Book Title</TableHead>
-                <TableHead>Downloads</TableHead>
-                <TableHead>Revenue</TableHead>
-                <TableHead>Language</TableHead>
-                <TableHead>Type</TableHead>
+              <TableRow className="bg-purple-light/50">
+                <TableHead className="font-semibold">Book Title</TableHead>
+                <TableHead className="font-semibold">Downloads</TableHead>
+                <TableHead className="font-semibold">Revenue</TableHead>
+                <TableHead className="font-semibold">Language</TableHead>
+                <TableHead className="font-semibold">Type</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {ztfBooks.map((book, index) => (
-                <TableRow key={index}>
+                <TableRow key={index} className="hover:bg-purple-light/20 transition-colors">
                   <TableCell className="font-medium">{book.title}</TableCell>
                   <TableCell>{book.downloads.toLocaleString()}</TableCell>
                   <TableCell>{book.revenue}</TableCell>
                   <TableCell>{book.language}</TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded-full text-xs ${book.type === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
+                    <span 
+                      className={`px-2 py-1 rounded-full text-xs ${
+                        book.type === 'Paid' 
+                          ? 'bg-success/20 text-success' 
+                          : 'bg-info/20 text-info'
+                      }`}
+                    >
                       {book.type}
                     </span>
                   </TableCell>

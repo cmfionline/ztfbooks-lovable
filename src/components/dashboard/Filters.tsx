@@ -19,12 +19,12 @@ export const Filters = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 mb-8">
+    <div className="flex flex-col gap-4 mb-8 bg-gradient-to-r from-purple-light/50 to-white p-4 rounded-lg">
       <div className="flex flex-wrap gap-4 items-center">
         <TimeFilter value="this_week" onValueChange={(value) => console.log(value)} />
         
         <Select>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-white">
             <SelectValue placeholder="Select author" />
           </SelectTrigger>
           <SelectContent>
@@ -37,7 +37,7 @@ export const Filters = () => {
         </Select>
 
         <Select>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-white">
             <SelectValue placeholder="Select series" />
           </SelectTrigger>
           <SelectContent>
@@ -50,7 +50,7 @@ export const Filters = () => {
         </Select>
 
         <Select>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-white">
             <SelectValue placeholder="Select tags" />
           </SelectTrigger>
           <SelectContent>
@@ -64,11 +64,19 @@ export const Filters = () => {
       </div>
 
       <div className="flex gap-2">
-        <Button variant="outline" onClick={handleDownloadPDF}>
+        <Button 
+          variant="outline" 
+          onClick={handleDownloadPDF}
+          className="bg-white hover:bg-purple-light/50"
+        >
           <FileDown className="mr-2 h-4 w-4" />
           Download PDF
         </Button>
-        <Button variant="outline" onClick={handleDownloadExcel}>
+        <Button 
+          variant="outline" 
+          onClick={handleDownloadExcel}
+          className="bg-white hover:bg-purple-light/50"
+        >
           <FileDown className="mr-2 h-4 w-4" />
           Download Excel
         </Button>
