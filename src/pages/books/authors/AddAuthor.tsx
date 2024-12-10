@@ -19,7 +19,7 @@ const AddAuthor = () => {
   const form = useForm<AuthorFormValues>({
     resolver: zodResolver(authorFormSchema),
     defaultValues: {
-      name: "",
+      name: "", // This is required but can start as empty string
       nationality: "",
       photo: "",
       bio: "",
