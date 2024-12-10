@@ -64,7 +64,7 @@ const EbooksPage = () => {
     refetch();
   };
 
-  const handleToggleFeatured = async (id: string, currentStatus: boolean) => {
+  const handleToggleFeatured = async (id: string, currentStatus: boolean | null) => {
     const { error } = await supabase
       .from("books")
       .update({ is_featured: !currentStatus })
@@ -134,21 +134,18 @@ const EbooksPage = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        asChild
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        asChild
                       >
                         <MessageSquare className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        asChild
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>

@@ -58,6 +58,7 @@ export type Database = {
           created_at: string
           epub_file: string | null
           id: string
+          is_featured: boolean | null
           is_free: boolean | null
           language_id: string
           page_count: number | null
@@ -75,6 +76,7 @@ export type Database = {
           created_at?: string
           epub_file?: string | null
           id?: string
+          is_featured?: boolean | null
           is_free?: boolean | null
           language_id: string
           page_count?: number | null
@@ -92,6 +94,7 @@ export type Database = {
           created_at?: string
           epub_file?: string | null
           id?: string
+          is_featured?: boolean | null
           is_free?: boolean | null
           language_id?: string
           page_count?: number | null
