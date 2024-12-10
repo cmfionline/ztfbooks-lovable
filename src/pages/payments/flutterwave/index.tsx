@@ -17,16 +17,18 @@ const FlutterwaveSettings = () => {
   const { data: gateway, isLoading: isLoadingGateway } = useQuery({
     queryKey: ['payment-gateway', 'flutterwave'],
     queryFn: async () => {
-      // First, check if the gateway exists
-      const { data, error } = await supabase
-        .from('payment_gateways')
-        .select('*')
-        .eq('type', 'flutterwave')
-        .single();
-      
-      if (error) {
-        if (error.code === 'PGRST116') {
-          // Gateway doesn't exist, create it
+      try {
+        // First, check if the gateway exists
+        const { data, error } = await supabase
+          .from('payment_gateways')
+          .select('*')
+          .eq('type', 'flutterwave')
+          .maybeSingle();
+        
+        if (error) throw error;
+        
+        // If no gateway exists, create it
+        if (!data) {
           const { data: newGateway, error: createError } = await supabase
             .from('payment_gateways')
             .insert({
@@ -44,10 +46,12 @@ const FlutterwaveSettings = () => {
           }
           return newGateway;
         }
-        console.error('Error fetching gateway:', error);
+
+        return data;
+      } catch (error) {
+        console.error('Error in gateway query:', error);
         return null;
       }
-      return data;
     }
   });
 
