@@ -1,6 +1,5 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext } from 'react';
 import { User } from '@supabase/supabase-js';
-import { AuthService } from '@/services/auth';
 import { useAuthToast } from '@/hooks/useAuthToast';
 
 interface AuthContextType {
@@ -13,108 +12,49 @@ interface AuthContextType {
   signInWithApple: () => Promise<void>;
 }
 
+// Mock user for development
+const mockUser: User = {
+  id: 'mock-user-id',
+  email: 'mock@example.com',
+  aud: 'authenticated',
+  created_at: new Date().toISOString(),
+  role: 'authenticated',
+  updated_at: new Date().toISOString(),
+};
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const { showSuccessToast, showErrorToast } = useAuthToast();
+  const { showSuccessToast } = useAuthToast();
 
-  useEffect(() => {
-    console.log('AuthProvider: Checking session...');
-    
-    AuthService.getSession().then(({ data: { session } }) => {
-      console.log('AuthProvider: Initial session:', session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    const { data: { subscription } } = AuthService.onAuthStateChange((_event, session) => {
-      console.log('AuthProvider: Auth state changed:', _event, session);
-      setUser(session?.user ?? null);
-    });
-
-    return () => {
-      console.log('AuthProvider: Cleaning up subscription');
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  const signIn = async (email: string, password: string) => {
-    try {
-      console.log('AuthProvider: Attempting sign in with email:', email);
-      const { error } = await AuthService.signInWithEmail(email, password);
-      
-      if (error) throw error;
-      
-      showSuccessToast("Welcome back!", "You have successfully signed in.");
-    } catch (error: any) {
-      console.error('AuthProvider: Sign in error:', error);
-      showErrorToast(error);
-      throw error;
-    }
+  // Mock authentication methods
+  const signIn = async () => {
+    console.log('Mock sign in');
+    showSuccessToast("Welcome back!", "You have successfully signed in.");
   };
 
   const signInWithGoogle = async () => {
-    try {
-      console.log('AuthProvider: Attempting Google sign in...');
-      const { error } = await AuthService.signInWithGoogle();
-      
-      if (error) throw error;
-    } catch (error: any) {
-      console.error('AuthProvider: Google sign in error:', error);
-      showErrorToast(error);
-      throw error;
-    }
+    console.log('Mock Google sign in');
   };
 
   const signInWithApple = async () => {
-    try {
-      console.log('AuthProvider: Attempting Apple sign in...');
-      const { error } = await AuthService.signInWithApple();
-      
-      if (error) throw error;
-    } catch (error: any) {
-      console.error('AuthProvider: Apple sign in error:', error);
-      showErrorToast(error);
-      throw error;
-    }
+    console.log('Mock Apple sign in');
   };
 
-  const signUp = async (email: string, password: string) => {
-    try {
-      console.log('AuthProvider: Attempting sign up with email:', email);
-      const { error } = await AuthService.signUp(email, password);
-      
-      if (error) throw error;
-      
-      showSuccessToast("Success!", "Please check your email for verification.");
-    } catch (error: any) {
-      console.error('AuthProvider: Sign up error:', error);
-      showErrorToast(error);
-      throw error;
-    }
+  const signUp = async () => {
+    console.log('Mock sign up');
+    showSuccessToast("Success!", "Account created successfully.");
   };
 
   const signOut = async () => {
-    try {
-      console.log('AuthProvider: Attempting sign out...');
-      const { error } = await AuthService.signOut();
-      
-      if (error) throw error;
-      
-      showSuccessToast("Signed out", "You have been successfully signed out.");
-    } catch (error: any) {
-      console.error('AuthProvider: Sign out error:', error);
-      showErrorToast(error);
-      throw error;
-    }
+    console.log('Mock sign out');
+    showSuccessToast("Signed out", "You have been successfully signed out.");
   };
 
   return (
     <AuthContext.Provider value={{ 
-      user, 
-      loading, 
+      user: mockUser, 
+      loading: false, 
       signIn, 
       signUp, 
       signOut, 
