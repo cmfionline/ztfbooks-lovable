@@ -64,7 +64,7 @@ export const CreateAuthorDialog = ({
   const onSubmit = async (values: FormValues) => {
     try {
       setIsLoading(true);
-      await createAuthor.mutateAsync(values.name);
+      await createAuthor.mutateAsync({ name: values.name });
       form.reset();
       onSuccess();
       toast({
