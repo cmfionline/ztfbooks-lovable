@@ -21,29 +21,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     console.log('AuthProvider: Checking session...');
+    
+    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('AuthProvider: Session result:', session);
+      console.log('AuthProvider: Initial session:', session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
+    // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log('AuthProvider: Auth state changed:', _event, session);
       setUser(session?.user ?? null);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log('AuthProvider: Cleaning up subscription');
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
     try {
-      console.log('AuthProvider: Attempting sign in...');
-      const { error } = await supabase.auth.signInWithPassword({
+      console.log('AuthProvider: Attempting sign in with email:', email);
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      
       if (error) throw error;
-      console.log('AuthProvider: Sign in successful');
+      
+      console.log('AuthProvider: Sign in successful:', data);
       toast({
         title: "Welcome back!",
         description: "You have successfully signed in.",
@@ -55,20 +63,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: error.message,
         variant: "destructive",
       });
+      throw error; // Re-throw to handle in the component
     }
   };
 
   const signInWithGoogle = async () => {
     try {
       console.log('AuthProvider: Attempting Google sign in...');
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: `${window.location.origin}/`,
         },
       });
+      
       if (error) throw error;
-      console.log('AuthProvider: Google sign in initiated');
+      
+      console.log('AuthProvider: Google sign in initiated:', data);
     } catch (error: any) {
       console.error('AuthProvider: Google sign in error:', error);
       toast({
@@ -76,18 +87,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: error.message,
         variant: "destructive",
       });
+      throw error;
     }
   };
 
   const signUp = async (email: string, password: string) => {
     try {
-      console.log('AuthProvider: Attempting sign up...');
-      const { error } = await supabase.auth.signUp({
+      console.log('AuthProvider: Attempting sign up with email:', email);
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+        },
       });
+      
       if (error) throw error;
-      console.log('AuthProvider: Sign up successful');
+      
+      console.log('AuthProvider: Sign up successful:', data);
       toast({
         title: "Success!",
         description: "Please check your email for verification.",
@@ -99,6 +116,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: error.message,
         variant: "destructive",
       });
+      throw error;
     }
   };
 
@@ -106,7 +124,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       console.log('AuthProvider: Attempting sign out...');
       const { error } = await supabase.auth.signOut();
+      
       if (error) throw error;
+      
       console.log('AuthProvider: Sign out successful');
       toast({
         title: "Signed out",
@@ -119,6 +139,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: error.message,
         variant: "destructive",
       });
+      throw error;
     }
   };
 

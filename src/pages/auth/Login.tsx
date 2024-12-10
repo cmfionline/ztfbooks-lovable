@@ -5,27 +5,57 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { signIn, signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isLogin) {
-      await signIn(email, password);
-    } else {
-      await signUp(email, password);
+    setIsLoading(true);
+    
+    try {
+      console.log(`Attempting to ${isLogin ? 'sign in' : 'sign up'} with email:`, email);
+      
+      if (isLogin) {
+        await signIn(email, password);
+      } else {
+        await signUp(email, password);
+      }
+      
+      console.log('Authentication successful, navigating to home');
+      navigate("/");
+    } catch (error: any) {
+      console.error('Authentication error:', error);
+      toast({
+        title: "Error",
+        description: error.message || "An error occurred during authentication",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
-    navigate("/");
   };
 
   const handleGoogleSignIn = async () => {
-    await signInWithGoogle();
-    navigate("/");
+    try {
+      console.log('Initiating Google sign in');
+      await signInWithGoogle();
+      // Note: No immediate navigation here as Google auth will handle the redirect
+    } catch (error: any) {
+      console.error('Google sign in error:', error);
+      toast({
+        title: "Error",
+        description: error.message || "An error occurred with Google sign in",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -45,6 +75,7 @@ const Login = () => {
             variant="outline" 
             className="w-full"
             onClick={handleGoogleSignIn}
+            disabled={isLoading}
           >
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
               <path
@@ -88,6 +119,7 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  disabled={isLoading}
                 />
               </div>
               <div className="space-y-2">
@@ -100,10 +132,11 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  disabled={isLoading}
                 />
               </div>
-              <Button type="submit" className="w-full">
-                {isLogin ? "Sign In" : "Sign Up"}
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Loading..." : (isLogin ? "Sign In" : "Sign Up")}
               </Button>
             </div>
           </form>
@@ -114,6 +147,7 @@ const Login = () => {
             variant="ghost"
             className="w-full"
             onClick={() => setIsLogin(!isLogin)}
+            disabled={isLoading}
           >
             {isLogin 
               ? "Don't have an account? Sign up" 
