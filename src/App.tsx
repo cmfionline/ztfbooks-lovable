@@ -2,9 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
-import Login from "./pages/auth/Login";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Books from "./pages/Books";
 import Payments from "./pages/Payments";
@@ -20,17 +18,7 @@ import Sidebar from "./components/Sidebar";
 
 const queryClient = new QueryClient();
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!user) {
-    return <Navigate to="/login" />;
-  }
-
+const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar />
@@ -44,67 +32,64 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={
-              <ProtectedRoute>
-                <Index />
-              </ProtectedRoute>
-            } />
-            <Route path="/books/*" element={
-              <ProtectedRoute>
-                <Books />
-              </ProtectedRoute>
-            } />
-            <Route path="/payments/*" element={
-              <ProtectedRoute>
-                <Payments />
-              </ProtectedRoute>
-            } />
-            <Route path="/users/*" element={
-              <ProtectedRoute>
-                <Users />
-              </ProtectedRoute>
-            } />
-            <Route path="/statistics" element={
-              <ProtectedRoute>
-                <Statistics />
-              </ProtectedRoute>
-            } />
-            <Route path="/pages/*" element={
-              <ProtectedRoute>
-                <Pages />
-              </ProtectedRoute>
-            } />
-            <Route path="/ads" element={
-              <ProtectedRoute>
-                <Ads />
-              </ProtectedRoute>
-            } />
-            <Route path="/reviews" element={
-              <ProtectedRoute>
-                <Reviews />
-              </ProtectedRoute>
-            } />
-            <Route path="/faqs" element={
-              <ProtectedRoute>
-                <Faqs />
-              </ProtectedRoute>
-            } />
-            <Route path="/settings/*" element={
-              <ProtectedRoute>
-                <Settings />
-              </ProtectedRoute>
-            } />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={
+            <Layout>
+              <Index />
+            </Layout>
+          } />
+          <Route path="/books/*" element={
+            <Layout>
+              <Books />
+            </Layout>
+          } />
+          <Route path="/payments/*" element={
+            <Layout>
+              <Payments />
+            </Layout>
+          } />
+          <Route path="/users/*" element={
+            <Layout>
+              <Users />
+            </Layout>
+          } />
+          <Route path="/statistics" element={
+            <Layout>
+              <Statistics />
+            </Layout>
+          } />
+          <Route path="/pages/*" element={
+            <Layout>
+              <Pages />
+            </Layout>
+          } />
+          <Route path="/ads" element={
+            <Layout>
+              <Ads />
+            </Layout>
+          } />
+          <Route path="/reviews" element={
+            <Layout>
+              <Reviews />
+            </Layout>
+          } />
+          <Route path="/faqs" element={
+            <Layout>
+              <Faqs />
+            </Layout>
+          } />
+          <Route path="/settings/*" element={
+            <Layout>
+              <Settings />
+            </Layout>
+          } />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
   </QueryClientProvider>
 );
 
