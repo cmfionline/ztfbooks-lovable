@@ -35,6 +35,11 @@ export default {
         border: "#E6E4DD",
         input: "#F0EFEA",
         foreground: "hsl(var(--foreground))",
+        payment: {
+          dark: "#0B0F1A",
+          card: "#1A1F2E",
+          button: "#00B252",
+        }
       },
       textColor: {
         foreground: "hsl(var(--foreground))",

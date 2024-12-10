@@ -1,101 +1,129 @@
 import { Routes, Route } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  CreditCard,
-  Smartphone,
-  Building2,
-  Wallet,
-  QrCode,
-} from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Edit } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import StripeSettings from "./payments/stripe";
 import PayStackSettings from "./payments/paystack";
 import FlutterwaveSettings from "./payments/flutterwave";
 
-const PaymentMethodBadge = ({ 
-  icon: Icon, 
-  label 
+const PaymentGatewayCard = ({ 
+  name, 
+  logo, 
+  route,
+  isActive,
+  onToggle 
 }: { 
-  icon: React.ElementType; 
-  label: string;
-}) => (
-  <Badge variant="secondary" className="flex items-center gap-1">
-    <Icon className="w-3 h-3" />
-    <span>{label}</span>
-  </Badge>
-);
-
-const Payments = () => {
+  name: string;
+  logo: string;
+  route: string;
+  isActive: boolean;
+  onToggle: () => void;
+}) => {
+  const navigate = useNavigate();
+  
   return (
-    <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
+    <Card className="bg-[#1A1F2E] border-0">
+      <CardContent className="p-6">
+        <div className="flex flex-col space-y-4">
+          <div className="bg-white rounded-lg p-4 w-full h-16 flex items-center justify-center">
+            <img src={logo} alt={name} className="h-8 object-contain" />
+          </div>
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-white">{name}</h3>
+            <Switch 
+              checked={isActive} 
+              onCheckedChange={onToggle}
+            />
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm"
+            className="w-full bg-[#00B252] hover:bg-[#00B252]/90 text-white border-0"
+            onClick={() => navigate(route)}
+          >
+            <Edit className="w-4 h-4 mr-2" />
+            Edit
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+const PaymentGateways = () => {
+  return (
+    <div className="min-h-screen bg-[#0B0F1A] pt-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         <Routes>
           <Route path="/" element={
             <>
-              <h1 className="text-3xl font-bold mb-8">Payment Gateways</h1>
+              <h1 className="text-3xl font-bold mb-8 text-white">Payment Gateways</h1>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Stripe</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Accept credit card payments worldwide
-                    </p>
-                    <div className="space-y-4">
-                      <div>
-                        <h3 className="text-sm font-medium mb-2">Payment Methods:</h3>
-                        <div className="flex flex-wrap gap-2">
-                          <PaymentMethodBadge icon={CreditCard} label="Credit Cards" />
-                          <PaymentMethodBadge icon={Building2} label="Bank Transfers" />
-                          <PaymentMethodBadge icon={Wallet} label="Digital Wallets" />
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>PayStack</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Accept payments in Nigeria and other African countries
-                    </p>
-                    <div className="space-y-4">
-                      <div>
-                        <h3 className="text-sm font-medium mb-2">Payment Methods:</h3>
-                        <div className="flex flex-wrap gap-2">
-                          <PaymentMethodBadge icon={CreditCard} label="Credit Cards" />
-                          <PaymentMethodBadge icon={Building2} label="Bank Transfers" />
-                          <PaymentMethodBadge icon={Smartphone} label="Mobile Money" />
-                          <PaymentMethodBadge icon={QrCode} label="USSD" />
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Flutterwave</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Accept payments across Africa with multiple payment methods
-                    </p>
-                    <div className="space-y-4">
-                      <div>
-                        <h3 className="text-sm font-medium mb-2">Payment Methods:</h3>
-                        <div className="flex flex-wrap gap-2">
-                          <PaymentMethodBadge icon={CreditCard} label="Credit Cards" />
-                          <PaymentMethodBadge icon={Building2} label="Bank Transfers" />
-                          <PaymentMethodBadge icon={Smartphone} label="Mobile Money" />
-                          <PaymentMethodBadge icon={Wallet} label="Digital Wallets" />
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <PaymentGatewayCard
+                  name="PayPal"
+                  logo="/lovable-uploads/paypal-logo.png"
+                  route="/payments/paypal"
+                  isActive={false}
+                  onToggle={() => {}}
+                />
+                <PaymentGatewayCard
+                  name="Stripe"
+                  logo="/lovable-uploads/stripe-logo.png"
+                  route="/payments/stripe"
+                  isActive={true}
+                  onToggle={() => {}}
+                />
+                <PaymentGatewayCard
+                  name="Razorpay"
+                  logo="/lovable-uploads/razorpay-logo.png"
+                  route="/payments/razorpay"
+                  isActive={false}
+                  onToggle={() => {}}
+                />
+                <PaymentGatewayCard
+                  name="PayStack"
+                  logo="/lovable-uploads/paystack-logo.png"
+                  route="/payments/paystack"
+                  isActive={true}
+                  onToggle={() => {}}
+                />
+                <PaymentGatewayCard
+                  name="PayUMoney"
+                  logo="/lovable-uploads/payumoney-logo.png"
+                  route="/payments/payumoney"
+                  isActive={false}
+                  onToggle={() => {}}
+                />
+                <PaymentGatewayCard
+                  name="Flutterwave"
+                  logo="/lovable-uploads/flutterwave-logo.png"
+                  route="/payments/flutterwave"
+                  isActive={true}
+                  onToggle={() => {}}
+                />
+                <PaymentGatewayCard
+                  name="CinetPay"
+                  logo="/lovable-uploads/cinetpay-logo.png"
+                  route="/payments/cinetpay"
+                  isActive={false}
+                  onToggle={() => {}}
+                />
+                <PaymentGatewayCard
+                  name="Bank Transfer"
+                  logo="/lovable-uploads/bank-transfer-logo.png"
+                  route="/payments/bank-transfer"
+                  isActive={false}
+                  onToggle={() => {}}
+                />
+                <PaymentGatewayCard
+                  name="SSLCOMMERZ"
+                  logo="/lovable-uploads/sslcommerz-logo.png"
+                  route="/payments/sslcommerz"
+                  isActive={false}
+                  onToggle={() => {}}
+                />
               </div>
             </>
           } />
@@ -108,4 +136,4 @@ const Payments = () => {
   );
 };
 
-export default Payments;
+export default PaymentGateways;
