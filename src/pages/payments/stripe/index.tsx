@@ -10,6 +10,7 @@ import { Loader2 } from "lucide-react";
 const StripeSettings = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const { data: gateway, isLoading: isLoadingGateway } = useQuery({
     queryKey: ['payment-gateway', 'stripe'],
@@ -51,6 +52,30 @@ const StripeSettings = () => {
     }
   };
 
+  const handleTestPayment = async () => {
+    setIsProcessing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('stripe-checkout', {
+        body: { amount: 10.99, currency: 'usd' },
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      toast({
+        title: "Error",
+        description: "Failed to process test payment.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   if (isLoadingGateway) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">
@@ -81,6 +106,35 @@ const StripeSettings = () => {
               <span className="text-sm text-muted-foreground">
                 {gateway?.is_active ? 'Enabled' : 'Disabled'}
               </span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Test Payment</CardTitle>
+            <CardDescription>
+              Process a test payment to verify your Stripe integration
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <Button
+                onClick={handleTestPayment}
+                disabled={!gateway?.is_active || isProcessing}
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  'Process Test Payment ($10.99)'
+                )}
+              </Button>
+              <p className="text-sm text-muted-foreground">
+                This will create a test payment session for $10.99 USD
+              </p>
             </div>
           </CardContent>
         </Card>
