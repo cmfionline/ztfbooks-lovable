@@ -10,6 +10,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -18,6 +19,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { User, Loader2 } from "lucide-react";
@@ -28,7 +30,11 @@ const formSchema = z.object({
     .string()
     .min(2, "Name must be at least 2 characters")
     .max(100, "Name must be less than 100 characters")
-    .regex(/^[a-zA-Z\s\-'.]+$/, "Name can only contain letters, spaces, hyphens, apostrophes, and periods"),
+    .regex(
+      /^[a-zA-Z\s\-'.]+$/,
+      "Name can only contain letters, spaces, hyphens, apostrophes, and periods"
+    )
+    .transform((val) => val.trim()),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -87,7 +93,8 @@ export const CreateAuthorDialog = ({
             Create New Author
           </DialogTitle>
           <DialogDescription>
-            Add a new author to your book collection. Fill in the required information below.
+            Add a new author to your book collection. Fill in the required
+            information below.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -99,18 +106,23 @@ export const CreateAuthorDialog = ({
                 <FormItem>
                   <FormLabel>Author Name</FormLabel>
                   <FormControl>
-                    <Input 
-                      {...field} 
+                    <Input
+                      {...field}
                       placeholder="Enter author's full name"
                       disabled={isLoading}
                       className="w-full"
+                      autoComplete="off"
+                      autoFocus
                     />
                   </FormControl>
+                  <FormDescription>
+                    Use the author's full name as it should appear on their books.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <div className="flex justify-end gap-2 pt-4">
+            <DialogFooter className="gap-2 pt-4">
               <Button
                 type="button"
                 variant="outline"
@@ -130,10 +142,10 @@ export const CreateAuthorDialog = ({
                     Creating...
                   </>
                 ) : (
-                  'Create Author'
+                  "Create Author"
                 )}
               </Button>
-            </div>
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>
