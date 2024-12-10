@@ -9,7 +9,7 @@ const Index = () => {
   const [timeFilter, setTimeFilter] = useState<TimeFilterValue>("this_week");
 
   return (
-    <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
+    <div className="min-h-screen bg-background p-8">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">ZTF Books Dashboard</h1>
         <Filters />
