@@ -1,25 +1,25 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Eye, Pencil, Star, Trash2, Link } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { Switch } from "@/components/ui/switch";
 import { Link as RouterLink } from "react-router-dom";
+import { SearchBar } from "./components/SearchBar";
+import { EbookTableRow } from "./components/EbookTableRow";
+import { Book } from "@/types/book";
 
 const EbooksPage = () => {
   const { toast } = useToast();
   const [search, setSearch] = useState("");
+  const [entriesPerPage, setEntriesPerPage] = useState("10");
 
   const { data: books, isLoading, refetch } = useQuery({
     queryKey: ["books"],
@@ -29,8 +29,7 @@ const EbooksPage = () => {
         .select(`
           *,
           authors (name),
-          series (name),
-          cover_image
+          series (name)
         `);
       
       if (error) {
@@ -42,7 +41,7 @@ const EbooksPage = () => {
         });
         return [];
       }
-      return data || [];
+      return data as Book[];
     },
   });
 
@@ -67,7 +66,7 @@ const EbooksPage = () => {
     refetch();
   };
 
-  const handleToggleFeatured = async (id: string, currentStatus: boolean | null) => {
+  const handleToggleFeatured = async (id: string, currentStatus: boolean) => {
     const { error } = await supabase
       .from("books")
       .update({ is_featured: !currentStatus })
@@ -88,7 +87,7 @@ const EbooksPage = () => {
     refetch();
   };
 
-  const handleToggleTopSelling = async (id: string, currentStatus: boolean | null) => {
+  const handleToggleTopSelling = async (id: string, currentStatus: boolean) => {
     const { error } = await supabase
       .from("books")
       .update({ is_top_selling: !currentStatus })
@@ -115,6 +114,8 @@ const EbooksPage = () => {
     book.series?.name?.toLowerCase().includes(search.toLowerCase())
   );
 
+  const displayedBooks = filteredBooks?.slice(0, parseInt(entriesPerPage));
+
   return (
     <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
@@ -128,19 +129,14 @@ const EbooksPage = () => {
         </div>
 
         <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center gap-2">
-            <span>Search:</span>
-            <Input
-              type="search"
-              placeholder="Search books..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="max-w-sm"
-            />
-          </div>
+          <SearchBar value={search} onChange={setSearch} />
           <div className="flex items-center gap-2">
             <span>Show</span>
-            <select className="border rounded p-1">
+            <select 
+              className="border rounded p-1"
+              value={entriesPerPage}
+              onChange={(e) => setEntriesPerPage(e.target.value)}
+            >
               <option value="10">10</option>
               <option value="25">25</option>
               <option value="50">50</option>
@@ -167,62 +163,15 @@ const EbooksPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredBooks?.map((book, index) => (
-                  <TableRow key={book.id}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>
-                      {book.cover_image ? (
-                        <img 
-                          src={book.cover_image} 
-                          alt={book.title}
-                          className="w-16 h-20 object-cover rounded"
-                        />
-                      ) : (
-                        <div className="w-16 h-20 bg-gray-200 rounded flex items-center justify-center">
-                          No Image
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell className="font-medium">{book.title}</TableCell>
-                    <TableCell>{book.authors?.name || "N/A"}</TableCell>
-                    <TableCell>{book.series?.name || "N/A"}</TableCell>
-                    <TableCell>
-                      <Switch
-                        checked={book.is_top_selling || false}
-                        onCheckedChange={() => handleToggleTopSelling(book.id, book.is_top_selling)}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Switch
-                        checked={book.is_featured || false}
-                        onCheckedChange={() => handleToggleFeatured(book.id, book.is_featured)}
-                      />
-                    </TableCell>
-                    <TableCell className="text-right space-x-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="hover:bg-teal-50 text-teal-600"
-                      >
-                        <Link className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="hover:bg-blue-50 text-blue-600"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(book.id)}
-                        className="hover:bg-red-50 text-red-600"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
+                {displayedBooks?.map((book, index) => (
+                  <EbookTableRow
+                    key={book.id}
+                    book={book}
+                    index={index}
+                    onToggleTopSelling={handleToggleTopSelling}
+                    onToggleFeatured={handleToggleFeatured}
+                    onDelete={handleDelete}
+                  />
                 ))}
               </TableBody>
             </Table>

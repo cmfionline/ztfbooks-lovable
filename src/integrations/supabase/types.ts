@@ -182,6 +182,7 @@ export type Database = {
           id: string
           is_featured: boolean | null
           is_free: boolean | null
+          is_top_selling: boolean | null
           language_id: string
           page_count: number | null
           price: number | null
@@ -200,6 +201,7 @@ export type Database = {
           id?: string
           is_featured?: boolean | null
           is_free?: boolean | null
+          is_top_selling?: boolean | null
           language_id: string
           page_count?: number | null
           price?: number | null
@@ -218,6 +220,7 @@ export type Database = {
           id?: string
           is_featured?: boolean | null
           is_free?: boolean | null
+          is_top_selling?: boolean | null
           language_id?: string
           page_count?: number | null
           price?: number | null
