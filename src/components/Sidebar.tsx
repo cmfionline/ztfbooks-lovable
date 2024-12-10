@@ -9,6 +9,9 @@ import {
   FileText,
   MessageSquare,
   PlusCircle,
+  Building2,
+  Tags,
+  Globe,
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -26,8 +29,9 @@ const Sidebar = () => {
         { title: "Add Book", path: "/books/add" },
         { title: "Authors", path: "/books/authors" },
         { title: "Series", path: "/books/series" },
-        { title: "Tags", path: "/books/tags" },
         { title: "Publishers", path: "/books/publishers" },
+        { title: "Tags", path: "/books/tags" },
+        { title: "Languages", path: "/books/languages" },
       ],
     },
     {

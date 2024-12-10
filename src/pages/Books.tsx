@@ -2,6 +2,14 @@ import { Routes, Route } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AddBook from "./books/AddBook";
 import AuthorsPage from "./books/authors/AuthorsPage";
+import SeriesPage from "./books/series/SeriesPage";
+import AddSeries from "./books/series/AddSeries";
+import PublishersPage from "./books/publishers/PublishersPage";
+import AddPublisher from "./books/publishers/AddPublisher";
+import TagsPage from "./books/tags/TagsPage";
+import AddTag from "./books/tags/AddTag";
+import LanguagesPage from "./books/languages/LanguagesPage";
+import AddLanguage from "./books/languages/AddLanguage";
 
 const Books = () => {
   return (
@@ -26,9 +34,14 @@ const Books = () => {
           />
           <Route path="/add" element={<AddBook />} />
           <Route path="/authors" element={<AuthorsPage />} />
-          <Route path="/series" element={<h1>Series</h1>} />
-          <Route path="/tags" element={<h1>Tags</h1>} />
-          <Route path="/publishers" element={<h1>Publishers</h1>} />
+          <Route path="/series" element={<SeriesPage />} />
+          <Route path="/series/add" element={<AddSeries />} />
+          <Route path="/publishers" element={<PublishersPage />} />
+          <Route path="/publishers/add" element={<AddPublisher />} />
+          <Route path="/tags" element={<TagsPage />} />
+          <Route path="/tags/add" element={<AddTag />} />
+          <Route path="/languages" element={<LanguagesPage />} />
+          <Route path="/languages/add" element={<AddLanguage />} />
         </Routes>
       </div>
     </div>
