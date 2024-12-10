@@ -70,25 +70,25 @@ export const useBookFormData = () => {
     isLoadingLanguages;
 
   // Transform the data into the format expected by CreatableCombobox
-  // Always return arrays even if data is undefined
+  // Return empty arrays during loading or if data is undefined
   return {
-    series: (seriesData || []).map((item) => ({
+    series: isLoading ? [] : (seriesData || []).map((item) => ({
       label: item.name,
       value: item.id,
     })),
-    authors: (authorsData || []).map((item) => ({
+    authors: isLoading ? [] : (authorsData || []).map((item) => ({
       label: item.name,
       value: item.id,
     })),
-    publishers: (publishersData || []).map((item) => ({
+    publishers: isLoading ? [] : (publishersData || []).map((item) => ({
       label: item.name,
       value: item.id,
     })),
-    tags: (tagsData || []).map((item) => ({
+    tags: isLoading ? [] : (tagsData || []).map((item) => ({
       label: item.name,
       value: item.id,
     })),
-    languages: (languagesData || []).map((item) => ({
+    languages: isLoading ? [] : (languagesData || []).map((item) => ({
       label: item.name,
       value: item.id,
     })),
