@@ -2,7 +2,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { supabase } from "@/integrations/supabase/client";
+import { useEntityMutations } from "@/hooks/useEntityMutations";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,6 +24,8 @@ const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 type CreateAuthorDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -36,19 +38,19 @@ export const CreateAuthorDialog = ({
   onSuccess,
 }: CreateAuthorDialogProps) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { createAuthor } = useEntityMutations();
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: FormValues) => {
     try {
       setIsLoading(true);
-      const { error } = await supabase.from("authors").insert(values);
-      if (error) throw error;
+      await createAuthor.mutateAsync(values.name);
       form.reset();
       onSuccess();
     } catch (error) {
