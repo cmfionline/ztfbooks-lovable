@@ -32,7 +32,7 @@ interface CreatableComboboxProps {
 
 export function CreatableCombobox({
   value,
-  options,
+  options = [], // Provide default empty array
   onChange,
   onCreateOption,
   placeholder = "Select an option",
@@ -42,12 +42,19 @@ export function CreatableCombobox({
   const [open, setOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
 
+  // Ensure options is always an array
+  const safeOptions = Array.isArray(options) ? options : [];
+
   const handleCreateOption = () => {
     if (inputValue) {
       onCreateOption(inputValue);
       setInputValue("");
     }
   };
+
+  const selectedOption = React.useMemo(() => {
+    return value ? safeOptions.find((option) => option.value === value) : undefined;
+  }, [value, safeOptions]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -58,9 +65,7 @@ export function CreatableCombobox({
           aria-expanded={open}
           className={cn("w-full justify-between", className)}
         >
-          {value
-            ? options.find((option) => option.value === value)?.label
-            : placeholder}
+          {selectedOption?.label || placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -83,7 +88,7 @@ export function CreatableCombobox({
             </Button>
           </CommandEmpty>
           <CommandGroup>
-            {options.map((option) => (
+            {safeOptions.map((option) => (
               <CommandItem
                 key={option.value}
                 value={option.value}
