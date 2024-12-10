@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { EnableFlutterwaveCard } from "./components/EnableFlutterwaveCard";
 import { TestPaymentCard } from "./components/TestPaymentCard";
@@ -10,6 +10,7 @@ import { PaymentMethodsCard } from "./components/PaymentMethodsCard";
 
 const FlutterwaveSettings = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -22,24 +23,38 @@ const FlutterwaveSettings = () => {
         .eq('type', 'flutterwave')
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching gateway:', error);
+        return null;
+      }
       return data;
     }
   });
 
   const handleToggleActive = async () => {
+    if (!gateway?.id) {
+      toast({
+        title: "Error",
+        description: "Gateway configuration not found.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
       const { error } = await supabase
         .from('payment_gateways')
-        .update({ is_active: !gateway?.is_active })
-        .eq('id', gateway?.id);
+        .update({ is_active: !gateway.is_active })
+        .eq('id', gateway.id);
 
       if (error) throw error;
 
+      await queryClient.invalidateQueries({ queryKey: ['payment-gateway', 'flutterwave'] });
+
       toast({
         title: "Success",
-        description: `Flutterwave payments ${!gateway?.is_active ? 'enabled' : 'disabled'} successfully.`,
+        description: `Flutterwave payments ${!gateway.is_active ? 'enabled' : 'disabled'} successfully.`,
       });
     } catch (error) {
       console.error('Error updating gateway:', error);
@@ -54,6 +69,15 @@ const FlutterwaveSettings = () => {
   };
 
   const handleTestPayment = async () => {
+    if (!gateway?.is_active) {
+      toast({
+        title: "Error",
+        description: "Please enable Flutterwave payments first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsProcessing(true);
     try {
       const { data, error } = await supabase.functions.invoke('flutterwave-checkout', {
@@ -96,7 +120,7 @@ const FlutterwaveSettings = () => {
           onToggle={handleToggleActive}
         />
         <PaymentMethodsCard />
-        <ApiConfigCard />
+        <ApiConfigCard gatewayId={gateway?.id} />
         <TestPaymentCard
           isActive={gateway?.is_active || false}
           isProcessing={isProcessing}
