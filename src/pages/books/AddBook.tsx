@@ -10,7 +10,6 @@ import { Form } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useBookFormData } from "@/hooks/useBookFormData";
-import { useEntityMutations } from "@/hooks/useEntityMutations";
 import { BookBasicInfo } from "./components/BookBasicInfo";
 import { BookFiles } from "./components/BookFiles";
 import { BookMetadata } from "./components/BookMetadata";
@@ -45,13 +44,6 @@ const AddBook = () => {
     languages = [],
     isLoading,
   } = useBookFormData();
-
-  const {
-    createSeries,
-    createAuthor,
-    createPublisher,
-    createTag,
-  } = useEntityMutations();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -174,7 +166,6 @@ const AddBook = () => {
                 control={form.control}
                 series={series}
                 languages={languages}
-                onCreateSeries={createSeries.mutateAsync}
               />
 
               <BookFiles control={form.control} />
@@ -183,15 +174,12 @@ const AddBook = () => {
                 selectedTags={selectedTags}
                 setSelectedTags={setSelectedTags}
                 tags={tags}
-                onCreateTag={createTag.mutateAsync}
               />
 
               <BookMetadata
                 control={form.control}
                 authors={authors}
                 publishers={publishers}
-                onCreateAuthor={createAuthor.mutateAsync}
-                onCreatePublisher={createPublisher.mutateAsync}
               />
 
               <Button 
