@@ -11,9 +11,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useEntityMutations } from "@/hooks/useEntityMutations";
 import { UserPlus, Loader2 } from "lucide-react";
 
@@ -87,6 +88,9 @@ const AddAuthor = () => {
                         autoFocus
                       />
                     </FormControl>
+                    <FormDescription>
+                      Enter the author's full name as it should appear on their books.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
