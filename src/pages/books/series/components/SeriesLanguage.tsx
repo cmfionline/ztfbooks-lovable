@@ -11,6 +11,7 @@ import {
 import { CreatableCombobox } from "@/components/ui/creatable-combobox";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface SeriesLanguageProps {
   control: Control<any>;
@@ -31,11 +32,20 @@ export const SeriesLanguage = ({ control }: SeriesLanguageProps) => {
       }
 
       return (data || []).map((language) => ({
-        label: language.name,
+        label: `${language.name} (${language.code})`,
         value: language.id,
       }));
     },
   });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-[100px]" />
+        <Skeleton className="h-10 w-full" />
+      </div>
+    );
+  }
 
   return (
     <FormField
@@ -59,9 +69,8 @@ export const SeriesLanguage = ({ control }: SeriesLanguageProps) => {
               options={languages}
               onChange={field.onChange}
               onCreateOption={() => {}}
-              placeholder={isLoading ? "Loading languages..." : "Select a language"}
+              placeholder="Select a language"
               className="border-purple-light focus:border-purple"
-              disabled={isLoading}
             />
           </FormControl>
           <FormMessage />
