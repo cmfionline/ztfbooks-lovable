@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { EnablePayStackCard } from "./components/EnablePayStackCard";
 import { TestPaymentCard } from "./components/TestPaymentCard";
 import { ApiConfigCard } from "./components/ApiConfigCard";
+import { PaymentMethodsCard } from "./components/PaymentMethodsCard";
 
 const PayStackSettings = () => {
   const { toast } = useToast();
@@ -108,6 +109,8 @@ const PayStackSettings = () => {
           isLoading={isLoading}
           onToggle={handleToggleActive}
         />
+        <PaymentMethodsCard />
+        <ApiConfigCard />
         <TestPaymentCard
           isActive={gateway?.is_active || false}
           isProcessing={isProcessing}
@@ -115,7 +118,6 @@ const PayStackSettings = () => {
           onEmailChange={setTestEmail}
           onTestPayment={handleTestPayment}
         />
-        <ApiConfigCard />
       </div>
     </div>
   );
