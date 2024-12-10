@@ -62,33 +62,6 @@ export const useBookFormData = () => {
     },
   });
 
-  // Transform the data into the format expected by CreatableCombobox
-  // Ensure we always return an array even if data is undefined
-  const series = (seriesData || []).map((item) => ({
-    label: item.name,
-    value: item.id,
-  }));
-
-  const authors = (authorsData || []).map((item) => ({
-    label: item.name,
-    value: item.id,
-  }));
-
-  const publishers = (publishersData || []).map((item) => ({
-    label: item.name,
-    value: item.id,
-  }));
-
-  const tags = (tagsData || []).map((item) => ({
-    label: item.name,
-    value: item.id,
-  }));
-
-  const languages = (languagesData || []).map((item) => ({
-    label: item.name,
-    value: item.id,
-  }));
-
   const isLoading = 
     isLoadingSeries || 
     isLoadingAuthors || 
@@ -96,13 +69,29 @@ export const useBookFormData = () => {
     isLoadingTags || 
     isLoadingLanguages;
 
-  // Return empty arrays if data is loading to prevent undefined
+  // Transform the data into the format expected by CreatableCombobox
+  // Always return arrays even if data is undefined
   return {
-    series: isLoading ? [] : series,
-    authors: isLoading ? [] : authors,
-    publishers: isLoading ? [] : publishers,
-    tags: isLoading ? [] : tags,
-    languages: isLoading ? [] : languages,
+    series: isLoading ? [] : (seriesData || []).map((item) => ({
+      label: item.name,
+      value: item.id,
+    })),
+    authors: isLoading ? [] : (authorsData || []).map((item) => ({
+      label: item.name,
+      value: item.id,
+    })),
+    publishers: isLoading ? [] : (publishersData || []).map((item) => ({
+      label: item.name,
+      value: item.id,
+    })),
+    tags: isLoading ? [] : (tagsData || []).map((item) => ({
+      label: item.name,
+      value: item.id,
+    })),
+    languages: isLoading ? [] : (languagesData || []).map((item) => ({
+      label: item.name,
+      value: item.id,
+    })),
     isLoading,
   };
 };
