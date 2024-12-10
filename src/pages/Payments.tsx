@@ -63,63 +63,63 @@ const PaymentGateways = () => {
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 <PaymentGatewayCard
                   name="PayPal"
-                  logo="/lovable-uploads/paypal-logo.png"
+                  logo="/payment-logos/paypal.svg"
                   route="/payments/paypal"
                   isActive={false}
                   onToggle={() => {}}
                 />
                 <PaymentGatewayCard
                   name="Stripe"
-                  logo="/lovable-uploads/stripe-logo.png"
+                  logo="/payment-logos/stripe.svg"
                   route="/payments/stripe"
                   isActive={true}
                   onToggle={() => {}}
                 />
                 <PaymentGatewayCard
                   name="Razorpay"
-                  logo="/lovable-uploads/razorpay-logo.png"
+                  logo="/payment-logos/razorpay.svg"
                   route="/payments/razorpay"
                   isActive={false}
                   onToggle={() => {}}
                 />
                 <PaymentGatewayCard
                   name="PayStack"
-                  logo="/lovable-uploads/paystack-logo.png"
+                  logo="/payment-logos/paystack.svg"
                   route="/payments/paystack"
                   isActive={true}
                   onToggle={() => {}}
                 />
                 <PaymentGatewayCard
                   name="PayUMoney"
-                  logo="/lovable-uploads/payumoney-logo.png"
+                  logo="/payment-logos/payumoney.svg"
                   route="/payments/payumoney"
                   isActive={false}
                   onToggle={() => {}}
                 />
                 <PaymentGatewayCard
                   name="Flutterwave"
-                  logo="/lovable-uploads/flutterwave-logo.png"
+                  logo="/payment-logos/flutterwave.svg"
                   route="/payments/flutterwave"
                   isActive={true}
                   onToggle={() => {}}
                 />
                 <PaymentGatewayCard
                   name="CinetPay"
-                  logo="/lovable-uploads/cinetpay-logo.png"
+                  logo="/payment-logos/cinetpay.svg"
                   route="/payments/cinetpay"
                   isActive={false}
                   onToggle={() => {}}
                 />
                 <PaymentGatewayCard
                   name="Bank Transfer"
-                  logo="/lovable-uploads/bank-transfer-logo.png"
+                  logo="/payment-logos/bank-transfer.svg"
                   route="/payments/bank-transfer"
                   isActive={false}
                   onToggle={() => {}}
                 />
                 <PaymentGatewayCard
                   name="SSLCOMMERZ"
-                  logo="/lovable-uploads/sslcommerz-logo.png"
+                  logo="/payment-logos/sslcommerz.svg"
                   route="/payments/sslcommerz"
                   isActive={false}
                   onToggle={() => {}}
