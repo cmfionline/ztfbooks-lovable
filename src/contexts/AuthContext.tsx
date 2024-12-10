@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
+import { AuthService } from '@/services/auth';
+import { useAuthToast } from '@/hooks/useAuthToast';
 
 interface AuthContextType {
   user: User | null;
@@ -18,20 +18,18 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
+  const { showSuccessToast, showErrorToast } = useAuthToast();
 
   useEffect(() => {
     console.log('AuthProvider: Checking session...');
     
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    AuthService.getSession().then(({ data: { session } }) => {
       console.log('AuthProvider: Initial session:', session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    // Set up auth state change listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = AuthService.onAuthStateChange((_event, session) => {
       console.log('AuthProvider: Auth state changed:', _event, session);
       setUser(session?.user ?? null);
     });
@@ -45,25 +43,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signIn = async (email: string, password: string) => {
     try {
       console.log('AuthProvider: Attempting sign in with email:', email);
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { error } = await AuthService.signInWithEmail(email, password);
       
       if (error) throw error;
       
-      console.log('AuthProvider: Sign in successful:', data);
-      toast({
-        title: "Welcome back!",
-        description: "You have successfully signed in.",
-      });
+      showSuccessToast("Welcome back!", "You have successfully signed in.");
     } catch (error: any) {
       console.error('AuthProvider: Sign in error:', error);
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      showErrorToast(error);
       throw error;
     }
   };
@@ -71,27 +58,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = async () => {
     try {
       console.log('AuthProvider: Attempting Google sign in...');
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: 'https://ppywzrizeqvtxhbfscki.supabase.co/auth/v1/callback',
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-        },
-      });
+      const { error } = await AuthService.signInWithGoogle();
       
       if (error) throw error;
-      
-      console.log('AuthProvider: Google sign in initiated:', data);
     } catch (error: any) {
       console.error('AuthProvider: Google sign in error:', error);
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      showErrorToast(error);
       throw error;
     }
   };
@@ -99,23 +71,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithApple = async () => {
     try {
       console.log('AuthProvider: Attempting Apple sign in...');
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'apple',
-        options: {
-          redirectTo: 'https://ppywzrizeqvtxhbfscki.supabase.co/auth/v1/callback',
-        },
-      });
+      const { error } = await AuthService.signInWithApple();
       
       if (error) throw error;
-      
-      console.log('AuthProvider: Apple sign in initiated:', data);
     } catch (error: any) {
       console.error('AuthProvider: Apple sign in error:', error);
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      showErrorToast(error);
       throw error;
     }
   };
@@ -123,28 +84,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUp = async (email: string, password: string) => {
     try {
       console.log('AuthProvider: Attempting sign up with email:', email);
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: 'https://ppywzrizeqvtxhbfscki.supabase.co/auth/v1/callback',
-        },
-      });
+      const { error } = await AuthService.signUp(email, password);
       
       if (error) throw error;
       
-      console.log('AuthProvider: Sign up successful:', data);
-      toast({
-        title: "Success!",
-        description: "Please check your email for verification.",
-      });
+      showSuccessToast("Success!", "Please check your email for verification.");
     } catch (error: any) {
       console.error('AuthProvider: Sign up error:', error);
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      showErrorToast(error);
       throw error;
     }
   };
@@ -152,22 +99,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     try {
       console.log('AuthProvider: Attempting sign out...');
-      const { error } = await supabase.auth.signOut();
+      const { error } = await AuthService.signOut();
       
       if (error) throw error;
       
-      console.log('AuthProvider: Sign out successful');
-      toast({
-        title: "Signed out",
-        description: "You have been successfully signed out.",
-      });
+      showSuccessToast("Signed out", "You have been successfully signed out.");
     } catch (error: any) {
       console.error('AuthProvider: Sign out error:', error);
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      showErrorToast(error);
       throw error;
     }
   };
