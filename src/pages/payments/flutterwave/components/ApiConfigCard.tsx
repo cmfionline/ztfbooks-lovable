@@ -6,21 +6,38 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-export const ApiConfigCard = () => {
+interface ApiConfigCardProps {
+  gatewayId?: string;
+}
+
+export const ApiConfigCard = ({ gatewayId }: ApiConfigCardProps) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSaveKeys = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    
+    if (!gatewayId) {
+      toast({
+        title: "Error",
+        description: "Gateway configuration not found. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const formData = new FormData(event.currentTarget);
       const secretKey = formData.get('secretKey') as string;
 
-      const { error } = await supabase.functions.invoke('update-flutterwave-keys', {
-        body: { secretKey }
-      });
+      const { error } = await supabase
+        .from('payment_gateways')
+        .update({
+          config: { secret_key: secretKey }
+        })
+        .eq('id', gatewayId);
 
       if (error) throw error;
 
@@ -66,7 +83,7 @@ export const ApiConfigCard = () => {
           <div className="flex justify-between items-center">
             <Button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !gatewayId}
             >
               {isLoading ? "Saving..." : "Save API Keys"}
             </Button>

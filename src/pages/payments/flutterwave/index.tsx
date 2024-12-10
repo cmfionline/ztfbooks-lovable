@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -17,6 +17,7 @@ const FlutterwaveSettings = () => {
   const { data: gateway, isLoading: isLoadingGateway } = useQuery({
     queryKey: ['payment-gateway', 'flutterwave'],
     queryFn: async () => {
+      // First, check if the gateway exists
       const { data, error } = await supabase
         .from('payment_gateways')
         .select('*')
@@ -24,6 +25,25 @@ const FlutterwaveSettings = () => {
         .single();
       
       if (error) {
+        if (error.code === 'PGRST116') {
+          // Gateway doesn't exist, create it
+          const { data: newGateway, error: createError } = await supabase
+            .from('payment_gateways')
+            .insert({
+              name: 'Flutterwave',
+              type: 'flutterwave',
+              is_active: false,
+              config: {}
+            })
+            .select()
+            .single();
+
+          if (createError) {
+            console.error('Error creating gateway:', createError);
+            return null;
+          }
+          return newGateway;
+        }
         console.error('Error fetching gateway:', error);
         return null;
       }
