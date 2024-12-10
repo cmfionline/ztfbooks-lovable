@@ -2,7 +2,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import Login from "./pages/auth/Login";
 import Index from "./pages/Index";
 import Books from "./pages/Books";
 import Payments from "./pages/Payments";
@@ -18,32 +20,91 @@ import Sidebar from "./components/Sidebar";
 
 const queryClient = new QueryClient();
 
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
+
+  return (
+    <div className="flex min-h-screen bg-background">
+      <Sidebar />
+      <div className="flex-1 ml-64">
+        <Navigation />
+        {children}
+      </div>
+    </div>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <div className="flex min-h-screen bg-background">
-          <Sidebar />
-          <div className="flex-1 ml-64">
-            <Navigation />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/books/*" element={<Books />} />
-              <Route path="/payments/*" element={<Payments />} />
-              <Route path="/users/*" element={<Users />} />
-              <Route path="/statistics" element={<Statistics />} />
-              <Route path="/pages/*" element={<Pages />} />
-              <Route path="/ads" element={<Ads />} />
-              <Route path="/reviews" element={<Reviews />} />
-              <Route path="/faqs" element={<Faqs />} />
-              <Route path="/settings/*" element={<Settings />} />
-            </Routes>
-          </div>
-        </div>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Index />
+              </ProtectedRoute>
+            } />
+            <Route path="/books/*" element={
+              <ProtectedRoute>
+                <Books />
+              </ProtectedRoute>
+            } />
+            <Route path="/payments/*" element={
+              <ProtectedRoute>
+                <Payments />
+              </ProtectedRoute>
+            } />
+            <Route path="/users/*" element={
+              <ProtectedRoute>
+                <Users />
+              </ProtectedRoute>
+            } />
+            <Route path="/statistics" element={
+              <ProtectedRoute>
+                <Statistics />
+              </ProtectedRoute>
+            } />
+            <Route path="/pages/*" element={
+              <ProtectedRoute>
+                <Pages />
+              </ProtectedRoute>
+            } />
+            <Route path="/ads" element={
+              <ProtectedRoute>
+                <Ads />
+              </ProtectedRoute>
+            } />
+            <Route path="/reviews" element={
+              <ProtectedRoute>
+                <Reviews />
+              </ProtectedRoute>
+            } />
+            <Route path="/faqs" element={
+              <ProtectedRoute>
+                <Faqs />
+              </ProtectedRoute>
+            } />
+            <Route path="/settings/*" element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            } />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
