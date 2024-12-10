@@ -27,6 +27,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -232,312 +233,361 @@ const AddBook = () => {
   };
 
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-2xl font-bold mb-8">Add New Book</h1>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Title</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <div className="container max-w-4xl mx-auto py-8 px-4">
+      <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-primary">Add New Book</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary">Title</FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          className="border-purple-light focus:border-purple focus:ring-purple"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <FormField
-            control={form.control}
-            name="seriesId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Series</FormLabel>
-                <FormControl>
-                  <CreatableCombobox
-                    value={field.value}
-                    options={series}
-                    onChange={field.onChange}
-                    onCreateOption={async (name) => {
-                      const newSeries = await createSeries.mutateAsync(name);
-                      field.onChange(newSeries.id);
-                    }}
-                    placeholder="Select or create a series"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                <FormField
+                  control={form.control}
+                  name="seriesId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary">Series</FormLabel>
+                      <FormControl>
+                        <CreatableCombobox
+                          value={field.value}
+                          options={series}
+                          onChange={field.onChange}
+                          onCreateOption={async (name) => {
+                            const newSeries = await createSeries.mutateAsync(name);
+                            field.onChange(newSeries?.id);
+                          }}
+                          placeholder="Select or create a series"
+                          className="border-purple-light focus:border-purple"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <FormField
-            control={form.control}
-            name="languageId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Language</FormLabel>
-                <FormControl>
-                  <CreatableCombobox
-                    value={field.value}
-                    options={languages}
-                    onChange={field.onChange}
-                    onCreateOption={() => {}}
-                    placeholder="Select a language"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                <FormField
+                  control={form.control}
+                  name="languageId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary">Language</FormLabel>
+                      <FormControl>
+                        <CreatableCombobox
+                          value={field.value}
+                          options={languages}
+                          onChange={field.onChange}
+                          onCreateOption={() => {}}
+                          placeholder="Select a language"
+                          className="border-purple-light focus:border-purple"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <FormField
-            control={form.control}
-            name="coverImage"
-            render={({ field: { onChange, value, ...field } }) => (
-              <FormItem>
-                <FormLabel>Cover Image (300x450)</FormLabel>
-                <FormControl>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => onChange(e.target.files)}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                <FormField
+                  control={form.control}
+                  name="coverImage"
+                  render={({ field: { onChange, value, ...field } }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary">Cover Image (300x450)</FormLabel>
+                      <FormControl>
+                        <div className="flex items-center space-x-4">
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => onChange(e.target.files)}
+                            {...field}
+                            className="border-purple-light focus:border-purple file:bg-purple file:text-white file:border-0 file:rounded-md file:px-4 file:py-2 hover:file:bg-purple/90"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-          <FormField
-            control={form.control}
-            name="synopsis"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Synopsis</FormLabel>
-                <FormControl>
-                  <Textarea {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormItem>
-            <FormLabel>Tags</FormLabel>
-            <CreatableCombobox
-              options={tags}
-              onChange={(value) => {
-                if (!selectedTags.includes(value)) {
-                  setSelectedTags([...selectedTags, value]);
-                }
-              }}
-              onCreateOption={async (name) => {
-                const newTag = await createTag.mutateAsync(name);
-                setSelectedTags([...selectedTags, newTag.id]);
-              }}
-              placeholder="Select or create tags"
-            />
-            <div className="flex flex-wrap gap-2 mt-2">
-              {selectedTags.map((tagId) => {
-                const tag = tags.find((t) => t.value === tagId);
-                return (
-                  <Button
-                    key={tagId}
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedTags(selectedTags.filter((id) => id !== tagId));
-                    }}
-                  >
-                    {tag?.label} ×
-                  </Button>
-                );
-              })}
-            </div>
-          </FormItem>
-
-          <FormField
-            control={form.control}
-            name="authorId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Author</FormLabel>
-                <FormControl>
-                  <CreatableCombobox
-                    value={field.value}
-                    options={authors}
-                    onChange={field.onChange}
-                    onCreateOption={async (name) => {
-                      const newAuthor = await createAuthor.mutateAsync(name);
-                      field.onChange(newAuthor.id);
-                    }}
-                    placeholder="Select or create an author"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="publisherId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Publisher</FormLabel>
-                <FormControl>
-                  <CreatableCombobox
-                    value={field.value}
-                    options={publishers}
-                    onChange={field.onChange}
-                    onCreateOption={async (name) => {
-                      const newPublisher = await createPublisher.mutateAsync(name);
-                      field.onChange(newPublisher.id);
-                    }}
-                    placeholder="Select or create a publisher"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="epubFile"
-            render={({ field: { onChange, value, ...field } }) => (
-              <FormItem>
-                <FormLabel>EPUB File</FormLabel>
-                <FormControl>
-                  <Input
-                    type="file"
-                    accept=".epub"
-                    onChange={(e) => onChange(e.target.files)}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="publicationDate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Publication Date</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
+              <FormField
+                control={form.control}
+                name="synopsis"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-primary">Synopsis</FormLabel>
                     <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
+                      <Textarea 
+                        {...field} 
+                        className="min-h-[120px] border-purple-light focus:border-purple focus:ring-purple"
+                      />
                     </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name="pageCount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Page Count</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    {...field}
-                    onChange={(e) => field.onChange(Number(e.target.value))}
+              <div className="space-y-4">
+                <FormLabel className="text-primary">Tags</FormLabel>
+                <div className="flex flex-wrap gap-2">
+                  {selectedTags.map((tagId) => {
+                    const tag = tags.find((t) => t.value === tagId);
+                    return (
+                      <span
+                        key={tagId}
+                        className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-purple-light text-purple"
+                      >
+                        {tag?.label}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedTags(selectedTags.filter((id) => id !== tagId));
+                          }}
+                          className="ml-2 hover:text-purple-600"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    );
+                  })}
+                </div>
+                <CreatableCombobox
+                  options={tags}
+                  onChange={(value) => {
+                    if (!selectedTags.includes(value)) {
+                      setSelectedTags([...selectedTags, value]);
+                    }
+                  }}
+                  onCreateOption={async (name) => {
+                    const newTag = await createTag.mutateAsync(name);
+                    if (newTag?.id) setSelectedTags([...selectedTags, newTag.id]);
+                  }}
+                  placeholder="Select or create tags"
+                  className="border-purple-light focus:border-purple"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="authorId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary">Author</FormLabel>
+                      <FormControl>
+                        <CreatableCombobox
+                          value={field.value}
+                          options={authors}
+                          onChange={field.onChange}
+                          onCreateOption={async (name) => {
+                            const newAuthor = await createAuthor.mutateAsync(name);
+                            if (newAuthor?.id) field.onChange(newAuthor.id);
+                          }}
+                          placeholder="Select or create an author"
+                          className="border-purple-light focus:border-purple"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="publisherId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary">Publisher</FormLabel>
+                      <FormControl>
+                        <CreatableCombobox
+                          value={field.value}
+                          options={publishers}
+                          onChange={field.onChange}
+                          onCreateOption={async (name) => {
+                            const newPublisher = await createPublisher.mutateAsync(name);
+                            if (newPublisher?.id) field.onChange(newPublisher.id);
+                          }}
+                          placeholder="Select or create a publisher"
+                          className="border-purple-light focus:border-purple"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="epubFile"
+                  render={({ field: { onChange, value, ...field } }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary">EPUB File</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          accept=".epub"
+                          onChange={(e) => onChange(e.target.files)}
+                          {...field}
+                          className="border-purple-light focus:border-purple file:bg-purple file:text-white file:border-0 file:rounded-md file:px-4 file:py-2 hover:file:bg-purple/90"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="publicationDate"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel className="text-primary">Publication Date</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full pl-3 text-left font-normal border-purple-light hover:bg-purple-light/50",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) =>
+                              date > new Date() || date < new Date("1900-01-01")
+                            }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="pageCount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary">Page Count</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                          className="border-purple-light focus:border-purple"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="isFree"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary">Pricing</FormLabel>
+                      <FormControl>
+                        <div className="flex items-center space-x-4">
+                          <Button
+                            type="button"
+                            variant={field.value ? "default" : "outline"}
+                            onClick={() => field.onChange(true)}
+                            className={cn(
+                              field.value 
+                                ? "bg-purple text-white hover:bg-purple/90" 
+                                : "border-purple-light hover:bg-purple-light/50"
+                            )}
+                          >
+                            Free
+                          </Button>
+                          <Button
+                            type="button"
+                            variant={!field.value ? "default" : "outline"}
+                            onClick={() => field.onChange(false)}
+                            className={cn(
+                              !field.value 
+                                ? "bg-purple text-white hover:bg-purple/90" 
+                                : "border-purple-light hover:bg-purple-light/50"
+                            )}
+                          >
+                            Paid
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {!form.watch("isFree") && (
+                  <FormField
+                    control={form.control}
+                    name="price"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-primary">Price</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...field}
+                            onChange={(e) => field.onChange(Number(e.target.value))}
+                            className="border-purple-light focus:border-purple"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                )}
+              </div>
 
-          <FormField
-            control={form.control}
-            name="isFree"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Pricing</FormLabel>
-                <FormControl>
-                  <div className="flex items-center space-x-4">
-                    <Button
-                      type="button"
-                      variant={field.value ? "default" : "outline"}
-                      onClick={() => field.onChange(true)}
-                    >
-                      Free
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={!field.value ? "default" : "outline"}
-                      onClick={() => field.onChange(false)}
-                    >
-                      Paid
-                    </Button>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {!form.watch("isFree") && (
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-
-          <Button type="submit">Create Book</Button>
-        </form>
-      </Form>
+              <Button 
+                type="submit"
+                className="w-full bg-purple hover:bg-purple/90 text-white"
+              >
+                Create Book
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
     </div>
   );
 };
