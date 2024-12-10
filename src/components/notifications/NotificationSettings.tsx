@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Settings } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -33,8 +33,7 @@ export const NotificationSettings = () => {
     },
   });
 
-  // Set initial values when settings are loaded
-  React.useEffect(() => {
+  useEffect(() => {
     if (settings) {
       setAppId(settings.app_id);
       setRestKey(settings.rest_key);
