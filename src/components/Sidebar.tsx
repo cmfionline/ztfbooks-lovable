@@ -9,10 +9,13 @@ import {
   FileText,
   MessageSquare,
   PlusCircle,
-  Building2,
-  Tags,
-  Globe,
 } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const Sidebar = () => {
   const menuItems = [
@@ -98,32 +101,43 @@ const Sidebar = () => {
     <div className="w-64 h-screen bg-white border-r border-border fixed left-0 top-0 overflow-y-auto">
       <div className="p-4">
         <h2 className="text-xl font-bold text-purple mb-6">ZTF Books Admin</h2>
-        <nav>
-          {menuItems.map((item) => (
-            <div key={item.path} className="mb-2">
-              <Link
-                to={item.path}
-                className="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-purple-light/50 rounded-lg transition-colors"
-              >
-                {item.icon}
-                <span className="ml-3">{item.title}</span>
-              </Link>
-              {item.submenu && (
-                <div className="ml-6 mt-1">
-                  {item.submenu.map((subItem) => (
-                    <Link
-                      key={subItem.path}
-                      to={subItem.path}
-                      className="flex items-center px-4 py-2 text-sm text-gray-500 hover:bg-purple-light/30 rounded-lg transition-colors"
-                    >
-                      {subItem.title}
-                    </Link>
-                  ))}
-                </div>
+        <Accordion type="multiple" className="w-full">
+          {menuItems.map((item, index) => (
+            <AccordionItem value={`item-${index}`} key={item.path} className="border-none">
+              {item.submenu ? (
+                <>
+                  <AccordionTrigger className="py-2 hover:no-underline">
+                    <div className="flex items-center text-sm text-gray-600">
+                      {item.icon}
+                      <span className="ml-3">{item.title}</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="ml-6">
+                      {item.submenu.map((subItem) => (
+                        <Link
+                          key={subItem.path}
+                          to={subItem.path}
+                          className="flex items-center px-4 py-2 text-sm text-gray-500 hover:bg-purple-light/30 rounded-lg transition-colors"
+                        >
+                          {subItem.title}
+                        </Link>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </>
+              ) : (
+                <Link
+                  to={item.path}
+                  className="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-purple-light/50 rounded-lg transition-colors"
+                >
+                  {item.icon}
+                  <span className="ml-3">{item.title}</span>
+                </Link>
               )}
-            </div>
+            </AccordionItem>
           ))}
-        </nav>
+        </Accordion>
       </div>
     </div>
   );
