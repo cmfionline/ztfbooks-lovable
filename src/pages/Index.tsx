@@ -1,6 +1,10 @@
+import { useState } from "react";
+import Navigation from "@/components/Navigation";
+import { TimeFilter, TimeFilterValue } from "@/components/dashboard/TimeFilter";
+import { MetricsCards } from "@/components/dashboard/MetricsCards";
+import { ZTFBooks } from "@/components/dashboard/ZTFBooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
-import Navigation from "@/components/Navigation";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area } from "recharts";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -9,6 +13,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
 const Index = () => {
+  const [timeFilter, setTimeFilter] = useState<TimeFilterValue>("this_week");
+
   // Sample data - replace with real data from your backend
   const salesData = [
     { month: "Jan", sales: 65, paid: 45, free: 20 },
@@ -60,109 +66,11 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-3xl font-bold">ZTF Books Dashboard</h1>
-            
-            <RadioGroup defaultValue="this_week" className="flex space-x-2">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="this_week" id="this_week" />
-                <Label htmlFor="this_week">This Week</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="last_week" id="last_week" />
-                <Label htmlFor="last_week">Last Week</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="this_month" id="this_month" />
-                <Label htmlFor="this_month">This Month</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="last_month" id="last_month" />
-                <Label htmlFor="last_month">Last Month</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="mtd" id="mtd" />
-                <Label htmlFor="mtd">Month to Date</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="ytd" id="ytd" />
-                <Label htmlFor="ytd">Year to Date</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="this_year" id="this_year" />
-                <Label htmlFor="this_year">This Year</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="last_year" id="last_year" />
-                <Label htmlFor="last_year">Last Year</Label>
-              </div>
-            </RadioGroup>
+            <TimeFilter value={timeFilter} onValueChange={setTimeFilter} />
           </div>
           
-          {/* Key Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">$45,231</div>
-                <div className="flex justify-between items-center">
-                  <p className="text-xs text-muted-foreground">+20.1% from last period</p>
-                  <div className="text-xs">
-                    <span className="text-green-500">Paid: $38,945</span>
-                    <span className="text-blue-500 ml-2">Free: 6,286</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Total Downloads</CardTitle>
-                <Download className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">2,350</div>
-                <div className="flex justify-between items-center">
-                  <p className="text-xs text-muted-foreground">+15% from last period</p>
-                  <div className="text-xs">
-                    <span className="text-green-500">Paid: 1,890</span>
-                    <span className="text-blue-500 ml-2">Free: 460</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Active Authors</CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">156</div>
-                <div className="flex justify-between items-center">
-                  <p className="text-xs text-muted-foreground">+4.5% from last period</p>
-                  <div className="text-xs">
-                    <span>Total Books: 348</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Active Series</CardTitle>
-                <Layers className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">42</div>
-                <div className="flex justify-between items-center">
-                  <p className="text-xs text-muted-foreground">+2 new this period</p>
-                  <div className="text-xs">
-                    <span>Avg Books/Series: 8.3</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
+          <MetricsCards />
+          
           {/* Charts Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <Card>
@@ -208,6 +116,9 @@ const Index = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* ZTF Books Section */}
+          <ZTFBooks />
 
           {/* Tables Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
