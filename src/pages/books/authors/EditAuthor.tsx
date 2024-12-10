@@ -14,11 +14,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const formSchema = z.object({
   name: z
@@ -30,7 +30,6 @@ const formSchema = z.object({
       "Name can only contain letters, spaces, hyphens, apostrophes, and periods"
     )
     .transform((val) => val.trim()),
-  bio: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -44,7 +43,6 @@ const EditAuthor = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      bio: "",
     },
   });
 
@@ -66,7 +64,6 @@ const EditAuthor = () => {
     if (author) {
       form.reset({
         name: author.name,
-        bio: author.bio || "",
       });
     }
   }, [author, form]);
@@ -75,7 +72,7 @@ const EditAuthor = () => {
     try {
       const { error } = await supabase
         .from("authors")
-        .update({ name: values.name, bio: values.bio })
+        .update({ name: values.name })
         .eq("id", id);
 
       if (error) throw error;
@@ -134,24 +131,6 @@ const EditAuthor = () => {
                         {...field}
                         className="border-purple-light focus:border-purple focus:ring-purple"
                         placeholder="Enter author's name"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="bio"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-primary">Biography (Optional)</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        className="min-h-[120px] border-purple-light focus:border-purple focus:ring-purple"
-                        placeholder="Enter author's biography"
                       />
                     </FormControl>
                     <FormMessage />
