@@ -31,7 +31,7 @@ const formSchema = z.object({
 const AddSeries = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { languages, isLoading } = useBookFormData();
+  const { languages = [], isLoading } = useBookFormData();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
