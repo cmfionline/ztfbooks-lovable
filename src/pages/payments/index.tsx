@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import StripeSettings from "./stripe";
+import PayStackSettings from "./paystack";
 
 const Payments = () => {
   return (
@@ -23,17 +24,17 @@ const Payments = () => {
                 </Card>
                 <Card>
                   <CardHeader>
-                    <CardTitle>PayPal</CardTitle>
+                    <CardTitle>PayStack</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground">
-                      Coming soon...
+                      Accept payments in Nigeria and other African countries
                     </p>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader>
-                    <CardTitle>PayStack</CardTitle>
+                    <CardTitle>PayPal</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground">
@@ -55,8 +56,8 @@ const Payments = () => {
             </>
           } />
           <Route path="/stripe/*" element={<StripeSettings />} />
+          <Route path="/paystack/*" element={<PayStackSettings />} />
           <Route path="/paypal" element={<h1>PayPal Settings (Coming Soon)</h1>} />
-          <Route path="/paystack" element={<h1>PayStack Settings (Coming Soon)</h1>} />
           <Route path="/mobile-money" element={<h1>Mobile Money Settings (Coming Soon)</h1>} />
         </Routes>
       </div>
