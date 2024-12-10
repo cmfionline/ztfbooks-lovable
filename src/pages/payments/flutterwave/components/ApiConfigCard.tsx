@@ -18,7 +18,7 @@ export const ApiConfigCard = () => {
       const formData = new FormData(event.currentTarget);
       const secretKey = formData.get('secretKey') as string;
 
-      const { error } = await supabase.functions.invoke('update-stripe-keys', {
+      const { error } = await supabase.functions.invoke('update-flutterwave-keys', {
         body: { secretKey }
       });
 
@@ -26,7 +26,7 @@ export const ApiConfigCard = () => {
 
       toast({
         title: "Success",
-        description: "Stripe API keys updated successfully.",
+        description: "Flutterwave API keys updated successfully.",
       });
 
       // Clear the form
@@ -35,7 +35,7 @@ export const ApiConfigCard = () => {
       console.error('Error saving API keys:', error);
       toast({
         title: "Error",
-        description: "Failed to update Stripe API keys.",
+        description: "Failed to update Flutterwave API keys.",
         variant: "destructive",
       });
     } finally {
@@ -48,7 +48,7 @@ export const ApiConfigCard = () => {
       <CardHeader>
         <CardTitle>API Configuration</CardTitle>
         <CardDescription>
-          Configure your Stripe API keys for payment processing
+          Configure your Flutterwave API keys for payment processing
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -59,7 +59,7 @@ export const ApiConfigCard = () => {
               id="secretKey"
               name="secretKey"
               type="password"
-              placeholder="sk_test_..."
+              placeholder="FLWSECK_TEST-..."
               required
             />
           </div>
@@ -74,10 +74,10 @@ export const ApiConfigCard = () => {
               type="button"
               variant="outline"
               onClick={() => {
-                window.open('https://dashboard.stripe.com/apikeys', '_blank');
+                window.open('https://app.flutterwave.com/dashboard/settings/apis', '_blank');
               }}
             >
-              Get Stripe API Keys
+              Get Flutterwave API Keys
             </Button>
           </div>
         </form>
