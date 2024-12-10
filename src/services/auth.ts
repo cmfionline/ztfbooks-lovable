@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase';
 import { AuthError } from '@supabase/supabase-js';
 
-const SUPABASE_CALLBACK_URL = 'http://localhost:8080/auth/callback';
+const SUPABASE_CALLBACK_URL = 'https://ppywzrizeqvtxhbfscki.supabase.co/auth/v1/callback';
 
 export class AuthService {
   static async signInWithEmail(email: string, password: string) {
