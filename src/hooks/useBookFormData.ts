@@ -6,7 +6,10 @@ export const useBookFormData = () => {
     queryKey: ["series"],
     queryFn: async () => {
       const { data, error } = await supabase.from("series").select("*");
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching series:", error);
+        return [];
+      }
       return data || [];
     },
   });
@@ -15,7 +18,10 @@ export const useBookFormData = () => {
     queryKey: ["authors"],
     queryFn: async () => {
       const { data, error } = await supabase.from("authors").select("*");
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching authors:", error);
+        return [];
+      }
       return data || [];
     },
   });
@@ -24,7 +30,10 @@ export const useBookFormData = () => {
     queryKey: ["publishers"],
     queryFn: async () => {
       const { data, error } = await supabase.from("publishers").select("*");
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching publishers:", error);
+        return [];
+      }
       return data || [];
     },
   });
@@ -33,7 +42,10 @@ export const useBookFormData = () => {
     queryKey: ["tags"],
     queryFn: async () => {
       const { data, error } = await supabase.from("tags").select("*");
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching tags:", error);
+        return [];
+      }
       return data || [];
     },
   });
@@ -42,12 +54,16 @@ export const useBookFormData = () => {
     queryKey: ["languages"],
     queryFn: async () => {
       const { data, error } = await supabase.from("languages").select("*");
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching languages:", error);
+        return [];
+      }
       return data || [];
     },
   });
 
   // Transform the data into the format expected by CreatableCombobox
+  // Ensure we always return an array even if data is undefined
   const series = (seriesData || []).map((item) => ({
     label: item.name,
     value: item.id,
@@ -80,12 +96,13 @@ export const useBookFormData = () => {
     isLoadingTags || 
     isLoadingLanguages;
 
+  // Return empty arrays if data is loading to prevent undefined
   return {
-    series,
-    authors,
-    publishers,
-    tags,
-    languages,
+    series: isLoading ? [] : series,
+    authors: isLoading ? [] : authors,
+    publishers: isLoading ? [] : publishers,
+    tags: isLoading ? [] : tags,
+    languages: isLoading ? [] : languages,
     isLoading,
   };
 };
