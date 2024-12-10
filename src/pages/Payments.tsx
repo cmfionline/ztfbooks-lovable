@@ -6,7 +6,6 @@ import {
   Smartphone,
   Building2,
   Wallet,
-  Bank,
   QrCode,
 } from "lucide-react";
 import StripeSettings from "./payments/stripe";
@@ -47,7 +46,7 @@ const Payments = () => {
                         <h3 className="text-sm font-medium mb-2">Payment Methods:</h3>
                         <div className="flex flex-wrap gap-2">
                           <PaymentMethodBadge icon={CreditCard} label="Credit Cards" />
-                          <PaymentMethodBadge icon={Bank} label="Bank Transfers" />
+                          <PaymentMethodBadge icon={Building2} label="Bank Transfers" />
                           <PaymentMethodBadge icon={Wallet} label="Digital Wallets" />
                           <PaymentMethodBadge icon={Building2} label="SEPA Direct Debit" />
                         </div>
@@ -76,7 +75,7 @@ const Payments = () => {
                         <h3 className="text-sm font-medium mb-2">Payment Methods:</h3>
                         <div className="flex flex-wrap gap-2">
                           <PaymentMethodBadge icon={CreditCard} label="Credit Cards" />
-                          <PaymentMethodBadge icon={Bank} label="Bank Transfers" />
+                          <PaymentMethodBadge icon={Building2} label="Bank Transfers" />
                           <PaymentMethodBadge icon={Smartphone} label="Mobile Money" />
                           <PaymentMethodBadge icon={QrCode} label="USSD" />
                         </div>
