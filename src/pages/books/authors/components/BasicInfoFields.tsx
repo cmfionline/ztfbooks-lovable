@@ -1,4 +1,4 @@
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { UseFormReturn } from "react-hook-form";
@@ -56,6 +56,32 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
       />
       <FormField
         control={form.control}
+        name="designation"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Designation</FormLabel>
+            <FormControl>
+              <Input {...field} placeholder="e.g. Senior Author" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="education"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Education</FormLabel>
+            <FormControl>
+              <Input {...field} placeholder="e.g. Ph.D. in Literature" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
         name="nationality"
         render={({ field }) => (
           <FormItem>
@@ -93,6 +119,32 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
       />
       <FormField
         control={form.control}
+        name="mobile"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Mobile</FormLabel>
+            <FormControl>
+              <Input {...field} placeholder="Enter mobile number" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="address"
+        render={({ field }) => (
+          <FormItem className="col-span-2">
+            <FormLabel>Address</FormLabel>
+            <FormControl>
+              <Textarea {...field} placeholder="Enter address" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
         name="photo"
         render={({ field }) => (
           <FormItem className="col-span-2">
@@ -114,6 +166,23 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
               <Textarea
                 {...field}
                 placeholder="Enter author's biography"
+                className="min-h-[100px]"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="description"
+        render={({ field }) => (
+          <FormItem className="col-span-2">
+            <FormLabel>Description</FormLabel>
+            <FormControl>
+              <Textarea
+                {...field}
+                placeholder="Enter author's description"
                 className="min-h-[100px]"
               />
             </FormControl>

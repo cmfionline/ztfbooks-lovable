@@ -133,12 +133,17 @@ export type Database = {
       }
       authors: {
         Row: {
+          address: string | null
           bio: string | null
           created_at: string
           date_of_birth: string | null
+          description: string | null
+          designation: string | null
+          education: string | null
           facebook_url: string | null
           id: string
           instagram_url: string | null
+          mobile: string | null
           name: string
           nationality: string | null
           photo: string | null
@@ -146,12 +151,17 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          address?: string | null
           bio?: string | null
           created_at?: string
           date_of_birth?: string | null
+          description?: string | null
+          designation?: string | null
+          education?: string | null
           facebook_url?: string | null
           id?: string
           instagram_url?: string | null
+          mobile?: string | null
           name: string
           nationality?: string | null
           photo?: string | null
@@ -159,12 +169,17 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          address?: string | null
           bio?: string | null
           created_at?: string
           date_of_birth?: string | null
+          description?: string | null
+          designation?: string | null
+          education?: string | null
           facebook_url?: string | null
           id?: string
           instagram_url?: string | null
+          mobile?: string | null
           name?: string
           nationality?: string | null
           photo?: string | null

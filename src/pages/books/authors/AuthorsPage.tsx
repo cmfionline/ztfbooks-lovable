@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { User, UserPlus, Pencil, Trash } from "lucide-react";
+import { User, UserPlus, Pencil, Trash, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,10 +15,14 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const AuthorsPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [search, setSearch] = useState("");
+  const [entriesPerPage, setEntriesPerPage] = useState("10");
 
   const { data: authors = [], isLoading, error } = useQuery({
     queryKey: ["authors"],
@@ -68,6 +72,15 @@ export const AuthorsPage = () => {
     }
   };
 
+  const filteredAuthors = authors.filter((author) =>
+    author.name.toLowerCase().includes(search.toLowerCase()) ||
+    author.nationality?.toLowerCase().includes(search.toLowerCase()) ||
+    author.designation?.toLowerCase().includes(search.toLowerCase()) ||
+    author.education?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const displayedAuthors = filteredAuthors.slice(0, parseInt(entriesPerPage));
+
   return (
     <div className="p-6">
       <Card>
@@ -85,6 +98,31 @@ export const AuthorsPage = () => {
           </Button>
         </CardHeader>
         <CardContent>
+          <div className="flex justify-between items-center mb-4">
+            <div className="relative w-72">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search authors..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-8"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <span>Show</span>
+              <select
+                className="border rounded p-1"
+                value={entriesPerPage}
+                onChange={(e) => setEntriesPerPage(e.target.value)}
+              >
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+              </select>
+              <span>entries</span>
+            </div>
+          </div>
+
           {isLoading ? (
             <div className="space-y-4">
               {[...Array(5)].map((_, i) => (
@@ -97,18 +135,33 @@ export const AuthorsPage = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Created At</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead className="w-[50px]">SR NO.</TableHead>
+                  <TableHead className="w-[100px]">PHOTO</TableHead>
+                  <TableHead>NAME</TableHead>
+                  <TableHead>DESIGNATION</TableHead>
+                  <TableHead>EDUCATION</TableHead>
+                  <TableHead>NATIONALITY</TableHead>
+                  <TableHead>CONTACT</TableHead>
+                  <TableHead className="text-right">ACTIONS</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {authors.map((author) => (
+                {displayedAuthors.map((author, index) => (
                   <TableRow key={author.id}>
-                    <TableCell>{author.name}</TableCell>
+                    <TableCell>{index + 1}</TableCell>
                     <TableCell>
-                      {new Date(author.created_at).toLocaleDateString()}
+                      <Avatar className="w-10 h-10">
+                        <AvatarImage src={author.photo || ""} alt={author.name} />
+                        <AvatarFallback>
+                          {author.name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
                     </TableCell>
+                    <TableCell className="font-medium">{author.name}</TableCell>
+                    <TableCell>{author.designation || "-"}</TableCell>
+                    <TableCell>{author.education || "-"}</TableCell>
+                    <TableCell>{author.nationality || "-"}</TableCell>
+                    <TableCell>{author.mobile || "-"}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
                         <Button
