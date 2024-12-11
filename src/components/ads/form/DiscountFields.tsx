@@ -42,17 +42,18 @@ export const DiscountFields = ({ control }: DiscountFieldsProps) => {
       <FormField
         control={control}
         name="discount_value"
-        render={({ field }) => (
+        render={({ field: { value, onChange, ...field }, formState }) => (
           <FormItem>
             <FormLabel>Discount Value</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
                 min="0" 
-                step={field.value === "percentage" ? "0.01" : "1"}
-                placeholder={field.value === "percentage" ? "e.g., 15 for 15%" : "Amount"}
+                step={formState.defaultValues?.discount_type === "percentage" ? "0.01" : "1"}
+                placeholder={formState.defaultValues?.discount_type === "percentage" ? "e.g., 15 for 15%" : "Amount"}
                 {...field}
-                onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                value={value || ""}
+                onChange={(e) => onChange(e.target.value ? parseFloat(e.target.value) : null)}
               />
             </FormControl>
             <FormMessage />
@@ -63,7 +64,7 @@ export const DiscountFields = ({ control }: DiscountFieldsProps) => {
       <FormField
         control={control}
         name="min_purchase_amount"
-        render={({ field }) => (
+        render={({ field: { value, onChange, ...field } }) => (
           <FormItem>
             <FormLabel>Minimum Purchase Amount</FormLabel>
             <FormControl>
@@ -72,7 +73,8 @@ export const DiscountFields = ({ control }: DiscountFieldsProps) => {
                 min="0" 
                 placeholder="e.g., 50"
                 {...field}
-                onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                value={value || ""}
+                onChange={(e) => onChange(e.target.value ? parseFloat(e.target.value) : null)}
               />
             </FormControl>
             <FormDescription>
@@ -86,7 +88,7 @@ export const DiscountFields = ({ control }: DiscountFieldsProps) => {
       <FormField
         control={control}
         name="min_books_count"
-        render={({ field }) => (
+        render={({ field: { value, onChange, ...field } }) => (
           <FormItem>
             <FormLabel>Minimum Books Count</FormLabel>
             <FormControl>
@@ -95,7 +97,8 @@ export const DiscountFields = ({ control }: DiscountFieldsProps) => {
                 min="0" 
                 placeholder="e.g., 5"
                 {...field}
-                onChange={(e) => field.onChange(parseInt(e.target.value))}
+                value={value || ""}
+                onChange={(e) => onChange(e.target.value ? parseInt(e.target.value) : null)}
               />
             </FormControl>
             <FormDescription>
