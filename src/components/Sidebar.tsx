@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   BookOpen,
@@ -11,6 +12,8 @@ import {
   PlusCircle,
   Bell,
   Ticket,
+  ChevronRight,
+  Menu,
 } from "lucide-react";
 import {
   Accordion,
@@ -18,8 +21,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const Sidebar = () => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   const menuItems = [
     {
       title: "Dashboard",
@@ -104,41 +111,66 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-64 h-screen bg-white border-r border-border fixed left-0 top-0 overflow-y-auto">
+    <div 
+      className={cn(
+        "h-screen bg-white border-r border-border fixed left-0 top-0 overflow-y-auto transition-all duration-300",
+        isCollapsed ? "w-16" : "w-64"
+      )}
+    >
       <div className="p-4">
-        <h2 className="text-xl font-bold text-purple mb-6">ZTF Books Admin</h2>
+        <div className="flex items-center justify-between mb-6">
+          {!isCollapsed && <h2 className="text-xl font-bold text-purple">ZTF Books Admin</h2>}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="ml-auto"
+          >
+            <Menu className="w-4 h-4" />
+          </Button>
+        </div>
+        
         <Accordion type="single" collapsible className="w-full">
           {menuItems.map((item, index) => (
             <AccordionItem value={`item-${index}`} key={item.path} className="border-none">
               {item.submenu ? (
                 <>
                   <AccordionTrigger className="py-2 hover:no-underline">
-                    <div className="flex items-center text-sm text-gray-600">
+                    <div className={cn(
+                      "flex items-center text-sm text-gray-600",
+                      isCollapsed && "justify-center"
+                    )}>
                       {item.icon}
-                      <span className="ml-3">{item.title}</span>
+                      {!isCollapsed && <span className="ml-3">{item.title}</span>}
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="ml-6">
-                      {item.submenu.map((subItem) => (
-                        <Link
-                          key={subItem.path}
-                          to={subItem.path}
-                          className="flex items-center px-4 py-2 text-sm text-gray-500 hover:bg-purple-light/30 rounded-lg transition-colors"
-                        >
-                          {subItem.title}
-                        </Link>
-                      ))}
-                    </div>
-                  </AccordionContent>
+                  {!isCollapsed && (
+                    <AccordionContent>
+                      <div className="ml-6">
+                        {item.submenu.map((subItem) => (
+                          <Link
+                            key={subItem.path}
+                            to={subItem.path}
+                            className="flex items-center px-4 py-2 text-sm text-gray-500 hover:bg-purple-light/30 rounded-lg transition-colors"
+                          >
+                            <ChevronRight className="w-3 h-3 mr-2" />
+                            {subItem.title}
+                          </Link>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  )}
                 </>
               ) : (
                 <Link
                   to={item.path}
-                  className="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-purple-light/50 rounded-lg transition-colors"
+                  className={cn(
+                    "flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-purple-light/50 rounded-lg transition-colors",
+                    isCollapsed && "justify-center"
+                  )}
                 >
                   {item.icon}
-                  <span className="ml-3">{item.title}</span>
+                  {!isCollapsed && <span className="ml-3">{item.title}</span>}
                 </Link>
               )}
             </AccordionItem>
