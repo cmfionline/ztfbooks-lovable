@@ -24,9 +24,9 @@ const CreateDiscountStrategyDialog = ({ open, onOpenChange }: CreateDiscountStra
       name: "",
       type: "percentage",
       value: 0,
-      minPurchaseAmount: 0,
-      minBooksCount: 0,
-      isStackable: false,
+      min_purchase_amount: 0,
+      min_books_count: 0,
+      is_stackable: false,
     },
   });
 
@@ -63,7 +63,7 @@ const CreateDiscountStrategyDialog = ({ open, onOpenChange }: CreateDiscountStra
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <DiscountStrategyBasicInfo control={form.control} />
-            <DiscountStrategyRules control={form.control} />
+            <DiscountStrategyRules control={form.control} discountType={form.watch("type")} />
             <Button type="submit">Create Strategy</Button>
           </form>
         </Form>
