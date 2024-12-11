@@ -21,9 +21,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BasicInfoFields } from "./components/BasicInfoFields";
 import { SocialMediaFields } from "./components/SocialMediaFields";
-import { authorSchema } from "./schema";
+import { authorFormSchema } from "./schema";
 
-type FormValues = z.infer<typeof authorSchema>;
+type FormValues = z.infer<typeof authorFormSchema>;
 
 const EditAuthor = () => {
   const { id } = useParams();
@@ -31,7 +31,7 @@ const EditAuthor = () => {
   const navigate = useNavigate();
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(authorSchema),
+    resolver: zodResolver(authorFormSchema),
     defaultValues: {
       name: "",
       designation: "",
