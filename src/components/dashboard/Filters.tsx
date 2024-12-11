@@ -27,7 +27,7 @@ export const Filters = () => {
           <SelectTrigger className="w-[180px] bg-white">
             <SelectValue placeholder="Select author" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white">
             {authors.map((author) => (
               <SelectItem key={author} value={author.toLowerCase()}>
                 {author}
@@ -40,7 +40,7 @@ export const Filters = () => {
           <SelectTrigger className="w-[180px] bg-white">
             <SelectValue placeholder="Select series" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white">
             {series.map((s) => (
               <SelectItem key={s} value={s.toLowerCase()}>
                 {s}
@@ -53,7 +53,7 @@ export const Filters = () => {
           <SelectTrigger className="w-[180px] bg-white">
             <SelectValue placeholder="Select tags" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white">
             {tags.map((tag) => (
               <SelectItem key={tag} value={tag.toLowerCase()}>
                 {tag}

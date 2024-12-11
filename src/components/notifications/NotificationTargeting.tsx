@@ -18,10 +18,10 @@ export const NotificationTargeting = ({
           value={targetAudience?.type || "all"}
           onValueChange={(value) => onTargetAudienceChange({ ...targetAudience, type: value })}
         >
-          <SelectTrigger>
+          <SelectTrigger className="bg-white">
             <SelectValue placeholder="Select target audience" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white">
             <SelectItem value="all">All Users</SelectItem>
             <SelectItem value="premium">Premium Users</SelectItem>
             <SelectItem value="free">Free Users</SelectItem>

@@ -77,11 +77,11 @@ export const SeriesLanguage = ({ control }: SeriesLanguageProps) => {
           </div>
           <Select onValueChange={field.onChange} value={field.value}>
             <FormControl>
-              <SelectTrigger className="border-purple-light focus:border-purple">
+              <SelectTrigger className="bg-white border-purple-light focus:border-purple">
                 <SelectValue placeholder="Select a language" />
               </SelectTrigger>
             </FormControl>
-            <SelectContent>
+            <SelectContent className="bg-white">
               {languages.map((item) => (
                 <SelectItem key={item.value} value={item.value}>
                   {item.label}

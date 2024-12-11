@@ -64,10 +64,10 @@ export const NotificationScheduling = ({
           <div className="space-y-2">
             <Label>Frequency</Label>
             <Select value={selectedFrequency} onValueChange={handleFrequencyChange}>
-              <SelectTrigger>
+              <SelectTrigger className="bg-white">
                 <SelectValue placeholder="Select frequency" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 <SelectItem value="daily">Daily</SelectItem>
                 <SelectItem value="weekly">Weekly</SelectItem>
                 <SelectItem value="monthly">Monthly</SelectItem>

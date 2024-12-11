@@ -16,10 +16,10 @@ interface TimeFilterProps {
 export const TimeFilter = ({ value, onValueChange }: TimeFilterProps) => {
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[180px] bg-white">
         <SelectValue placeholder="Select time period" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="bg-white">
         <SelectItem value="this_week">This Week</SelectItem>
         <SelectItem value="last_week">Last Week</SelectItem>
         <SelectItem value="this_month">This Month</SelectItem>
