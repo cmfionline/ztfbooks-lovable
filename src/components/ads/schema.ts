@@ -8,7 +8,7 @@ export const adSchema = z.object({
   name: z.string()
     .min(3, "Name must be at least 3 characters")
     .max(100, "Name must not exceed 100 characters"),
-  type: z.enum(["banner", "interstitial", "popup", "sponsored"], {
+  type: z.string({
     required_error: "Please select an ad type",
   }),
   placement: z.enum(["home", "category", "checkout", "series", "book"], {
@@ -33,7 +33,9 @@ export const adSchema = z.object({
     }),
   end_date: z.string()
     .min(1, "End date is required")
-    .superRefine((date, ctx: z.RefinementCtx & { parent: { start_date: string } }) => {
+    .superRefine((date, ctx) => {
+      if (!ctx.parent?.start_date) return true;
+      
       const startDate = new Date(ctx.parent.start_date);
       const endDate = new Date(date);
       if (endDate <= startDate) {
@@ -51,7 +53,7 @@ export const adSchema = z.object({
     .optional(),
   target_audience: z.record(z.any()).optional(),
   ab_test_group: z.string().optional(),
-  discount_type: z.enum(["percentage", "fixed", "volume", "cart"]).optional(),
+  discount_type: z.string().optional(),
   discount_value: z.number().min(0).optional(),
   min_purchase_amount: z.number().min(0).optional(),
   min_books_count: z.number().int().min(0).optional(),
@@ -64,8 +66,7 @@ export const adSchema = z.object({
     .optional(),
   discount_end_date: z.string()
     .min(1, "Discount end date is required when applying a discount")
-    .superRefine((date, ctx: z.RefinementCtx & { parent: { discount_start_date?: string } }) => {
-      // If there's no discount_start_date, skip validation
+    .superRefine((date, ctx) => {
       if (!ctx.parent?.discount_start_date) return true;
       
       const startDate = new Date(ctx.parent.discount_start_date);
@@ -81,7 +82,6 @@ export const adSchema = z.object({
     })
     .optional(),
 }).refine((data) => {
-  // If any discount-related field is provided, ensure all required discount fields are present
   const hasDiscountFields = data.discount_type || data.discount_value || data.discount_start_date || data.discount_end_date;
   if (hasDiscountFields) {
     return data.discount_type && 

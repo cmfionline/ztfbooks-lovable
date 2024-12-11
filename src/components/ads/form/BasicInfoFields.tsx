@@ -3,12 +3,16 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Control } from "react-hook-form";
 import { AdFormValues } from "../schema";
+import { useAdConfigurations } from "@/hooks/useAdConfigurations";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface BasicInfoFieldsProps {
   control: Control<AdFormValues>;
 }
 
 export const BasicInfoFields = ({ control }: BasicInfoFieldsProps) => {
+  const { adTypes, isLoading } = useAdConfigurations();
+
   return (
     <div className="space-y-4">
       <FormField
@@ -42,19 +46,24 @@ export const BasicInfoFields = ({ control }: BasicInfoFieldsProps) => {
                 Type
                 <span className="text-red-500">*</span>
               </FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className="focus:ring-2 focus:ring-primary/20 transition-all">
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="banner">Banner</SelectItem>
-                  <SelectItem value="interstitial">Interstitial</SelectItem>
-                  <SelectItem value="popup">Popup</SelectItem>
-                  <SelectItem value="sponsored">Sponsored</SelectItem>
-                </SelectContent>
-              </Select>
+              {isLoading ? (
+                <Skeleton className="h-10 w-full" />
+              ) : (
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="focus:ring-2 focus:ring-primary/20 transition-all">
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {adTypes?.map((type) => (
+                      <SelectItem key={type.id} value={type.type}>
+                        {type.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
               <FormMessage className="text-xs" />
             </FormItem>
           )}
@@ -69,7 +78,7 @@ export const BasicInfoFields = ({ control }: BasicInfoFieldsProps) => {
                 Placement
                 <span className="text-red-500">*</span>
               </FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger className="focus:ring-2 focus:ring-primary/20 transition-all">
                     <SelectValue placeholder="Select placement" />
