@@ -24,27 +24,27 @@ const PaymentGatewayCard = ({
   const navigate = useNavigate();
   
   return (
-    <Card className="bg-[#1A1F2E] border-0">
+    <Card className="bg-background border border-border">
       <CardContent className="p-6">
         <div className="flex flex-col space-y-4">
-          <div className="bg-white rounded-lg p-4 w-full h-16 flex items-center justify-center">
+          <div className="bg-background rounded-lg p-4 w-full h-16 flex items-center justify-center border border-border">
             <img src={logo} alt={name} className="h-8 object-contain" />
           </div>
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-white">{name}</h3>
+            <h3 className="text-lg font-semibold text-foreground">{name}</h3>
             <Switch 
               checked={isActive} 
               onCheckedChange={onToggle}
             />
           </div>
           <Button 
-            variant="outline" 
+            variant="default" 
             size="sm"
-            className="w-full bg-[#00B252] hover:bg-[#00B252]/90 text-white border-0"
+            className="w-full bg-purple hover:bg-purple/90 text-white"
             onClick={() => navigate(route)}
           >
             <Edit className="w-4 h-4 mr-2" />
-            Edit
+            Configure
           </Button>
         </div>
       </CardContent>
@@ -54,32 +54,18 @@ const PaymentGatewayCard = ({
 
 const PaymentGateways = () => {
   return (
-    <div className="min-h-screen bg-[#0B0F1A] pt-20 px-4 md:px-8">
+    <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         <Routes>
           <Route path="/" element={
             <>
-              <h1 className="text-3xl font-bold mb-8 text-white">Payment Gateways</h1>
+              <h1 className="text-3xl font-bold mb-8 text-foreground">Payment Gateways</h1>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                <PaymentGatewayCard
-                  name="PayPal"
-                  logo="/payment-logos/paypal.svg"
-                  route="/payments/paypal"
-                  isActive={false}
-                  onToggle={() => {}}
-                />
                 <PaymentGatewayCard
                   name="Stripe"
                   logo="/payment-logos/stripe.svg"
                   route="/payments/stripe"
                   isActive={true}
-                  onToggle={() => {}}
-                />
-                <PaymentGatewayCard
-                  name="Razorpay"
-                  logo="/payment-logos/razorpay.svg"
-                  route="/payments/razorpay"
-                  isActive={false}
                   onToggle={() => {}}
                 />
                 <PaymentGatewayCard
@@ -90,13 +76,6 @@ const PaymentGateways = () => {
                   onToggle={() => {}}
                 />
                 <PaymentGatewayCard
-                  name="PayUMoney"
-                  logo="/payment-logos/payumoney.svg"
-                  route="/payments/payumoney"
-                  isActive={false}
-                  onToggle={() => {}}
-                />
-                <PaymentGatewayCard
                   name="Flutterwave"
                   logo="/payment-logos/flutterwave.svg"
                   route="/payments/flutterwave"
@@ -104,23 +83,9 @@ const PaymentGateways = () => {
                   onToggle={() => {}}
                 />
                 <PaymentGatewayCard
-                  name="CinetPay"
-                  logo="/payment-logos/cinetpay.svg"
-                  route="/payments/cinetpay"
-                  isActive={false}
-                  onToggle={() => {}}
-                />
-                <PaymentGatewayCard
-                  name="Bank Transfer"
+                  name="Mobile Money"
                   logo="/payment-logos/bank-transfer.svg"
-                  route="/payments/bank-transfer"
-                  isActive={false}
-                  onToggle={() => {}}
-                />
-                <PaymentGatewayCard
-                  name="SSLCOMMERZ"
-                  logo="/payment-logos/sslcommerz.svg"
-                  route="/payments/sslcommerz"
+                  route="/payments/mobile-money"
                   isActive={false}
                   onToggle={() => {}}
                 />

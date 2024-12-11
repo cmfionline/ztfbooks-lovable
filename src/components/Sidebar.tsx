@@ -11,9 +11,9 @@ import {
   MessageSquare,
   PlusCircle,
   Bell,
-  Ticket,
   ChevronRight,
   Menu,
+  X,
 } from "lucide-react";
 import {
   Accordion,
@@ -55,17 +55,6 @@ const Sidebar = () => {
         { title: "Paystack", path: "/payments/paystack" },
         { title: "Flutterwave", path: "/payments/flutterwave" },
         { title: "Mobile Money", path: "/payments/mobile-money" },
-        { title: "Vouchers", path: "/payments/vouchers" },
-      ],
-    },
-    {
-      title: "Vouchers",
-      icon: <Ticket className="w-4 h-4" />,
-      path: "/vouchers",
-      submenu: [
-        { title: "All Vouchers", path: "/vouchers" },
-        { title: "Create Voucher", path: "/vouchers/create" },
-        { title: "Analytics", path: "/vouchers/analytics" },
       ],
     },
     {
@@ -108,7 +97,7 @@ const Sidebar = () => {
   return (
     <div 
       className={cn(
-        "h-screen bg-white border-r border-border fixed left-0 top-0 overflow-y-auto transition-all duration-300",
+        "h-screen bg-background border-r border-border fixed left-0 top-0 overflow-y-auto transition-all duration-300 z-50",
         isCollapsed ? "w-16" : "w-64"
       )}
     >
@@ -121,7 +110,7 @@ const Sidebar = () => {
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="ml-auto"
           >
-            <Menu className="w-4 h-4" />
+            {isCollapsed ? <Menu className="w-4 h-4" /> : <X className="w-4 h-4" />}
           </Button>
         </div>
         
@@ -132,7 +121,7 @@ const Sidebar = () => {
                 <>
                   <AccordionTrigger className="py-2 hover:no-underline">
                     <div className={cn(
-                      "flex items-center text-sm text-gray-600",
+                      "flex items-center text-sm text-muted-foreground hover:text-foreground",
                       isCollapsed && "justify-center"
                     )}>
                       {item.icon}
@@ -146,7 +135,7 @@ const Sidebar = () => {
                           <Link
                             key={subItem.path}
                             to={subItem.path}
-                            className="flex items-center px-4 py-2 text-sm text-gray-500 hover:bg-purple-light/30 rounded-lg transition-colors"
+                            className="flex items-center px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors"
                           >
                             <ChevronRight className="w-3 h-3 mr-2" />
                             {subItem.title}
@@ -160,7 +149,7 @@ const Sidebar = () => {
                 <Link
                   to={item.path}
                   className={cn(
-                    "flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-purple-light/50 rounded-lg transition-colors",
+                    "flex items-center px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors",
                     isCollapsed && "justify-center"
                   )}
                 >
