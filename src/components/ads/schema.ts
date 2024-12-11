@@ -10,8 +10,6 @@ export const adSchema = z.object({
   placement: z.enum(["home", "category", "checkout", "series", "book"]),
   content: z.string().min(1, "Content is required"),
   html_content: z.string().optional(),
-  image_url: z.string().url().optional(),
-  video_url: z.string().url().optional(),
   image_file: z.instanceof(File)
     .refine(file => file.size <= MAX_FILE_SIZE, "Max file size is 5MB.")
     .refine(file => ACCEPTED_IMAGE_TYPES.includes(file.type), "Only .jpg, .jpeg, .png and .webp formats are supported.")

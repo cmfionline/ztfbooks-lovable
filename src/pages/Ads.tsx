@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Settings, Eye, Trash } from "lucide-react";
+import { PlusCircle, Settings, Eye, Trash, Grid, List } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { format } from "date-fns";
@@ -10,19 +10,14 @@ import { toast } from "@/hooks/use-toast";
 
 const Ads = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const { data: ads, isLoading } = useQuery({
     queryKey: ['ads'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('ads')
-        .select(`
-          *,
-          ad_books (
-            book_id,
-            discount_percentage
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -64,15 +59,33 @@ const Ads = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Advertisements</h1>
-          <Button onClick={() => setIsCreateDialogOpen(true)}>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            New Ad
-          </Button>
+          <div className="flex gap-4">
+            <div className="flex items-center bg-background border rounded-lg">
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                size="icon"
+                onClick={() => setViewMode('grid')}
+              >
+                <Grid className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'ghost'}
+                size="icon"
+                onClick={() => setViewMode('list')}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
+            <Button onClick={() => setIsCreateDialogOpen(true)}>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              New Ad
+            </Button>
+          </div>
         </div>
 
         {isLoading ? (
           <div>Loading...</div>
-        ) : (
+        ) : viewMode === 'grid' ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {ads?.map((ad) => (
               <Card key={ad.id}>
@@ -110,6 +123,36 @@ const Ads = () => {
                     <p className="text-sm text-muted-foreground">
                       Duration: {format(new Date(ad.start_date), 'PP')} - {format(new Date(ad.end_date), 'PP')}
                     </p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {ads?.map((ad) => (
+              <Card key={ad.id}>
+                <CardContent className="flex items-center justify-between p-4">
+                  <div>
+                    <h3 className="font-semibold">{ad.name}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {ad.type} • {ad.placement} • {ad.is_active ? "Active" : "Inactive"}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="icon">
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon">
+                      <Settings className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => handleDeleteAd(ad.id)}
+                    >
+                      <Trash className="h-4 w-4" />
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

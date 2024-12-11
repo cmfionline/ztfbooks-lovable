@@ -31,9 +31,8 @@ const CreateAdDialog = ({ open, onOpenChange }: CreateAdDialogProps) => {
   });
 
   const onSubmit = async (values: AdFormValues) => {
-    // Handle file uploads first if they exist
-    let image_url = values.image_url;
-    let video_url = values.video_url;
+    let image_url = null;
+    let video_url = null;
 
     if (values.image_file) {
       const file = values.image_file;
@@ -85,7 +84,6 @@ const CreateAdDialog = ({ open, onOpenChange }: CreateAdDialogProps) => {
       video_url = publicUrl;
     }
 
-    // Create ad with file URLs
     const { error } = await supabase
       .from('ads')
       .insert([{
@@ -121,8 +119,10 @@ const CreateAdDialog = ({ open, onOpenChange }: CreateAdDialogProps) => {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <BasicInfoFields control={form.control} />
-            <CreativeFields control={form.control} />
+            <div className="grid gap-4 grid-cols-2">
+              <BasicInfoFields control={form.control} />
+              <CreativeFields control={form.control} />
+            </div>
             <SchedulingFields control={form.control} />
             <Button type="submit">Create Ad</Button>
           </form>
