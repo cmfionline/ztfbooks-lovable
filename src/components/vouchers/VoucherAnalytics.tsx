@@ -61,7 +61,7 @@ export const VoucherAnalytics = () => {
 
       // Using our new RPC function for voucher type counts
       const { data: voucherTypes } = await supabase
-        .rpc<VoucherTypeCount>('get_voucher_type_counts');
+        .rpc<VoucherTypeCount, Record<string, never>>('get_voucher_type_counts');
 
       const revenue = totalRevenue?.reduce((sum, v) => sum + (v.total_amount || 0), 0) || 0;
 
