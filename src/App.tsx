@@ -9,7 +9,6 @@ import Ads from "./pages/Ads";
 import Analytics from "./pages/ads/Analytics";
 import DiscountStrategies from "./pages/ads/DiscountStrategies";
 import Payments from "./pages/Payments";
-import Statistics from "./pages/Statistics";
 import Pages from "./pages/Pages";
 import Reviews from "./pages/Reviews";
 import Faqs from "./pages/Faqs";
@@ -35,7 +34,6 @@ const App = () => {
               <Route path="/ads/analytics" element={<Analytics />} />
               <Route path="/ads/discount-strategies" element={<DiscountStrategies />} />
               <Route path="/payments/*" element={<Payments />} />
-              <Route path="/statistics" element={<Statistics />} />
               <Route path="/pages" element={<Pages />} />
               <Route path="/reviews" element={<Reviews />} />
               <Route path="/faqs" element={<Faqs />} />
