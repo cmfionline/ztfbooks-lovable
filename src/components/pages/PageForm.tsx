@@ -16,6 +16,7 @@ import {
 import { Database } from "@/integrations/supabase/types";
 
 type Page = Database['public']['Tables']['pages']['Row'];
+type PageInsert = Database['public']['Tables']['pages']['Insert'];
 
 interface PageFormProps {
   initialData?: Page;
@@ -26,7 +27,7 @@ const PageForm = ({ initialData, isEditing = false }: PageFormProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState<Partial<Page>>({
+  const [formData, setFormData] = useState<PageInsert>({
     title: initialData?.title || "",
     content: initialData?.content || "",
     status: initialData?.status || "active",
@@ -55,12 +56,10 @@ const PageForm = ({ initialData, isEditing = false }: PageFormProps) => {
       } else {
         const { error } = await supabase
           .from("pages")
-          .insert([
-            {
-              ...formData,
-              order_index: 0,
-            },
-          ]);
+          .insert({
+            ...formData,
+            order_index: 0,
+          });
 
         if (error) throw error;
 
