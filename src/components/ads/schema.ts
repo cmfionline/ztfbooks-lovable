@@ -33,15 +33,20 @@ export const adSchema = z.object({
     }),
   end_date: z.string()
     .min(1, "End date is required")
-    .refine((date: string, ctx) => {
+    .superRefine((date, ctx) => {
       const startDate = ctx.path.includes('discount') 
-        ? z.string().parse(ctx.path.includes('discount') && (ctx.parent as any)?.discount_start_date)
-        : z.string().parse((ctx.parent as any)?.start_date);
+        ? (ctx.parent as any)?.discount_start_date
+        : (ctx.parent as any)?.start_date;
       
-      if (!startDate) return true;
+      if (!startDate) return;
       
-      return new Date(date) > new Date(startDate);
-    }, "End date must be after start date"),
+      if (new Date(date) <= new Date(startDate)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "End date must be after start date"
+        });
+      }
+    }),
   cta_text: z.string()
     .min(2, "CTA text must be at least 2 characters")
     .max(30, "CTA text must not exceed 30 characters")
@@ -61,12 +66,17 @@ export const adSchema = z.object({
     .optional(),
   discount_end_date: z.string()
     .min(1, "Discount end date is required when applying a discount")
-    .refine((date: string, ctx) => {
-      const startDate = z.string().parse((ctx.parent as any)?.discount_start_date);
-      if (!startDate) return true;
+    .superRefine((date, ctx) => {
+      const startDate = (ctx.parent as any)?.discount_start_date;
+      if (!startDate) return;
       
-      return new Date(date) > new Date(startDate);
-    }, "Discount end date must be after discount start date")
+      if (new Date(date) <= new Date(startDate)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Discount end date must be after discount start date"
+        });
+      }
+    })
     .optional(),
 }).refine((data) => {
   const hasDiscountFields = data.discount_type || data.discount_value || data.discount_start_date || data.discount_end_date;
