@@ -28,61 +28,38 @@ const CreateAdminDialog = ({ open, onOpenChange }: CreateAdminDialogProps) => {
   const onSubmit = async (values: any) => {
     setIsLoading(true);
     try {
-      // First check if the user exists in profiles
-      const { data: profiles, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', values.email)
-        .single();
-
-      if (profileError && profileError.code !== 'PGRST116') {
-        throw profileError;
-      }
-
-      let userId;
-
-      if (profiles) {
-        // User exists, update their profile
-        userId = profiles.id;
-        const { error: updateError } = await supabase
-          .from('profiles')
-          .update({
-            role: values.role,
-            location: values.location,
-            full_name: values.fullName
-          })
-          .eq('id', userId);
-
-        if (updateError) throw updateError;
-        toast.success("Admin role assigned successfully");
-      } else {
-        // Create new user
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-          email: values.email,
-          password: Math.random().toString(36).slice(-8),
-          options: {
-            data: {
-              full_name: values.fullName,
-            }
+      // Create new user with random password
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: values.email,
+        password: Math.random().toString(36).slice(-8),
+        options: {
+          data: {
+            full_name: values.fullName,
           }
-        });
+        }
+      });
 
-        if (authError) throw authError;
-        userId = authData.user!.id;
-
-        // Update profile with role and location
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update({
-            role: values.role,
-            location: values.location
-          })
-          .eq('id', userId);
-
-        if (profileError) throw profileError;
-        toast.success("Admin created successfully");
+      if (authError) {
+        if (authError.message === "User already registered") {
+          toast.error("This email is already registered");
+        } else {
+          throw authError;
+        }
+        return;
       }
 
+      // Update profile with role and location
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          role: values.role,
+          location: values.location
+        })
+        .eq('id', authData.user!.id);
+
+      if (profileError) throw profileError;
+      
+      toast.success("Admin created successfully");
       onOpenChange(false);
       form.reset();
     } catch (error: any) {
