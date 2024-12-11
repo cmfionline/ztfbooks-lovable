@@ -220,10 +220,15 @@ const CreateVoucher = () => {
               type="button"
               variant="outline"
               onClick={() => navigate('/vouchers')}
+              className="border-purple text-purple hover:bg-purple/10"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              disabled={isLoading}
+              className="bg-purple hover:bg-purple/90 text-white"
+            >
               Create Voucher
             </Button>
           </div>

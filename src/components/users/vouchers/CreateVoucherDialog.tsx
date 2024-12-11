@@ -196,8 +196,11 @@ const CreateVoucherDialog = ({ open, onOpenChange, clientId }: CreateVoucherDial
                 </FormItem>
               )}
             />
-
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              className="w-full bg-purple hover:bg-purple/90 text-white" 
+              disabled={isLoading}
+            >
               Create Voucher
             </Button>
           </form>
