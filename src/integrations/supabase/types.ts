@@ -9,33 +9,107 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      ad_ab_tests: {
+        Row: {
+          ad_id: string | null
+          created_at: string
+          end_date: string
+          id: string
+          start_date: string
+          test_name: string
+          updated_at: string
+          variant_a: string | null
+          variant_b: string | null
+          winner_variant: string | null
+        }
+        Insert: {
+          ad_id?: string | null
+          created_at?: string
+          end_date: string
+          id?: string
+          start_date: string
+          test_name: string
+          updated_at?: string
+          variant_a?: string | null
+          variant_b?: string | null
+          winner_variant?: string | null
+        }
+        Update: {
+          ad_id?: string | null
+          created_at?: string
+          end_date?: string
+          id?: string
+          start_date?: string
+          test_name?: string
+          updated_at?: string
+          variant_a?: string | null
+          variant_b?: string | null
+          winner_variant?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_ab_tests_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_ab_tests_variant_a_fkey"
+            columns: ["variant_a"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_ab_tests_variant_b_fkey"
+            columns: ["variant_b"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_ab_tests_winner_variant_fkey"
+            columns: ["winner_variant"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ad_analytics: {
         Row: {
+          ab_test_group: string | null
           ad_id: string | null
           clicks: number | null
           conversions: number | null
           created_at: string
           date: string
+          device_type: string | null
           id: string
           impressions: number | null
           revenue: number | null
         }
         Insert: {
+          ab_test_group?: string | null
           ad_id?: string | null
           clicks?: number | null
           conversions?: number | null
           created_at?: string
           date: string
+          device_type?: string | null
           id?: string
           impressions?: number | null
           revenue?: number | null
         }
         Update: {
+          ab_test_group?: string | null
           ad_id?: string | null
           clicks?: number | null
           conversions?: number | null
           created_at?: string
           date?: string
+          device_type?: string | null
           id?: string
           impressions?: number | null
           revenue?: number | null
@@ -85,49 +159,64 @@ export type Database = {
       }
       ads: {
         Row: {
+          ab_test_group: string | null
           content: string
           created_at: string
           cta_text: string | null
           end_date: string
+          html_content: string | null
           id: string
           image_url: string | null
           is_active: boolean | null
           name: string
           placement: Database["public"]["Enums"]["ad_placement"]
+          preview_mobile_url: string | null
+          preview_tablet_url: string | null
           start_date: string
           target_audience: Json | null
           type: Database["public"]["Enums"]["ad_type"]
           updated_at: string
+          video_url: string | null
         }
         Insert: {
+          ab_test_group?: string | null
           content: string
           created_at?: string
           cta_text?: string | null
           end_date: string
+          html_content?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           name: string
           placement: Database["public"]["Enums"]["ad_placement"]
+          preview_mobile_url?: string | null
+          preview_tablet_url?: string | null
           start_date: string
           target_audience?: Json | null
           type: Database["public"]["Enums"]["ad_type"]
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
+          ab_test_group?: string | null
           content?: string
           created_at?: string
           cta_text?: string | null
           end_date?: string
+          html_content?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           name?: string
           placement?: Database["public"]["Enums"]["ad_placement"]
+          preview_mobile_url?: string | null
+          preview_tablet_url?: string | null
           start_date?: string
           target_audience?: Json | null
           type?: Database["public"]["Enums"]["ad_type"]
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: []
       }
