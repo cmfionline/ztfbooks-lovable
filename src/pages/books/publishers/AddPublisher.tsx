@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,17 +5,11 @@ import * as z from "zod";
 import { useToast } from "@/components/ui/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { supabase } from "@/integrations/supabase/client";
+import { PublisherBasicInfo } from "./components/PublisherBasicInfo";
+import { PublisherAddress } from "./components/PublisherAddress";
+import { PublisherOnline } from "./components/PublisherOnline";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -94,171 +87,26 @@ const AddPublisher = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-primary">Name</FormLabel>
-                    <FormControl>
-                      <Input 
-                        {...field} 
-                        className="border-purple-light focus:border-purple focus:ring-purple"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-primary">Email</FormLabel>
-                    <FormControl>
-                      <Input 
-                        {...field} 
-                        type="email"
-                        className="border-purple-light focus:border-purple focus:ring-purple"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-primary">Phone</FormLabel>
-                    <FormControl>
-                      <Input 
-                        {...field} 
-                        type="tel"
-                        className="border-purple-light focus:border-purple focus:ring-purple"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-primary">Address</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        {...field} 
-                        className="min-h-[80px] border-purple-light focus:border-purple focus:ring-purple"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <FormField
-                  control={form.control}
-                  name="city"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary">City</FormLabel>
-                      <FormControl>
-                        <Input 
-                          {...field} 
-                          className="border-purple-light focus:border-purple focus:ring-purple"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="country"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary">Country</FormLabel>
-                      <FormControl>
-                        <Input 
-                          {...field} 
-                          className="border-purple-light focus:border-purple focus:ring-purple"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="postcode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary">Postcode</FormLabel>
-                      <FormControl>
-                        <Input 
-                          {...field} 
-                          className="border-purple-light focus:border-purple focus:ring-purple"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <PublisherBasicInfo control={form.control} />
+              <PublisherAddress control={form.control} />
+              <PublisherOnline control={form.control} />
+              
+              <div className="flex gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1 border-purple-light hover:bg-purple-light/10"
+                  onClick={() => navigate("/books/publishers")}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit"
+                  className="flex-1 bg-purple hover:bg-purple/90 text-white"
+                >
+                  Create Publisher
+                </Button>
               </div>
-
-              <FormField
-                control={form.control}
-                name="website"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-primary">Website</FormLabel>
-                    <FormControl>
-                      <Input 
-                        {...field} 
-                        type="url"
-                        className="border-purple-light focus:border-purple focus:ring-purple"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="socialMediaUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-primary">Social Media URL</FormLabel>
-                    <FormControl>
-                      <Input 
-                        {...field} 
-                        type="url"
-                        className="border-purple-light focus:border-purple focus:ring-purple"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button 
-                type="submit"
-                className="w-full bg-purple hover:bg-purple/90 text-white"
-              >
-                Create Publisher
-              </Button>
             </form>
           </Form>
         </CardContent>
