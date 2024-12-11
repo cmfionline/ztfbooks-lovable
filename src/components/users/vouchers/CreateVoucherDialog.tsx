@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ClientInfoFields } from "./components/ClientInfoFields";
@@ -208,7 +209,9 @@ const CreateVoucherDialog = ({ open, onOpenChange, clientId }: CreateVoucherDial
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Amount</FormLabel>
-                  <Input {...field} type="number" min="0" step="0.01" />
+                  <FormControl>
+                    <Input {...field} type="number" min="0" step="0.01" />
+                  </FormControl>
                 </FormItem>
               )}
             />
