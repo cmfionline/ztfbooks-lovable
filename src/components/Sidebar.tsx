@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   BookOpen,
   CreditCard,
@@ -27,6 +27,12 @@ import { cn } from "@/lib/utils";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [openItem, setOpenItem] = useState<string | undefined>(undefined);
+  const location = useLocation();
+
+  const handleItemClick = (itemValue: string) => {
+    setOpenItem(openItem === itemValue ? undefined : itemValue);
+  };
 
   const menuItems = [
     {
@@ -120,12 +126,21 @@ const Sidebar = () => {
           </Button>
         </div>
         
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion 
+          type="single" 
+          collapsible 
+          className="w-full"
+          value={openItem}
+          onValueChange={setOpenItem}
+        >
           {menuItems.map((item, index) => (
             <AccordionItem value={`item-${index}`} key={item.path} className="border-none">
               {item.submenu ? (
                 <>
-                  <AccordionTrigger className="py-2 hover:no-underline">
+                  <AccordionTrigger 
+                    className="py-2 hover:no-underline"
+                    onClick={() => handleItemClick(`item-${index}`)}
+                  >
                     <div className={cn(
                       "flex items-center text-sm text-muted-foreground hover:text-foreground",
                       isCollapsed && "justify-center"
@@ -141,7 +156,11 @@ const Sidebar = () => {
                           <Link
                             key={subItem.path}
                             to={subItem.path}
-                            className="flex items-center px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors"
+                            onClick={() => setOpenItem(undefined)}
+                            className={cn(
+                              "flex items-center px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors",
+                              location.pathname === subItem.path && "bg-accent text-foreground"
+                            )}
                           >
                             <ChevronRight className="w-3 h-3 mr-2" />
                             {subItem.title}
@@ -154,9 +173,11 @@ const Sidebar = () => {
               ) : (
                 <Link
                   to={item.path}
+                  onClick={() => setOpenItem(undefined)}
                   className={cn(
                     "flex items-center px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors",
-                    isCollapsed && "justify-center"
+                    isCollapsed && "justify-center",
+                    location.pathname === item.path && "bg-accent text-foreground"
                   )}
                 >
                   {item.icon}
