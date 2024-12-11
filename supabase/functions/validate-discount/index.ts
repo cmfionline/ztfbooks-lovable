@@ -11,6 +11,7 @@ interface ValidateDiscountRequest {
 }
 
 Deno.serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -21,6 +22,7 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
+    // Get request body
     const { discountId, userId } = await req.json() as ValidateDiscountRequest
 
     // Get discount details
@@ -31,6 +33,7 @@ Deno.serve(async (req) => {
       .single()
 
     if (discountError || !discount) {
+      console.error('Error fetching discount:', discountError)
       return new Response(
         JSON.stringify({ error: 'Discount not found' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 404 }
@@ -45,7 +48,7 @@ Deno.serve(async (req) => {
       )
     }
 
-    // Check user's usage of this discount
+    // Check user-specific usage
     if (discount.max_uses_per_user) {
       const { count, error: usageError } = await supabaseClient
         .from('discount_usage')
@@ -54,7 +57,7 @@ Deno.serve(async (req) => {
         .eq('user_id', userId)
 
       if (usageError) {
-        console.error('Error checking usage:', usageError)
+        console.error('Error checking user usage:', usageError)
         return new Response(
           JSON.stringify({ error: 'Error checking discount usage' }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
@@ -72,17 +75,12 @@ Deno.serve(async (req) => {
     // Record usage and update total count
     const { error: insertError } = await supabaseClient
       .from('discount_usage')
-      .insert([
-        { discount_id: discountId, user_id: userId }
-      ])
+      .insert({
+        discount_id: discountId,
+        user_id: userId,
+      })
 
     if (insertError) {
-      if (insertError.code === '23505') { // Unique violation
-        return new Response(
-          JSON.stringify({ error: 'You have already used this discount' }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
-        )
-      }
       console.error('Error recording usage:', insertError)
       return new Response(
         JSON.stringify({ error: 'Error recording discount usage' }),
@@ -97,8 +95,8 @@ Deno.serve(async (req) => {
       .eq('id', discountId)
 
     if (updateError) {
-      console.error('Error updating usage count:', updateError)
-      // Don't return error since usage was already recorded
+      console.error('Error updating total usage:', updateError)
+      // Don't return error here as the usage has been recorded
     }
 
     return new Response(
@@ -106,8 +104,8 @@ Deno.serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
 
-  } catch (error) {
-    console.error('Error:', error)
+  } catch (err) {
+    console.error('Error processing request:', err)
     return new Response(
       JSON.stringify({ error: 'Internal server error' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }

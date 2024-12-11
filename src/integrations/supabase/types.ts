@@ -1269,6 +1269,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_device_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          device_type: string
+          count: number
+        }[]
+      }
       get_voucher_type_counts: {
         Args: Record<PropertyKey, never>
         Returns: {
