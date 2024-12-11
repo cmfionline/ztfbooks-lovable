@@ -1,27 +1,34 @@
 import { useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { User, Loader2 } from "lucide-react";
+import { UserSquare2, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BasicInfoFields } from "./components/BasicInfoFields";
 import { SocialMediaFields } from "./components/SocialMediaFields";
-import { authorFormSchema } from "./schema";
+
+const authorFormSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  designation: z.string().optional(),
+  education: z.string().optional(),
+  nationality: z.string().optional(),
+  date_of_birth: z.string().optional(),
+  bio: z.string().optional(),
+  mobile: z.string().optional(),
+  address: z.string().optional(),
+  description: z.string().optional(),
+  website: z.string().url().optional().or(z.literal("")),
+  facebook_url: z.string().url().optional().or(z.literal("")),
+  twitter_url: z.string().url().optional().or(z.literal("")),
+  instagram_url: z.string().url().optional().or(z.literal("")),
+});
 
 type FormValues = z.infer<typeof authorFormSchema>;
 
@@ -38,10 +45,9 @@ const EditAuthor = () => {
       education: "",
       nationality: "",
       date_of_birth: "",
+      bio: "",
       mobile: "",
       address: "",
-      photo: "",
-      bio: "",
       description: "",
       website: "",
       facebook_url: "",
@@ -59,7 +65,14 @@ const EditAuthor = () => {
         .eq("id", id)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Error fetching author",
+          description: error.message,
+        });
+        throw error;
+      }
       return data;
     },
   });
@@ -72,10 +85,9 @@ const EditAuthor = () => {
         education: author.education || "",
         nationality: author.nationality || "",
         date_of_birth: author.date_of_birth || "",
+        bio: author.bio || "",
         mobile: author.mobile || "",
         address: author.address || "",
-        photo: author.photo || "",
-        bio: author.bio || "",
         description: author.description || "",
         website: author.website || "",
         facebook_url: author.facebook_url || "",
@@ -89,21 +101,36 @@ const EditAuthor = () => {
     try {
       const { error } = await supabase
         .from("authors")
-        .update(values)
+        .update({
+          name: values.name,
+          designation: values.designation || null,
+          education: values.education || null,
+          nationality: values.nationality || null,
+          date_of_birth: values.date_of_birth || null,
+          bio: values.bio || null,
+          mobile: values.mobile || null,
+          address: values.address || null,
+          description: values.description || null,
+          website: values.website || null,
+          facebook_url: values.facebook_url || null,
+          twitter_url: values.twitter_url || null,
+          instagram_url: values.instagram_url || null,
+        })
         .eq("id", id);
 
       if (error) throw error;
 
       toast({
         title: "Success",
-        description: `Author "${values.name}" has been updated successfully.`,
+        description: "Author has been updated successfully",
       });
+
       navigate("/books/authors");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating author:", error);
       toast({
         title: "Error",
-        description: "Failed to update author. Please try again.",
+        description: error.message || "Failed to update author. Please try again.",
         variant: "destructive",
       });
     }
@@ -111,60 +138,63 @@ const EditAuthor = () => {
 
   if (isLoading) {
     return (
-      <div className="container max-w-2xl mx-auto py-8 px-4">
-        <Card>
-          <CardContent className="p-6">
-            <div className="space-y-4">
-              <Skeleton className="h-8 w-1/3" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-32 w-full" />
-            </div>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
+        <div className="max-w-2xl mx-auto">
+          <Card>
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                <Skeleton className="h-8 w-1/3" />
+                <Skeleton className="h-12 w-full" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container max-w-2xl mx-auto py-8 px-4">
-      <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
-            <User className="w-6 h-6" />
-            Edit Author
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <BasicInfoFields form={form} />
-              <SocialMediaFields form={form} />
+    <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
+      <div className="max-w-2xl mx-auto">
+        <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
+              <UserSquare2 className="w-6 h-6" />
+              Edit Author
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <BasicInfoFields control={form.control} />
+                <SocialMediaFields control={form.control} />
 
-              <div className="flex gap-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => navigate("/books/authors")}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="flex-1 bg-purple hover:bg-purple/90 text-white"
-                  disabled={form.formState.isSubmitting}
-                >
-                  {form.formState.isSubmitting ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    "Update Author"
-                  )}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+                <div className="flex gap-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => navigate("/books/authors")}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="flex-1 bg-purple hover:bg-purple/90 text-white"
+                    disabled={form.formState.isSubmitting}
+                  >
+                    {form.formState.isSubmitting ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      "Update Author"
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
