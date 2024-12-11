@@ -246,6 +246,7 @@ export type Database = {
           content: string
           created_at: string
           cta_text: string | null
+          discount_strategy_id: string | null
           discount_type: string | null
           discount_value: number | null
           end_date: string
@@ -271,6 +272,7 @@ export type Database = {
           content: string
           created_at?: string
           cta_text?: string | null
+          discount_strategy_id?: string | null
           discount_type?: string | null
           discount_value?: number | null
           end_date: string
@@ -296,6 +298,7 @@ export type Database = {
           content?: string
           created_at?: string
           cta_text?: string | null
+          discount_strategy_id?: string | null
           discount_type?: string | null
           discount_value?: number | null
           end_date?: string
@@ -316,7 +319,22 @@ export type Database = {
           updated_at?: string
           video_url?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "ads_discount_strategy_id_fkey"
+            columns: ["discount_strategy_id"]
+            isOneToOne: false
+            referencedRelation: "discount_strategies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_ads_discount_strategy"
+            columns: ["discount_strategy_id"]
+            isOneToOne: false
+            referencedRelation: "discount_strategies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       authors: {
         Row: {

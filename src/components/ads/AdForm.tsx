@@ -95,6 +95,7 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
           ...values,
           image_url,
           video_url,
+          discount_strategy_id: values.discount_strategy_id || null,
         }]);
 
       if (error) {
