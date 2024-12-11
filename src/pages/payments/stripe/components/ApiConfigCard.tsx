@@ -45,7 +45,7 @@ export const ApiConfigCard = () => {
   };
 
   return (
-    <Card className="bg-white shadow-sm">
+    <Card className="bg-background">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
           <Key className="w-5 h-5 text-purple" />
@@ -66,7 +66,7 @@ export const ApiConfigCard = () => {
               name="secretKey"
               type="password"
               placeholder="sk_test_..."
-              className="bg-gray-50 border-gray-200"
+              className="bg-input border-input"
               required
             />
           </div>

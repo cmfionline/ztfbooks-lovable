@@ -17,7 +17,7 @@ const PaymentMethodBadge = ({
 
 export const PaymentMethodsCard = () => {
   return (
-    <Card>
+    <Card className="bg-background">
       <CardHeader>
         <CardTitle>Supported Payment Methods</CardTitle>
         <CardDescription>

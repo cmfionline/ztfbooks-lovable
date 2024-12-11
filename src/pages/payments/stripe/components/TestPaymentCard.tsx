@@ -10,7 +10,7 @@ interface TestPaymentCardProps {
 
 export const TestPaymentCard = ({ isActive, isProcessing, onTestPayment }: TestPaymentCardProps) => {
   return (
-    <Card>
+    <Card className="bg-background">
       <CardHeader>
         <CardTitle>Test Payment</CardTitle>
         <CardDescription>
@@ -22,6 +22,7 @@ export const TestPaymentCard = ({ isActive, isProcessing, onTestPayment }: TestP
           <Button
             onClick={onTestPayment}
             disabled={!isActive || isProcessing}
+            className="w-full bg-purple hover:bg-purple/90 text-white"
           >
             {isProcessing ? (
               <>

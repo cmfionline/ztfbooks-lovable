@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, CreditCard, DollarSign } from "lucide-react";
+import { Loader2, CreditCard } from "lucide-react";
 import { EnableStripeCard } from "./components/EnableStripeCard";
 import { TestPaymentCard } from "./components/TestPaymentCard";
 import { ApiConfigCard } from "./components/ApiConfigCard";

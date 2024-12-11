@@ -10,7 +10,7 @@ interface EnableStripeCardProps {
 
 export const EnableStripeCard = ({ isActive, isLoading, onToggle }: EnableStripeCardProps) => {
   return (
-    <Card>
+    <Card className="bg-background">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
