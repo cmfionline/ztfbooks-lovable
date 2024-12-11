@@ -31,6 +31,7 @@ export const VoucherForm = ({ clientId, onSuccess }: VoucherFormProps) => {
       bookId: "",
       seriesId: "",
       tagId: "",
+      clientId,
       clientName: "",
       clientEmail: "",
       amount: "",
