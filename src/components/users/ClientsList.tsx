@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -8,19 +9,42 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { User, Ticket, Eye, Download, Printer } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import ClientVouchersList from "./ClientVouchersList";
+import { useToast } from "@/components/ui/use-toast";
 
 const ClientsList = () => {
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
+  const { toast } = useToast();
+
   const { data: clients, isLoading } = useQuery({
     queryKey: ['clients'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select(`
+          *,
+          vouchers:vouchers(
+            id,
+            code,
+            type,
+            redeemed,
+            total_amount
+          )
+        `)
         .eq('role', 'client');
       
-      if (error) throw error;
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Error fetching clients",
+          description: error.message
+        });
+        throw error;
+      }
       return data;
     }
   });
@@ -30,14 +54,19 @@ const ClientsList = () => {
   }
 
   return (
-    <>
-      <h1 className="text-3xl font-bold mb-8">Clients</h1>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">Clients</h1>
+      </div>
+
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Location</TableHead>
             <TableHead>Joined</TableHead>
+            <TableHead>Vouchers</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -51,11 +80,36 @@ const ClientsList = () => {
               <TableCell>
                 {new Date(client.created_at).toLocaleDateString()}
               </TableCell>
+              <TableCell>
+                {client.vouchers?.length || 0} vouchers
+              </TableCell>
+              <TableCell>
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => setSelectedClientId(client.id)}
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      View Vouchers
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="right" className="w-[400px] sm:w-[540px]">
+                    <SheetHeader>
+                      <SheetTitle>Vouchers for {client.full_name}</SheetTitle>
+                    </SheetHeader>
+                    {selectedClientId && (
+                      <ClientVouchersList clientId={selectedClientId} />
+                    )}
+                  </SheetContent>
+                </Sheet>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-    </>
+    </div>
   );
 };
 
