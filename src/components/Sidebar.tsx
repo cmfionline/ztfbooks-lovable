@@ -121,67 +121,68 @@ const Sidebar = () => {
           </Button>
         </div>
       
-      <Accordion 
-        type="single" 
-        collapsible 
-        className="w-full"
-        value={openItem}
-        onValueChange={setOpenItem}
-      >
-        {menuItems.map((item, index) => (
-          <AccordionItem value={`item-${index}`} key={item.path} className="border-none">
-            {item.submenu ? (
-              <>
-                <AccordionTrigger 
-                  className="py-2 hover:no-underline"
-                  onClick={() => handleItemClick(`item-${index}`)}
-                >
-                  <div className={cn(
-                    "flex items-center text-sm text-muted-foreground hover:text-foreground",
-                    isCollapsed && "justify-center"
-                  )}>
-                    {item.icon}
-                    {!isCollapsed && <span className="ml-3">{item.title}</span>}
-                  </div>
-                </AccordionTrigger>
-                {!isCollapsed && (
-                  <AccordionContent>
-                    <div className="ml-6">
-                      {item.submenu.map((subItem) => (
-                        <Link
-                          key={subItem.path}
-                          to={subItem.path}
-                          onClick={() => setOpenItem(undefined)}
-                          className={cn(
-                            "flex items-center px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors",
-                            location.pathname === subItem.path && "bg-accent text-foreground"
-                          )}
-                        >
-                          <ChevronRight className="w-3 h-3 mr-2" />
-                          {subItem.title}
-                        </Link>
-                      ))}
+        <Accordion 
+          type="single" 
+          collapsible 
+          className="w-full"
+          value={openItem}
+          onValueChange={setOpenItem}
+        >
+          {menuItems.map((item, index) => (
+            <AccordionItem value={`item-${index}`} key={item.path} className="border-none">
+              {item.submenu ? (
+                <>
+                  <AccordionTrigger 
+                    className="py-2 hover:no-underline"
+                    onClick={() => handleItemClick(`item-${index}`)}
+                  >
+                    <div className={cn(
+                      "flex items-center text-sm text-muted-foreground hover:text-foreground",
+                      isCollapsed && "justify-center"
+                    )}>
+                      {item.icon}
+                      {!isCollapsed && <span className="ml-3">{item.title}</span>}
                     </div>
-                  </AccordionContent>
-                )}
-              </>
-            ) : (
-              <Link
-                to={item.path}
-                onClick={() => setOpenItem(undefined)}
-                className={cn(
-                  "flex items-center px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors",
-                  isCollapsed && "justify-center",
-                  location.pathname === item.path && "bg-accent text-foreground"
-                )}
-              >
-                {item.icon}
-                {!isCollapsed && <span className="ml-3">{item.title}</span>}
-              </Link>
-            )}
-          </AccordionItem>
-        ))}
-      </Accordion>
+                  </AccordionTrigger>
+                  {!isCollapsed && (
+                    <AccordionContent>
+                      <div className="ml-6">
+                        {item.submenu.map((subItem) => (
+                          <Link
+                            key={subItem.path}
+                            to={subItem.path}
+                            onClick={() => setOpenItem(undefined)}
+                            className={cn(
+                              "flex items-center px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors",
+                              location.pathname === subItem.path && "bg-accent text-foreground"
+                            )}
+                          >
+                            <ChevronRight className="w-3 h-3 mr-2" />
+                            {subItem.title}
+                          </Link>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  )}
+                </>
+              ) : (
+                <Link
+                  to={item.path}
+                  onClick={() => setOpenItem(undefined)}
+                  className={cn(
+                    "flex items-center px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors",
+                    isCollapsed && "justify-center",
+                    location.pathname === item.path && "bg-accent text-foreground"
+                  )}
+                >
+                  {item.icon}
+                  {!isCollapsed && <span className="ml-3">{item.title}</span>}
+                </Link>
+              )}
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>
     </div>
   );
 };
