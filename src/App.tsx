@@ -18,6 +18,7 @@ import SubscriptionPlans from "./pages/SubscriptionPlans";
 import Vouchers from "./pages/Vouchers";
 import Navigation from "./components/Navigation";
 import Sidebar from "./components/Sidebar";
+import DiscountStrategies from "./pages/ads/DiscountStrategies";
 
 const queryClient = new QueryClient();
 
@@ -78,6 +79,11 @@ const App = () => (
           <Route path="/ads" element={
             <Layout>
               <Ads />
+            </Layout>
+          } />
+          <Route path="/ads/discount-strategies" element={
+            <Layout>
+              <DiscountStrategies />
             </Layout>
           } />
           <Route path="/reviews" element={
