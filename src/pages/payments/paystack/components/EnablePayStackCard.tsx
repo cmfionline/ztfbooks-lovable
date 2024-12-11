@@ -10,12 +10,12 @@ interface EnablePayStackCardProps {
 
 export const EnablePayStackCard = ({ isActive, isLoading, onToggle }: EnablePayStackCardProps) => {
   return (
-    <Card>
-      <CardHeader>
+    <Card className="bg-white shadow-sm">
+      <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Enable PayStack Payments</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-lg font-semibold">Enable PayStack Payments</CardTitle>
+            <CardDescription className="text-sm text-gray-500">
               Accept payments through PayStack
             </CardDescription>
           </div>
@@ -33,7 +33,7 @@ export const EnablePayStackCard = ({ isActive, isLoading, onToggle }: EnablePayS
             onCheckedChange={onToggle}
             disabled={isLoading}
           />
-          <span className="text-sm text-muted-foreground">
+          <span className="text-sm text-gray-600">
             {isActive ? 'Enabled' : 'Disabled'}
           </span>
         </div>

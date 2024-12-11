@@ -9,7 +9,7 @@ const PaymentMethodBadge = ({
   icon: React.ElementType; 
   label: string;
 }) => (
-  <Badge variant="secondary" className="flex items-center gap-1">
+  <Badge variant="secondary" className="flex items-center gap-1 bg-purple-50 text-purple border-purple/20">
     <Icon className="w-3 h-3" />
     <span>{label}</span>
   </Badge>
@@ -17,10 +17,10 @@ const PaymentMethodBadge = ({
 
 export const PaymentMethodsCard = () => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Supported Payment Methods</CardTitle>
-        <CardDescription>
+    <Card className="bg-white shadow-sm">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg font-semibold">Supported Payment Methods</CardTitle>
+        <CardDescription className="text-sm text-gray-500">
           Available payment methods through PayStack
         </CardDescription>
       </CardHeader>
@@ -33,8 +33,8 @@ export const PaymentMethodsCard = () => {
             <PaymentMethodBadge icon={QrCode} label="USSD" />
           </div>
           <div className="mt-4">
-            <h3 className="text-sm font-medium mb-2">Key Features:</h3>
-            <ul className="text-sm text-muted-foreground list-disc pl-4 space-y-1">
+            <h3 className="text-sm font-medium text-gray-700 mb-2">Key Features:</h3>
+            <ul className="text-sm text-gray-500 list-disc pl-4 space-y-1">
               <li>Local & international cards</li>
               <li>Split payments</li>
               <li>Recurring billing</li>

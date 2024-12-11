@@ -7,6 +7,7 @@ import { EnablePayStackCard } from "./components/EnablePayStackCard";
 import { TestPaymentCard } from "./components/TestPaymentCard";
 import { ApiConfigCard } from "./components/ApiConfigCard";
 import { PaymentMethodsCard } from "./components/PaymentMethodsCard";
+import { PayStackHeader } from "./components/PayStackHeader";
 
 const PayStackSettings = () => {
   const { toast } = useToast();
@@ -100,8 +101,8 @@ const PayStackSettings = () => {
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-8">PayStack Settings</h1>
+    <div className="p-6 space-y-6 max-w-4xl mx-auto">
+      <PayStackHeader />
       
       <div className="grid gap-6">
         <EnablePayStackCard

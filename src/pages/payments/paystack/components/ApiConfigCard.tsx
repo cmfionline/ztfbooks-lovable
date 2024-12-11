@@ -44,10 +44,10 @@ export const ApiConfigCard = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>API Configuration</CardTitle>
-        <CardDescription>
+    <Card className="bg-white shadow-sm">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg font-semibold">API Configuration</CardTitle>
+        <CardDescription className="text-sm text-gray-500">
           Configure your PayStack API keys for payment processing
         </CardDescription>
       </CardHeader>
@@ -61,12 +61,14 @@ export const ApiConfigCard = () => {
               type="password"
               placeholder="sk_test_..."
               required
+              className="w-full"
             />
           </div>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center pt-2">
             <Button
               type="submit"
               disabled={isLoading}
+              className="bg-purple hover:bg-purple-600 text-white"
             >
               {isLoading ? "Saving..." : "Save API Keys"}
             </Button>
@@ -76,6 +78,7 @@ export const ApiConfigCard = () => {
               onClick={() => {
                 window.open('https://dashboard.paystack.com/#/settings/developer', '_blank');
               }}
+              className="border-purple text-purple hover:bg-purple-50"
             >
               Get PayStack API Keys
             </Button>

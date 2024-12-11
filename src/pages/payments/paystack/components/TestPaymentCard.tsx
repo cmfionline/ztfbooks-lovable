@@ -20,16 +20,16 @@ export const TestPaymentCard = ({
   onTestPayment
 }: TestPaymentCardProps) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Test Payment</CardTitle>
-        <CardDescription>
+    <Card className="bg-white shadow-sm">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg font-semibold">Test Payment</CardTitle>
+        <CardDescription className="text-sm text-gray-500">
           Process a test payment to verify your PayStack integration
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <div className="grid w-full max-w-sm items-center gap-1.5">
+          <div className="space-y-2">
             <Label htmlFor="testEmail">Test Email</Label>
             <Input
               type="email"
@@ -37,11 +37,13 @@ export const TestPaymentCard = ({
               placeholder="test@example.com"
               value={testEmail}
               onChange={(e) => onEmailChange(e.target.value)}
+              className="w-full"
             />
           </div>
           <Button
             onClick={onTestPayment}
             disabled={!isActive || isProcessing || !testEmail}
+            className="w-full bg-purple hover:bg-purple-600 text-white"
           >
             {isProcessing ? (
               <>
@@ -52,7 +54,7 @@ export const TestPaymentCard = ({
               'Process Test Payment (₦10.99)'
             )}
           </Button>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-500 mt-2">
             This will create a test payment session for ₦10.99
           </p>
         </div>
