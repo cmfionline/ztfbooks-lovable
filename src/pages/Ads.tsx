@@ -7,12 +7,13 @@ import { supabase } from "@/lib/supabase";
 import { format } from "date-fns";
 import CreateAdDialog from "@/components/ads/CreateAdDialog";
 import { toast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 const Ads = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
-  const { data: ads, isLoading } = useQuery({
+  const { data: ads, isLoading, refetch } = useQuery({
     queryKey: ['ads'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -52,6 +53,7 @@ const Ads = () => {
       title: "Ad deleted",
       description: "The ad has been successfully deleted.",
     });
+    refetch();
   };
 
   return (
