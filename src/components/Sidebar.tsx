@@ -77,11 +77,6 @@ const Sidebar = () => {
       title: "Pages",
       icon: <FileText className="w-4 h-4" />,
       path: "/pages",
-      submenu: [
-        { title: "About Us", path: "/pages/about" },
-        { title: "Privacy Policy", path: "/pages/privacy" },
-        { title: "Terms of Service", path: "/pages/terms" },
-      ],
     },
     {
       title: "Ads",
