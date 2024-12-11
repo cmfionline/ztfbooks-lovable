@@ -6,7 +6,7 @@ import { DiscountStrategyFormValues } from "../schema";
 
 interface DiscountStrategyRulesProps {
   control: Control<DiscountStrategyFormValues>;
-  discountType: string;
+  discountType?: string;
 }
 
 export const DiscountStrategyRules = ({ control, discountType }: DiscountStrategyRulesProps) => {
