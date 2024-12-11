@@ -13,11 +13,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { SearchInput } from "@/components/ui/search-input";
-import { SearchBar } from "./components/SearchBar";
 import { EbookTableRow } from "./components/EbookTableRow";
+import { useToast } from "@/components/ui/use-toast";
 
 const EbooksPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { toast } = useToast();
 
   const { data: books, isLoading } = useQuery({
     queryKey: ["books"],
@@ -57,6 +58,66 @@ const EbooksPage = () => {
     book.series?.name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleToggleTopSelling = async (id: string, currentStatus: boolean) => {
+    const { error } = await supabase
+      .from('books')
+      .update({ is_top_selling: !currentStatus })
+      .eq('id', id);
+
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error updating book status",
+        description: error.message,
+      });
+      return;
+    }
+
+    toast({
+      title: "Book status updated successfully",
+    });
+  };
+
+  const handleToggleFeatured = async (id: string, currentStatus: boolean) => {
+    const { error } = await supabase
+      .from('books')
+      .update({ is_featured: !currentStatus })
+      .eq('id', id);
+
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error updating book status",
+        description: error.message,
+      });
+      return;
+    }
+
+    toast({
+      title: "Book status updated successfully",
+    });
+  };
+
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase
+      .from('books')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error deleting book",
+        description: error.message,
+      });
+      return;
+    }
+
+    toast({
+      title: "Book deleted successfully",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
@@ -95,8 +156,15 @@ const EbooksPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredBooks?.map((book) => (
-                  <EbookTableRow key={book.id} book={book} />
+                {filteredBooks?.map((book, index) => (
+                  <EbookTableRow 
+                    key={book.id} 
+                    book={book} 
+                    index={index}
+                    onToggleTopSelling={handleToggleTopSelling}
+                    onToggleFeatured={handleToggleFeatured}
+                    onDelete={handleDelete}
+                  />
                 ))}
               </TableBody>
             </Table>
