@@ -10,6 +10,10 @@ const Analytics = () => {
   const { data: performanceData, isLoading: isLoadingPerformance } = useQuery({
     queryKey: ['ad-performance'],
     queryFn: async () => {
+      if (process.env.NODE_ENV === 'development') {
+        return generateDemoPerformanceData(30);
+      }
+
       const endDate = new Date();
       const startDate = subDays(endDate, 30);
       
@@ -21,48 +25,57 @@ const Analytics = () => {
         .order('date', { ascending: true });
 
       if (error) throw error;
-      return data || generateDemoData(30);
+      return data || generateDemoPerformanceData(30);
     },
   });
 
   const { data: deviceStats, isLoading: isLoadingDevices } = useQuery({
     queryKey: ['device-stats'],
     queryFn: async () => {
+      if (process.env.NODE_ENV === 'development') {
+        return [
+          { device_type: 'Mobile', count: 2850 },
+          { device_type: 'Desktop', count: 1950 },
+          { device_type: 'Tablet', count: 850 },
+          { device_type: 'Other', count: 150 }
+        ];
+      }
+
       const { data, error } = await supabase
         .from('ad_analytics')
-        .select('device_type, count')
-        .not('device_type', 'is', null);
+        .select('device_type, count(*)')
+        .not('device_type', 'is', null)
+        .groupBy('device_type');
 
       if (error) throw error;
-      return data || [
-        { device_type: 'Mobile', count: 1250 },
-        { device_type: 'Desktop', count: 850 },
-        { device_type: 'Tablet', count: 400 },
-        { device_type: 'Other', count: 100 }
-      ];
+      return data || [];
     },
   });
 
   const { data: discountData, isLoading: isLoadingDiscounts } = useQuery({
     queryKey: ['discount-analytics'],
     queryFn: async () => {
+      if (process.env.NODE_ENV === 'development') {
+        return [
+          { ad_id: 'Summer Sale', redemption_count: 458, sales_impact: 22500 },
+          { ad_id: 'Back to School', redemption_count: 385, sales_impact: 15800 },
+          { ad_id: 'Holiday Special', redemption_count: 625, sales_impact: 31200 },
+          { ad_id: 'Flash Sale', redemption_count: 289, sales_impact: 12400 }
+        ];
+      }
+
       const { data, error } = await supabase
         .from('ad_discount_analytics')
         .select('*');
 
       if (error) throw error;
-      return data || [
-        { ad_id: 'Campaign A', redemption_count: 245, sales_impact: 12500 },
-        { ad_id: 'Campaign B', redemption_count: 189, sales_impact: 9500 },
-        { ad_id: 'Campaign C', redemption_count: 328, sales_impact: 15800 },
-        { ad_id: 'Campaign D', redemption_count: 156, sales_impact: 7200 }
-      ];
+      return data || [];
     },
   });
 
   if (isLoadingPerformance || isLoadingDevices || isLoadingDiscounts) {
     return (
-      <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
+      <div className="min-h-screen bg-gradient-to-br from-background to-purple-light/10 pt-20 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple"></div>
@@ -93,28 +106,33 @@ const Analytics = () => {
         />
 
         <div className="grid gap-6 md:grid-cols-2">
-          <PerformanceChart data={performanceData} />
-          <DeviceDistribution data={deviceStats} />
+          <PerformanceChart data={performanceData || []} />
+          <DeviceDistribution data={deviceStats || []} />
         </div>
 
-        <DiscountPerformance data={discountData} />
+        <DiscountPerformance data={discountData || []} />
       </div>
     </div>
   );
 };
 
-const generateDemoData = (days: number) => {
+const generateDemoPerformanceData = (days: number) => {
   const data = [];
   const now = new Date();
   
   for (let i = days - 1; i >= 0; i--) {
     const date = subDays(now, i);
+    const baseImpressions = 1000 + Math.random() * 2000;
+    const clicks = Math.floor(baseImpressions * (0.15 + Math.random() * 0.1));
+    const conversions = Math.floor(clicks * (0.2 + Math.random() * 0.1));
+    const revenue = conversions * (50 + Math.random() * 30);
+    
     data.push({
       date: date.toISOString(),
-      impressions: Math.floor(Math.random() * 1000) + 500,
-      clicks: Math.floor(Math.random() * 200) + 50,
-      conversions: Math.floor(Math.random() * 50) + 10,
-      revenue: Math.floor(Math.random() * 1000) + 200,
+      impressions: Math.floor(baseImpressions),
+      clicks,
+      conversions,
+      revenue: Math.floor(revenue),
     });
   }
   
