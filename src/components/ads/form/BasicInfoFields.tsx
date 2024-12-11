@@ -1,4 +1,4 @@
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Control } from "react-hook-form";
@@ -21,7 +21,11 @@ export const BasicInfoFields = ({ control }: BasicInfoFieldsProps) => {
               <span className="text-red-500">*</span>
             </FormLabel>
             <FormControl>
-              <Input placeholder="e.g., Summer Sale 2024" {...field} />
+              <Input 
+                placeholder="e.g., Summer Sale 2024" 
+                className="focus:ring-2 focus:ring-primary/20 transition-all"
+                {...field} 
+              />
             </FormControl>
             <FormMessage className="text-xs" />
           </FormItem>
@@ -40,7 +44,7 @@ export const BasicInfoFields = ({ control }: BasicInfoFieldsProps) => {
               </FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="focus:ring-2 focus:ring-primary/20 transition-all">
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                 </FormControl>
@@ -67,7 +71,7 @@ export const BasicInfoFields = ({ control }: BasicInfoFieldsProps) => {
               </FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="focus:ring-2 focus:ring-primary/20 transition-all">
                     <SelectValue placeholder="Select placement" />
                   </SelectTrigger>
                 </FormControl>

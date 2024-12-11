@@ -23,7 +23,7 @@ export const CreativeFields = ({ control }: CreativeFieldsProps) => {
             <FormControl>
               <Textarea 
                 placeholder="Enter your ad content or description" 
-                className="resize-none h-24"
+                className="resize-none h-24 focus:ring-2 focus:ring-primary/20 transition-all"
                 {...field} 
               />
             </FormControl>
@@ -41,7 +41,7 @@ export const CreativeFields = ({ control }: CreativeFieldsProps) => {
             <FormControl>
               <Textarea 
                 placeholder="Custom HTML content (optional)" 
-                className="resize-none h-24 font-mono text-sm"
+                className="resize-none h-24 font-mono text-sm focus:ring-2 focus:ring-primary/20 transition-all"
                 {...field} 
               />
             </FormControl>
@@ -65,7 +65,10 @@ export const CreativeFields = ({ control }: CreativeFieldsProps) => {
                     const file = e.target.files?.[0];
                     if (file) onChange(file);
                   }}
-                  className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-primary/10 hover:file:bg-primary/20"
+                  className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 
+                    file:text-sm file:font-medium file:bg-primary/10 hover:file:bg-primary/20 
+                    focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer
+                    border-2 hover:border-primary/20"
                   {...field}
                 />
               </FormControl>
@@ -91,7 +94,10 @@ export const CreativeFields = ({ control }: CreativeFieldsProps) => {
                     const file = e.target.files?.[0];
                     if (file) onChange(file);
                   }}
-                  className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-primary/10 hover:file:bg-primary/20"
+                  className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 
+                    file:text-sm file:font-medium file:bg-primary/10 hover:file:bg-primary/20 
+                    focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer
+                    border-2 hover:border-primary/20"
                   {...field}
                 />
               </FormControl>
@@ -111,7 +117,11 @@ export const CreativeFields = ({ control }: CreativeFieldsProps) => {
           <FormItem>
             <FormLabel>Call to Action</FormLabel>
             <FormControl>
-              <Input placeholder="e.g., Learn More, Shop Now" {...field} />
+              <Input 
+                placeholder="e.g., Learn More, Shop Now" 
+                className="focus:ring-2 focus:ring-primary/20 transition-all"
+                {...field} 
+              />
             </FormControl>
             <FormMessage className="text-xs" />
           </FormItem>
