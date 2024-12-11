@@ -29,7 +29,7 @@ const AdminsList = () => {
         .from('profiles')
         .select(`
           *,
-          sales_agents(
+          sales_agents (
             commission_rate,
             total_sales,
             total_commission
