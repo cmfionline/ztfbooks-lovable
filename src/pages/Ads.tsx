@@ -77,7 +77,7 @@ const Ads = () => {
       toast({
         title: "Success",
         description: "The ad has been successfully deleted.",
-        icon: <CheckCircle className="h-4 w-4 text-green-500" />,
+        variant: "default",
       });
       refetch();
     } catch (error) {
@@ -96,15 +96,15 @@ const Ads = () => {
     toast({
       title: "Ad Created Successfully",
       description: "Your new advertisement has been created and is now live.",
-      icon: <CheckCircle className="h-4 w-4 text-green-500" />,
+      variant: "default",
     });
   };
 
   return (
-    <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-primary">Advertisements</h1>
+    <div className="page-container">
+      <div className="page-content">
+        <div className="page-header">
+          <h1 className="page-title">Advertisements</h1>
           <div className="flex gap-4">
             <div className="flex items-center bg-background border rounded-lg">
               <Button
@@ -116,7 +116,7 @@ const Ads = () => {
                   viewMode === 'grid' && "bg-purple hover:bg-purple/90 text-white"
                 )}
               >
-                <Grid className="h-4 w-4" />
+                <Grid className="icon" />
               </Button>
               <Button
                 variant={viewMode === 'list' ? 'default' : 'ghost'}
@@ -127,32 +127,32 @@ const Ads = () => {
                   viewMode === 'list' && "bg-purple hover:bg-purple/90 text-white"
                 )}
               >
-                <List className="h-4 w-4" />
+                <List className="icon" />
               </Button>
             </div>
             <Button 
               onClick={() => setShowForm(!showForm)}
-              className="bg-accent hover:bg-accent/90 text-primary font-medium focus:ring-2 focus:ring-accent/50"
+              className="btn btn-primary"
             >
-              <PlusCircle className="mr-2 h-4 w-4" />
+              <PlusCircle className="icon mr-2" />
               {showForm ? 'Hide Form' : 'New Ad'}
             </Button>
           </div>
         </div>
 
         <Tabs defaultValue="ads" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="ads">Ads</TabsTrigger>
-            <TabsTrigger value="types">Ad Types</TabsTrigger>
+          <TabsList className="tabs-list">
+            <TabsTrigger value="ads" className="tab">Ads</TabsTrigger>
+            <TabsTrigger value="types" className="tab">Ad Types</TabsTrigger>
           </TabsList>
 
           <TabsContent value="ads" className="space-y-4">
             {showForm && (
-              <Card className="mb-8">
-                <CardHeader>
+              <Card className="card">
+                <CardHeader className="card-header">
                   <CardTitle>Create New Advertisement</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="card-content">
                   <AdForm onSuccess={handleAdCreated} />
                 </CardContent>
               </Card>
@@ -160,7 +160,7 @@ const Ads = () => {
 
             {isLoading ? (
               <div className="flex justify-center items-center h-32">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple"></div>
+                <div className="loading w-8 h-8 border-b-2 border-purple rounded-full"></div>
               </div>
             ) : (
               <AdsList 

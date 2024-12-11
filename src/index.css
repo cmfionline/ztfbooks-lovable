@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './styles/global.css';
+
 @layer base {
   :root {
     --background: 60 33% 99%;
