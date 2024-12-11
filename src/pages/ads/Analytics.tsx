@@ -42,9 +42,8 @@ const Analytics = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('ad_analytics')
-        .select('device_type, count(*)')
-        .not('device_type', 'is', null)
-        .group('device_type');
+        .select('device_type, count')
+        .not('device_type', 'is', null);
 
       if (error) throw error;
       return data;

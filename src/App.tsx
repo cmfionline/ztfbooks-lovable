@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Navigation } from "./components/Navigation";
-import { Sidebar } from "./components/Sidebar";
-import { Footer } from "./components/Footer";
+import Navigation from "./components/Navigation";
+import Sidebar from "./components/Sidebar";
+import Footer from "./components/Footer";
 import Index from "./pages/Index";
 import Books from "./pages/Books";
 import Ads from "./pages/Ads";
