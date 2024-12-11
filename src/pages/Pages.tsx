@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, Routes, Route, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,6 +15,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Database } from "@/integrations/supabase/types";
+import AddPage from "@/components/pages/AddPage";
+import EditPage from "@/components/pages/EditPage";
 
 type Page = Database['public']['Tables']['pages']['Row'];
 
@@ -124,9 +125,8 @@ const Pages = () => {
   return (
     <Routes>
       <Route path="/" element={<PagesListing />} />
-      <Route path="/about" element={<h1>About Us</h1>} />
-      <Route path="/privacy" element={<h1>Privacy Policy</h1>} />
-      <Route path="/terms" element={<h1>Terms of Service</h1>} />
+      <Route path="/add" element={<AddPage />} />
+      <Route path="/:id/edit" element={<EditPage />} />
     </Routes>
   );
 };
