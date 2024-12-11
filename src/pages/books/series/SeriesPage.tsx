@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -14,9 +15,11 @@ import {
 } from "@/components/ui/table";
 import { format, isValid, parseISO } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { SearchInput } from "@/components/ui/search-input";
 
 const SeriesPage = () => {
   const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: seriesData, isLoading, refetch } = useQuery({
     queryKey: ["series"],
@@ -78,6 +81,12 @@ const SeriesPage = () => {
     }
   };
 
+  const filteredSeries = seriesData?.filter(series => 
+    series.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    series.languages?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    series.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
@@ -90,6 +99,15 @@ const SeriesPage = () => {
             </Button>
           </Link>
         </div>
+
+        <div className="mb-6">
+          <SearchInput
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Search by name, language, or description..."
+          />
+        </div>
+
         <Card className="p-6">
           {isLoading ? (
             <div className="text-center py-4">Loading...</div>
@@ -104,7 +122,7 @@ const SeriesPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {seriesData?.map((series) => (
+                {filteredSeries?.map((series) => (
                   <TableRow key={series.id}>
                     <TableCell className="font-medium">{series.name}</TableCell>
                     <TableCell>{series.languages?.name || "N/A"}</TableCell>
