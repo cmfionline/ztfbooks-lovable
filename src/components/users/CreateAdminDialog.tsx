@@ -31,17 +31,19 @@ const CreateAdminDialog = ({ open, onOpenChange }: CreateAdminDialogProps) => {
       // First check if the user exists in auth
       const { data: { users }, error: getUserError } = await supabase.auth.admin.listUsers({
         page: 1,
-        perPage: 1,
-        query: values.email
+        perPage: 1
       });
 
       if (getUserError) throw getUserError;
 
       let userId;
       
-      if (users && users.length > 0) {
+      // Filter users by email manually since we can't query by email
+      const existingUser = users?.find(user => user.email === values.email);
+      
+      if (existingUser) {
         // User exists in auth
-        userId = users[0].id;
+        userId = existingUser.id;
         
         // Update their profile
         const { error: updateError } = await supabase
