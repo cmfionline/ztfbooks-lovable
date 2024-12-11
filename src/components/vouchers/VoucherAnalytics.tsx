@@ -23,17 +23,37 @@ import {
   Legend,
 } from "recharts";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+// Modern color palette
+const COLORS = ["#8B5CF6", "#D946EF", "#F97316", "#0EA5E9"];
 
-type VoucherTypeCount = {
-  type: string;
-  count: number;
-}
+// Demo data for development and testing
+const DEMO_MODE = true;
+
+const demoData = {
+  total: 1250,
+  redeemed: 875,
+  revenue: 43750,
+  salesAgentPerformance: [
+    { profiles: { full_name: "John Smith" }, total_sales: 15000 },
+    { profiles: { full_name: "Emma Wilson" }, total_sales: 12500 },
+    { profiles: { full_name: "Michael Brown" }, total_sales: 10000 },
+    { profiles: { full_name: "Sarah Davis" }, total_sales: 8500 },
+    { profiles: { full_name: "James Johnson" }, total_sales: 7000 },
+  ],
+  voucherTypes: [
+    { name: "Standard", value: 450 },
+    { name: "Premium", value: 300 },
+    { name: "Student", value: 280 },
+    { name: "Enterprise", value: 220 },
+  ],
+};
 
 export const VoucherAnalytics = () => {
   const { data: voucherStats } = useQuery({
     queryKey: ["voucher-stats"],
     queryFn: async () => {
+      if (DEMO_MODE) return demoData;
+
       const { data: totalVouchers } = await supabase
         .from("vouchers")
         .select("*", { count: "exact" });
@@ -78,26 +98,26 @@ export const VoucherAnalytics = () => {
   });
 
   return (
-    <div className="space-y-8">
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
+    <div className="space-y-8 p-6 bg-gradient-to-br from-purple-50 to-white">
+      <div className="grid gap-6 md:grid-cols-3">
+        <Card className="bg-white/50 backdrop-blur-sm border border-purple-100 shadow-lg hover:shadow-xl transition-shadow">
           <CardHeader>
-            <CardTitle>Total Vouchers</CardTitle>
+            <CardTitle className="text-purple-800">Total Vouchers</CardTitle>
             <CardDescription>Number of vouchers created</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{voucherStats?.total || 0}</div>
+            <div className="text-4xl font-bold text-purple-600">{voucherStats?.total || 0}</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white/50 backdrop-blur-sm border border-purple-100 shadow-lg hover:shadow-xl transition-shadow">
           <CardHeader>
-            <CardTitle>Redeemed Vouchers</CardTitle>
+            <CardTitle className="text-purple-800">Redeemed Vouchers</CardTitle>
             <CardDescription>Number of vouchers used</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{voucherStats?.redeemed || 0}</div>
-            <div className="text-sm text-muted-foreground">
+            <div className="text-4xl font-bold text-purple-600">{voucherStats?.redeemed || 0}</div>
+            <div className="text-sm text-purple-500 mt-2">
               {voucherStats?.total ? 
                 `${((voucherStats.redeemed / voucherStats.total) * 100).toFixed(1)}% redemption rate` 
                 : '0% redemption rate'}
@@ -105,16 +125,16 @@ export const VoucherAnalytics = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white/50 backdrop-blur-sm border border-purple-100 shadow-lg hover:shadow-xl transition-shadow">
           <CardHeader>
-            <CardTitle>Total Revenue</CardTitle>
+            <CardTitle className="text-purple-800">Total Revenue</CardTitle>
             <CardDescription>From redeemed vouchers</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-4xl font-bold text-purple-600">
               ${voucherStats?.revenue.toFixed(2) || "0.00"}
             </div>
-            <div className="text-sm text-muted-foreground">
+            <div className="text-sm text-purple-500 mt-2">
               ${voucherStats?.redeemed ? 
                 (voucherStats.revenue / voucherStats.redeemed).toFixed(2) 
                 : "0.00"} avg. per voucher
@@ -123,10 +143,10 @@ export const VoucherAnalytics = () => {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card>
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card className="bg-white/50 backdrop-blur-sm border border-purple-100 shadow-lg">
           <CardHeader>
-            <CardTitle>Top Performing Sales Agents</CardTitle>
+            <CardTitle className="text-purple-800">Top Performing Sales Agents</CardTitle>
             <CardDescription>Based on total sales volume</CardDescription>
           </CardHeader>
           <CardContent>
@@ -136,26 +156,37 @@ export const VoucherAnalytics = () => {
                   data={voucherStats?.salesAgentPerformance}
                   margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E5DEFF" />
                   <XAxis 
                     dataKey="profiles.full_name"
                     tick={{ fontSize: 12 }}
                     interval={0}
                     angle={-45}
                     textAnchor="end"
+                    stroke="#8B5CF6"
                   />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="total_sales" fill="#8884d8" />
+                  <YAxis stroke="#8B5CF6" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                      border: '1px solid #E5DEFF',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Bar 
+                    dataKey="total_sales" 
+                    fill="#8B5CF6"
+                    radius={[4, 4, 0, 0]}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white/50 backdrop-blur-sm border border-purple-100 shadow-lg">
           <CardHeader>
-            <CardTitle>Voucher Types Distribution</CardTitle>
+            <CardTitle className="text-purple-800">Voucher Types Distribution</CardTitle>
             <CardDescription>Breakdown by voucher type</CardDescription>
           </CardHeader>
           <CardContent>
@@ -176,7 +207,13 @@ export const VoucherAnalytics = () => {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                      border: '1px solid #E5DEFF',
+                      borderRadius: '8px'
+                    }}
+                  />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
