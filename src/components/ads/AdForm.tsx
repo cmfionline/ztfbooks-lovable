@@ -89,10 +89,13 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
         video_url = publicUrl;
       }
 
+      // Remove file fields before sending to Supabase
+      const { image_file, video_file, ...adData } = values;
+
       const { error } = await supabase
         .from('ads')
         .insert([{
-          ...values,
+          ...adData,
           image_url,
           video_url,
           discount_strategy_id: values.discount_strategy_id || null,
