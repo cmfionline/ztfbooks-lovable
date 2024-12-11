@@ -1,9 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Eye, Settings, Trash } from "lucide-react";
-import { format } from "date-fns";
+import { Eye, Settings, Trash, Bell } from "lucide-react";
+import { format, isWithinDays } from "date-fns";
 import { PriceManagement } from "./pricing/PriceManagement";
 import { DiscountAnalytics } from "./analytics/DiscountAnalytics";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface AdsListProps {
   ads: any[];
@@ -12,6 +14,11 @@ interface AdsListProps {
 }
 
 export const AdsList = ({ ads, viewMode, onDeleteAd }: AdsListProps) => {
+  const isDiscountExpiringSoon = (endDate: string) => {
+    if (!endDate) return false;
+    return isWithinDays(new Date(endDate), new Date(), 3);
+  };
+
   if (!ads?.length) {
     return (
       <div className="text-center py-8 text-muted-foreground">
@@ -26,7 +33,15 @@ export const AdsList = ({ ads, viewMode, onDeleteAd }: AdsListProps) => {
         <Card key={ad.id} className="hover:shadow-lg transition-shadow">
           <CardHeader>
             <CardTitle className="flex justify-between items-center">
-              <span>{ad.name}</span>
+              <div className="flex items-center gap-2">
+                <span>{ad.name}</span>
+                {ad.discount_type && isDiscountExpiringSoon(ad.discount_end_date) && (
+                  <Badge variant="destructive" className="animate-pulse">
+                    <Bell className="h-3 w-3 mr-1" />
+                    Expires Soon
+                  </Badge>
+                )}
+              </div>
               <div className="flex gap-2">
                 <Button 
                   variant="ghost" 
@@ -79,7 +94,10 @@ export const AdsList = ({ ads, viewMode, onDeleteAd }: AdsListProps) => {
                     )}
                   </>
                 )}
-                <p className="text-sm text-muted-foreground">
+                <p className={cn(
+                  "text-sm",
+                  isDiscountExpiringSoon(ad.end_date) ? "text-red-500 font-medium" : "text-muted-foreground"
+                )}>
                   Duration: {format(new Date(ad.start_date), 'PP')} - {format(new Date(ad.end_date), 'PP')}
                 </p>
               </div>
@@ -98,7 +116,15 @@ export const AdsList = ({ ads, viewMode, onDeleteAd }: AdsListProps) => {
         <Card key={ad.id} className="hover:shadow-lg transition-shadow">
           <CardContent className="flex items-center justify-between p-4">
             <div>
-              <h3 className="font-semibold">{ad.name}</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold">{ad.name}</h3>
+                {ad.discount_type && isDiscountExpiringSoon(ad.discount_end_date) && (
+                  <Badge variant="destructive" className="animate-pulse">
+                    <Bell className="h-3 w-3 mr-1" />
+                    Expires Soon
+                  </Badge>
+                )}
+              </div>
               <p className="text-sm text-muted-foreground">
                 {ad.type} • {ad.placement} • {ad.is_active ? "Active" : "Inactive"}
               </p>
