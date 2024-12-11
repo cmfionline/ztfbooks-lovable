@@ -20,7 +20,29 @@ const Ads = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('ads')
-        .select('*')
+        .select(`
+          id,
+          name,
+          type,
+          placement,
+          content,
+          html_content,
+          start_date,
+          end_date,
+          cta_text,
+          discount_strategy_id,
+          image_url,
+          video_url,
+          is_active,
+          target_audience,
+          discount_type,
+          discount_value,
+          min_purchase_amount,
+          min_books_count,
+          is_stackable,
+          created_at,
+          updated_at
+        `)
         .order('created_at', { ascending: false });
 
       if (error) {
