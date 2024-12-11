@@ -568,13 +568,45 @@ export type Database = {
         }
         Relationships: []
       }
+      discount_usage: {
+        Row: {
+          discount_id: string
+          id: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          discount_id: string
+          id?: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          discount_id?: string
+          id?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discount_usage_discount_id_fkey"
+            columns: ["discount_id"]
+            isOneToOne: false
+            referencedRelation: "discounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       discounts: {
         Row: {
           created_at: string
+          current_total_uses: number | null
           end_date: string
           id: string
           is_active: boolean | null
           is_stackable: boolean | null
+          max_total_uses: number | null
+          max_uses_per_user: number | null
           min_books_count: number | null
           min_purchase_amount: number | null
           name: string
@@ -585,10 +617,13 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          current_total_uses?: number | null
           end_date: string
           id?: string
           is_active?: boolean | null
           is_stackable?: boolean | null
+          max_total_uses?: number | null
+          max_uses_per_user?: number | null
           min_books_count?: number | null
           min_purchase_amount?: number | null
           name: string
@@ -599,10 +634,13 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          current_total_uses?: number | null
           end_date?: string
           id?: string
           is_active?: boolean | null
           is_stackable?: boolean | null
+          max_total_uses?: number | null
+          max_uses_per_user?: number | null
           min_books_count?: number | null
           min_purchase_amount?: number | null
           name?: string

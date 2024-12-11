@@ -60,6 +60,8 @@ export const adSchema = z.object({
   min_purchase_amount: z.number().min(0).optional(),
   min_books_count: z.number().int().min(0).optional(),
   is_stackable: z.boolean().default(false),
+  max_uses_per_user: z.number().int().min(1).optional(),
+  max_total_uses: z.number().int().min(1).optional(),
   discount_start_date: z.string()
     .min(1, "Discount start date is required when applying a discount")
     .refine((date: string) => new Date(date) >= new Date(), {
