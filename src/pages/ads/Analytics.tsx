@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { MetricsCards } from "@/components/ads/analytics/MetricsCards";
 import { PerformanceChart } from "@/components/ads/analytics/PerformanceChart";
 import { DeviceDistribution } from "@/components/ads/analytics/DeviceDistribution";
@@ -30,11 +30,15 @@ const Analytics = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('ad_analytics')
-        .select('device_type, count')
-        .not('device_type', 'is', null);
+        .select('device_type, count(*)')
+        .not('device_type', 'is', null)
+        .groupBy('device_type');
 
       if (error) throw error;
-      return data;
+      return data.map(item => ({
+        device_type: item.device_type,
+        count: parseInt(item.count)
+      }));
     },
   });
 
