@@ -49,7 +49,7 @@ const AdminsList = () => {
         <div className="flex items-center gap-2">
           <Button 
             onClick={() => setIsCreateDialogOpen(true)}
-            className="shadow-sm transition-all duration-200 hover:shadow-md"
+            className="bg-accent text-primary hover:bg-accent/90 shadow-sm transition-all duration-200 hover:shadow-md"
           >
             <UserPlus className="w-4 h-4 mr-2" />
             Add Admin
