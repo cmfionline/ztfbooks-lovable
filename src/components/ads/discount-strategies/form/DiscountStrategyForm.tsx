@@ -7,16 +7,18 @@ import { toast } from "@/hooks/use-toast";
 import { DiscountStrategyBasicInfo } from "./DiscountStrategyBasicInfo";
 import { DiscountStrategyRules } from "./DiscountStrategyRules";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { discountStrategySchema, type DiscountStrategyFormValues } from "../schema";
 import { addDays } from "date-fns";
 import { DiscountDateFields } from "../../form/discount/DiscountDateFields";
 
 interface DiscountStrategyFormProps {
   onSuccess: () => void;
+  onCancel: () => void;
+  editingStrategy?: any;
 }
 
-export const DiscountStrategyForm = ({ onSuccess }: DiscountStrategyFormProps) => {
+export const DiscountStrategyForm = ({ onSuccess, onCancel, editingStrategy }: DiscountStrategyFormProps) => {
   const tomorrow = addDays(new Date(), 1);
   const fiveDaysLater = addDays(tomorrow, 5);
 
@@ -69,8 +71,22 @@ export const DiscountStrategyForm = ({ onSuccess }: DiscountStrategyFormProps) =
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <Card className="bg-white shadow-sm">
           <CardContent className="grid gap-6 p-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-medium text-gray-900">
+                {editingStrategy ? 'Edit' : 'Create'} Discount Strategy
+              </h3>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={onCancel}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900">Basic Information</h3>
               <DiscountStrategyBasicInfo control={form.control} />
             </div>
             
@@ -87,7 +103,15 @@ export const DiscountStrategyForm = ({ onSuccess }: DiscountStrategyFormProps) =
               />
             </div>
 
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-3">
+              <Button 
+                type="button"
+                variant="outline"
+                onClick={onCancel}
+                className="px-4"
+              >
+                Cancel
+              </Button>
               <Button 
                 type="submit"
                 className="min-w-[120px] bg-purple hover:bg-purple/90 text-white focus:ring-2 focus:ring-purple/50"
@@ -96,10 +120,10 @@ export const DiscountStrategyForm = ({ onSuccess }: DiscountStrategyFormProps) =
                 {form.formState.isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating...
+                    {editingStrategy ? 'Updating...' : 'Creating...'}
                   </>
                 ) : (
-                  'Create Strategy'
+                  editingStrategy ? 'Update Strategy' : 'Create Strategy'
                 )}
               </Button>
             </div>
