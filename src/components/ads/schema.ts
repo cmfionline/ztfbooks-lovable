@@ -33,7 +33,7 @@ export const adSchema = z.object({
     }),
   end_date: z.string()
     .min(1, "End date is required")
-    .superRefine((date, ctx) => {
+    .superRefine((date, ctx: z.RefinementCtx & { parent: any }) => {
       type ParentInput = { start_date?: string; discount_start_date?: string };
       const parent = ctx.parent as ParentInput;
       const startDate = ctx.path.includes('discount') 
@@ -68,7 +68,7 @@ export const adSchema = z.object({
     .optional(),
   discount_end_date: z.string()
     .min(1, "Discount end date is required when applying a discount")
-    .superRefine((date, ctx) => {
+    .superRefine((date, ctx: z.RefinementCtx & { parent: any }) => {
       type ParentInput = { discount_start_date?: string };
       const parent = ctx.parent as ParentInput;
       const startDate = parent?.discount_start_date;
