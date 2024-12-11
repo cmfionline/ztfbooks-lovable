@@ -28,31 +28,52 @@ const CreateAdminDialog = ({ open, onOpenChange }: CreateAdminDialogProps) => {
   const onSubmit = async (values: any) => {
     setIsLoading(true);
     try {
-      // Create user in Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: values.email,
-        password: Math.random().toString(36).slice(-8),
-        options: {
-          data: {
-            full_name: values.fullName,
-          }
-        }
-      });
-
-      if (authError) throw authError;
-
-      // Update profile with role and location
-      const { error: profileError } = await supabase
+      // First check if the user already exists
+      const { data: existingUser } = await supabase
         .from('profiles')
-        .update({
-          role: values.role,
-          location: values.location
-        })
-        .eq('id', authData.user!.id);
+        .select('id')
+        .eq('id', values.email)
+        .single();
 
-      if (profileError) throw profileError;
+      if (existingUser) {
+        // If user exists, just update their role
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({
+            role: values.role,
+            location: values.location
+          })
+          .eq('id', existingUser.id);
 
-      toast.success("Admin created successfully");
+        if (updateError) throw updateError;
+        toast.success("Admin role assigned successfully");
+      } else {
+        // Create new user if they don't exist
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email: values.email,
+          password: Math.random().toString(36).slice(-8),
+          options: {
+            data: {
+              full_name: values.fullName,
+            }
+          }
+        });
+
+        if (authError) throw authError;
+
+        // Update profile with role and location
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({
+            role: values.role,
+            location: values.location
+          })
+          .eq('id', authData.user!.id);
+
+        if (profileError) throw profileError;
+        toast.success("Admin created successfully");
+      }
+
       onOpenChange(false);
       form.reset();
     } catch (error: any) {
