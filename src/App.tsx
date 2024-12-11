@@ -1,120 +1,50 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Navigation } from "./components/Navigation";
+import { Sidebar } from "./components/Sidebar";
+import { Footer } from "./components/Footer";
 import Index from "./pages/Index";
 import Books from "./pages/Books";
+import Ads from "./pages/Ads";
+import Analytics from "./pages/ads/Analytics";
+import DiscountStrategies from "./pages/ads/DiscountStrategies";
 import Payments from "./pages/Payments";
-import Users from "./pages/Users";
 import Statistics from "./pages/Statistics";
 import Pages from "./pages/Pages";
-import Ads from "./pages/Ads";
 import Reviews from "./pages/Reviews";
 import Faqs from "./pages/Faqs";
-import Settings from "./pages/Settings";
 import Notifications from "./pages/Notifications";
-import SubscriptionPlans from "./pages/SubscriptionPlans";
+import Settings from "./pages/Settings";
+import Users from "./pages/Users";
 import Vouchers from "./pages/Vouchers";
-import Navigation from "./components/Navigation";
-import Sidebar from "./components/Sidebar";
-import DiscountStrategies from "./pages/ads/DiscountStrategies";
 
-const queryClient = new QueryClient();
-
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const App = () => {
   return (
-    <div className="flex min-h-screen bg-background">
-      <Sidebar />
-      <div className="flex-1 ml-64">
+    <Router>
+      <div className="min-h-screen bg-background">
         <Navigation />
-        {children}
+        <Sidebar />
+        <main className="pl-64">
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/books/*" element={<Books />} />
+            <Route path="/ads" element={<Ads />} />
+            <Route path="/ads/analytics" element={<Analytics />} />
+            <Route path="/ads/discount-strategies" element={<DiscountStrategies />} />
+            <Route path="/payments/*" element={<Payments />} />
+            <Route path="/statistics" element={<Statistics />} />
+            <Route path="/pages" element={<Pages />} />
+            <Route path="/reviews" element={<Reviews />} />
+            <Route path="/faqs" element={<Faqs />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/vouchers" element={<Vouchers />} />
+          </Routes>
+        </main>
+        <Footer />
       </div>
-    </div>
+    </Router>
   );
 };
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={
-            <Layout>
-              <Index />
-            </Layout>
-          } />
-          <Route path="/books/*" element={
-            <Layout>
-              <Books />
-            </Layout>
-          } />
-          <Route path="/payments/*" element={
-            <Layout>
-              <Payments />
-            </Layout>
-          } />
-          <Route path="/vouchers/*" element={
-            <Layout>
-              <Vouchers />
-            </Layout>
-          } />
-          <Route path="/users/*" element={
-            <Layout>
-              <Users />
-            </Layout>
-          } />
-          <Route path="/statistics" element={
-            <Layout>
-              <Statistics />
-            </Layout>
-          } />
-          <Route path="/pages/*" element={
-            <Layout>
-              <Pages />
-            </Layout>
-          } />
-          <Route path="/ads" element={
-            <Layout>
-              <Ads />
-            </Layout>
-          } />
-          <Route path="/ads/discount-strategies" element={
-            <Layout>
-              <DiscountStrategies />
-            </Layout>
-          } />
-          <Route path="/reviews" element={
-            <Layout>
-              <Reviews />
-            </Layout>
-          } />
-          <Route path="/faqs" element={
-            <Layout>
-              <Faqs />
-            </Layout>
-          } />
-          <Route path="/settings/*" element={
-            <Layout>
-              <Settings />
-            </Layout>
-          } />
-          <Route path="/notifications" element={
-            <Layout>
-              <Notifications />
-            </Layout>
-          } />
-          <Route path="/subscription-plans" element={
-            <Layout>
-              <SubscriptionPlans />
-            </Layout>
-          } />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
 
 export default App;
