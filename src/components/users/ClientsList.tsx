@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { User, Ticket, Eye, Download, Printer } from "lucide-react";
+import { User, Eye } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import ClientVouchersList from "./ClientVouchersList";
@@ -23,29 +23,39 @@ const ClientsList = () => {
   const { data: clients, isLoading } = useQuery({
     queryKey: ['clients'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // First, fetch all clients
+      const { data: clientsData, error: clientsError } = await supabase
         .from('profiles')
-        .select(`
-          *,
-          vouchers:vouchers(
-            id,
-            code,
-            type,
-            redeemed,
-            total_amount
-          )
-        `)
+        .select('*')
         .eq('role', 'client');
       
-      if (error) {
+      if (clientsError) {
         toast({
           variant: "destructive",
           title: "Error fetching clients",
-          description: error.message
+          description: clientsError.message
         });
-        throw error;
+        throw clientsError;
       }
-      return data;
+
+      // Then, for each client, fetch their voucher count
+      const clientsWithVoucherCount = await Promise.all(
+        clientsData.map(async (client) => {
+          const { count, error: vouchersError } = await supabase
+            .from('vouchers')
+            .select('*', { count: 'exact', head: true })
+            .eq('client_id', client.id);
+          
+          if (vouchersError) {
+            console.error('Error fetching voucher count:', vouchersError);
+            return { ...client, voucherCount: 0 };
+          }
+
+          return { ...client, voucherCount: count || 0 };
+        })
+      );
+
+      return clientsWithVoucherCount;
     }
   });
 
@@ -81,7 +91,7 @@ const ClientsList = () => {
                 {new Date(client.created_at).toLocaleDateString()}
               </TableCell>
               <TableCell>
-                {client.vouchers?.length || 0} vouchers
+                {client.voucherCount} vouchers
               </TableCell>
               <TableCell>
                 <Sheet>
