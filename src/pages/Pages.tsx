@@ -15,14 +15,9 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { Database } from "@/integrations/supabase/types";
 
-interface Page {
-  id: string;
-  title: string;
-  content: string;
-  status: 'active' | 'inactive';
-  order: number;
-}
+type Page = Database['public']['Tables']['pages']['Row'];
 
 const PagesListing = () => {
   const navigate = useNavigate();
@@ -32,9 +27,9 @@ const PagesListing = () => {
     queryKey: ["pages"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("pages")
-        .select("*")
-        .order("order");
+        .from('pages')
+        .select('*')
+        .order('order_index');
 
       if (error) {
         toast({
@@ -45,7 +40,7 @@ const PagesListing = () => {
         return [];
       }
 
-      return data as Page[];
+      return data;
     },
   });
 
@@ -94,7 +89,7 @@ const PagesListing = () => {
                             : 'bg-muted hover:bg-muted/80'
                         }
                       >
-                        {page.status === 'active' ? 'Active' : 'Inactive'}
+                        {page.status}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right space-x-2">

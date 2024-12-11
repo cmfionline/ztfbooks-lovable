@@ -572,6 +572,36 @@ export type Database = {
         }
         Relationships: []
       }
+      pages: {
+        Row: {
+          content: string | null
+          created_at: string
+          id: string
+          order_index: number
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          order_index?: number
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          order_index?: number
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       payment_gateways: {
         Row: {
           config: Json | null
