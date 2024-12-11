@@ -157,17 +157,63 @@ export type Database = {
           },
         ]
       }
+      ad_discount_analytics: {
+        Row: {
+          ad_id: string | null
+          created_at: string | null
+          customer_segment: Json | null
+          id: string
+          redemption_count: number | null
+          roi: number | null
+          sales_impact: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          ad_id?: string | null
+          created_at?: string | null
+          customer_segment?: Json | null
+          id?: string
+          redemption_count?: number | null
+          roi?: number | null
+          sales_impact?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          ad_id?: string | null
+          created_at?: string | null
+          customer_segment?: Json | null
+          id?: string
+          redemption_count?: number | null
+          roi?: number | null
+          sales_impact?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_discount_analytics_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ads: {
         Row: {
           ab_test_group: string | null
           content: string
           created_at: string
           cta_text: string | null
+          discount_type: string | null
+          discount_value: number | null
           end_date: string
           html_content: string | null
           id: string
           image_url: string | null
           is_active: boolean | null
+          is_stackable: boolean | null
+          min_books_count: number | null
+          min_purchase_amount: number | null
           name: string
           placement: Database["public"]["Enums"]["ad_placement"]
           preview_mobile_url: string | null
@@ -183,11 +229,16 @@ export type Database = {
           content: string
           created_at?: string
           cta_text?: string | null
+          discount_type?: string | null
+          discount_value?: number | null
           end_date: string
           html_content?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          is_stackable?: boolean | null
+          min_books_count?: number | null
+          min_purchase_amount?: number | null
           name: string
           placement: Database["public"]["Enums"]["ad_placement"]
           preview_mobile_url?: string | null
@@ -203,11 +254,16 @@ export type Database = {
           content?: string
           created_at?: string
           cta_text?: string | null
+          discount_type?: string | null
+          discount_value?: number | null
           end_date?: string
           html_content?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          is_stackable?: boolean | null
+          min_books_count?: number | null
+          min_purchase_amount?: number | null
           name?: string
           placement?: Database["public"]["Enums"]["ad_placement"]
           preview_mobile_url?: string | null
