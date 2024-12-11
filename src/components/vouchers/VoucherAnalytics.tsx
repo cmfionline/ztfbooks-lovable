@@ -25,6 +25,11 @@ import {
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
+type VoucherTypeCount = {
+  type: string;
+  count: number;
+}
+
 export const VoucherAnalytics = () => {
   const { data: voucherStats } = useQuery({
     queryKey: ["voucher-stats"],
@@ -54,9 +59,9 @@ export const VoucherAnalytics = () => {
         .order("total_sales", { ascending: false })
         .limit(5);
 
-      // Using a raw SQL query for grouping by type
+      // Using our new RPC function for voucher type counts
       const { data: voucherTypes } = await supabase
-        .rpc('get_voucher_type_counts');
+        .rpc<VoucherTypeCount>('get_voucher_type_counts');
 
       const revenue = totalRevenue?.reduce((sum, v) => sum + (v.total_amount || 0), 0) || 0;
 
@@ -67,7 +72,7 @@ export const VoucherAnalytics = () => {
         salesAgentPerformance: salesAgentPerformance || [],
         voucherTypes: voucherTypes?.map(vt => ({
           name: vt.type,
-          value: parseInt(vt.count)
+          value: parseInt(vt.count.toString())
         })) || []
       };
     },

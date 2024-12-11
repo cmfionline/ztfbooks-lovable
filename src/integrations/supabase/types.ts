@@ -975,7 +975,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_voucher_type_counts: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          type: string
+          count: number
+        }[]
+      }
     }
     Enums: {
       ad_placement: "home" | "category" | "checkout" | "series" | "book"
