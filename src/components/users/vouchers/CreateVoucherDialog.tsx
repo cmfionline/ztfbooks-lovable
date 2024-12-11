@@ -1,18 +1,10 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Form } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ClientInfoFields } from "./components/ClientInfoFields";
-import { VoucherTypeSelect } from "./components/VoucherTypeSelect";
-import { BookMultiSelect } from "./components/BookMultiSelect";
-import { SeriesSelectionField } from "@/components/vouchers/components/SeriesSelectionField";
-import { TagSelectionField } from "./components/TagSelectionField";
-import { BookSelectionField } from "./components/BookSelectionField";
-import { VoucherFormFields } from "./components/VoucherFormFields";
+import { VoucherForm } from "./components/VoucherForm";
 
 interface CreateVoucherDialogProps {
   open: boolean;
@@ -140,43 +132,16 @@ const CreateVoucherDialog = ({ open, onOpenChange, clientId }: CreateVoucherDial
         <DialogHeader>
           <DialogTitle>Create New Voucher</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <ClientInfoFields form={form} />
-            <VoucherTypeSelect form={form} />
-            
-            {form.watch("type") === "single_book" && (
-              <BookSelectionField form={form} books={books || []} />
-            )}
-
-            {form.watch("type") === "multiple_books" && (
-              <BookMultiSelect
-                form={form}
-                books={books || []}
-                selectedBooks={selectedBooks}
-                setSelectedBooks={setSelectedBooks}
-              />
-            )}
-
-            {form.watch("type") === "series" && (
-              <SeriesSelectionField form={form} series={series || []} />
-            )}
-
-            {form.watch("type") === "book_tag" && (
-              <TagSelectionField form={form} tags={tags || []} />
-            )}
-
-            <VoucherFormFields form={form} />
-
-            <Button 
-              type="submit" 
-              className="w-full bg-purple hover:bg-purple/90 text-white" 
-              disabled={isLoading}
-            >
-              Create Voucher
-            </Button>
-          </form>
-        </Form>
+        <VoucherForm
+          form={form}
+          onSubmit={onSubmit}
+          isLoading={isLoading}
+          books={books || []}
+          series={series || []}
+          tags={tags || []}
+          selectedBooks={selectedBooks}
+          setSelectedBooks={setSelectedBooks}
+        />
       </DialogContent>
     </Dialog>
   );
