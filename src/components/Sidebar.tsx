@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Menu,
   X,
+  Percent,
 } from "lucide-react";
 import {
   Accordion,
@@ -47,6 +48,16 @@ const Sidebar = () => {
       ],
     },
     {
+      title: "Ads & Discounts",
+      icon: <Percent className="w-4 h-4" />,
+      path: "/ads",
+      submenu: [
+        { title: "All Ads", path: "/ads" },
+        { title: "Discount Strategies", path: "/ads/discount-strategies" },
+        { title: "Analytics", path: "/ads/analytics" },
+      ],
+    },
+    {
       title: "Payment Gateways",
       icon: <CreditCard className="w-4 h-4" />,
       path: "/payments",
@@ -66,11 +77,6 @@ const Sidebar = () => {
       title: "Pages",
       icon: <FileText className="w-4 h-4" />,
       path: "/pages",
-    },
-    {
-      title: "Ads",
-      icon: <PlusCircle className="w-4 h-4" />,
-      path: "/ads",
     },
     {
       title: "Book Reviews",
