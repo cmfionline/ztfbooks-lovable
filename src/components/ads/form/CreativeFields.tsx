@@ -41,12 +41,20 @@ export const CreativeFields = ({ control }: CreativeFieldsProps) => {
 
       <FormField
         control={control}
-        name="image_url"
-        render={({ field }) => (
+        name="image_file"
+        render={({ field: { value, onChange, ...field } }) => (
           <FormItem>
-            <FormLabel>Image URL</FormLabel>
+            <FormLabel>Image</FormLabel>
             <FormControl>
-              <Input type="url" placeholder="https://..." {...field} />
+              <Input 
+                type="file" 
+                accept=".jpg,.jpeg,.png,.webp"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) onChange(file);
+                }}
+                {...field}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -55,12 +63,20 @@ export const CreativeFields = ({ control }: CreativeFieldsProps) => {
 
       <FormField
         control={control}
-        name="video_url"
-        render={({ field }) => (
+        name="video_file"
+        render={({ field: { value, onChange, ...field } }) => (
           <FormItem>
-            <FormLabel>Video URL (Optional)</FormLabel>
+            <FormLabel>Video (Optional)</FormLabel>
             <FormControl>
-              <Input type="url" placeholder="https://..." {...field} />
+              <Input 
+                type="file" 
+                accept=".mp4,.webm"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) onChange(file);
+                }}
+                {...field}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -69,26 +85,12 @@ export const CreativeFields = ({ control }: CreativeFieldsProps) => {
 
       <FormField
         control={control}
-        name="preview_mobile_url"
+        name="cta_text"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Mobile Preview URL</FormLabel>
+            <FormLabel>Call to Action Text</FormLabel>
             <FormControl>
-              <Input type="url" placeholder="https://..." {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={control}
-        name="preview_tablet_url"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Tablet Preview URL</FormLabel>
-            <FormControl>
-              <Input type="url" placeholder="https://..." {...field} />
+              <Input placeholder="Learn More" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

@@ -31,9 +31,68 @@ const CreateAdDialog = ({ open, onOpenChange }: CreateAdDialogProps) => {
   });
 
   const onSubmit = async (values: AdFormValues) => {
+    // Handle file uploads first if they exist
+    let image_url = values.image_url;
+    let video_url = values.video_url;
+
+    if (values.image_file) {
+      const file = values.image_file;
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${crypto.randomUUID()}.${fileExt}`;
+      
+      const { error: uploadError, data } = await supabase.storage
+        .from('ads')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        toast({
+          title: "Error uploading image",
+          description: uploadError.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('ads')
+        .getPublicUrl(filePath);
+
+      image_url = publicUrl;
+    }
+
+    if (values.video_file) {
+      const file = values.video_file;
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${crypto.randomUUID()}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('ads')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        toast({
+          title: "Error uploading video",
+          description: uploadError.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('ads')
+        .getPublicUrl(filePath);
+
+      video_url = publicUrl;
+    }
+
+    // Create ad with file URLs
     const { error } = await supabase
       .from('ads')
-      .insert([values]);
+      .insert([{
+        ...values,
+        image_url,
+        video_url,
+      }]);
 
     if (error) {
       toast({
@@ -61,24 +120,10 @@ const CreateAdDialog = ({ open, onOpenChange }: CreateAdDialogProps) => {
           <DialogTitle>Create New Advertisement</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-lg font-medium">Basic Information</h3>
-                <BasicInfoFields control={form.control} />
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium">Creative Content</h3>
-                <CreativeFields control={form.control} />
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium">Campaign Schedule</h3>
-                <SchedulingFields control={form.control} />
-              </div>
-            </div>
-
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <BasicInfoFields control={form.control} />
+            <CreativeFields control={form.control} />
+            <SchedulingFields control={form.control} />
             <Button type="submit">Create Ad</Button>
           </form>
         </Form>
