@@ -26,7 +26,7 @@ const App = () => {
         <div className="min-h-screen bg-background">
           <Navigation />
           <Sidebar />
-          <main className="pl-64">
+          <main className="transition-all duration-300 md:pl-64">
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/books/*" element={<Books />} />
