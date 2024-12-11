@@ -10,7 +10,10 @@ export const useAdConfigurations = () => {
         .select('name, type, description, status')
         .eq('status', 'active');
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching ad types:', error);
+        return [];
+      }
       return data;
     },
   });
@@ -24,6 +27,7 @@ export const useAdConfigurations = () => {
         .eq('is_active', true);
 
       if (error) {
+        console.error('Error fetching discount strategies:', error);
         // Fallback to hardcoded values if table doesn't exist or error occurs
         return [
           { id: 'percentage', type: 'percentage', name: 'Percentage' },
@@ -38,8 +42,8 @@ export const useAdConfigurations = () => {
   });
 
   return {
-    adTypes,
-    discountStrategies,
+    adTypes: adTypes || [],
+    discountStrategies: discountStrategies || [],
     isLoading: isLoadingAdTypes || isLoadingDiscountStrategies
   };
 };
