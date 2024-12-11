@@ -123,16 +123,17 @@ const CreateVoucher = () => {
                 <FormLabel>Voucher Type</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select voucher type" />
+                    <SelectTrigger className="bg-white border-purple-light focus:border-purple">
+                      <SelectValue placeholder="Select voucher type" className="text-foreground" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
-                    <SelectItem value="single_book">Single Book</SelectItem>
-                    <SelectItem value="series">Book Series</SelectItem>
-                    <SelectItem value="all_books">All Books</SelectItem>
+                  <SelectContent className="bg-white">
+                    <SelectItem value="single_book" className="hover:bg-purple-light/10">Single Book</SelectItem>
+                    <SelectItem value="series" className="hover:bg-purple-light/10">Book Series</SelectItem>
+                    <SelectItem value="all_books" className="hover:bg-purple-light/10">All Books</SelectItem>
                   </SelectContent>
                 </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -146,18 +147,23 @@ const CreateVoucher = () => {
                   <FormLabel>Select Book</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a book" />
+                      <SelectTrigger className="bg-white border-purple-light focus:border-purple">
+                        <SelectValue placeholder="Select a book" className="text-foreground" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       {books?.map((book) => (
-                        <SelectItem key={book.id} value={book.id}>
+                        <SelectItem 
+                          key={book.id} 
+                          value={book.id}
+                          className="hover:bg-purple-light/10"
+                        >
                           {book.title}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -172,11 +178,11 @@ const CreateVoucher = () => {
                   <FormLabel>Select Series</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a series" />
+                      <SelectTrigger className="bg-white border-purple-light focus:border-purple">
+                        <SelectValue placeholder="Select a series" className="text-foreground" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       {series?.map((s) => (
                         <SelectItem key={s.id} value={s.id}>
                           {s.name}
@@ -184,6 +190,7 @@ const CreateVoucher = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage />
                 </FormItem>
               )}
             />
