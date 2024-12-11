@@ -128,17 +128,29 @@ export type Database = {
         Row: {
           ad_id: string
           book_id: string
+          discount_end_date: string | null
           discount_percentage: number | null
+          discount_start_date: string | null
+          discounted_price: number | null
+          original_price: number | null
         }
         Insert: {
           ad_id: string
           book_id: string
+          discount_end_date?: string | null
           discount_percentage?: number | null
+          discount_start_date?: string | null
+          discounted_price?: number | null
+          original_price?: number | null
         }
         Update: {
           ad_id?: string
           book_id?: string
+          discount_end_date?: string | null
           discount_percentage?: number | null
+          discount_start_date?: string | null
+          discounted_price?: number | null
+          original_price?: number | null
         }
         Relationships: [
           {
