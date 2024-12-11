@@ -5,6 +5,8 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { NotifyNewDiscount } from "@/components/notifications/NotifyNewDiscount";
+import { supabase } from "@/lib/supabase";
+import { toast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -15,31 +17,43 @@ const formSchema = z.object({
   })).optional(),
 });
 
-type DiscountStrategyFormProps = {
-  onSubmit: (values: z.infer<typeof formSchema>) => Promise<void>;
+export type DiscountStrategyFormProps = {
+  onSubmit?: (values: z.infer<typeof formSchema>) => Promise<void>;
+  onSuccess?: () => void;
+  onCancel?: () => void;
+  editingStrategy?: any;
 };
 
-export const DiscountStrategyForm = ({ onSubmit }: DiscountStrategyFormProps) => {
+export const DiscountStrategyForm = ({ onSuccess, onCancel, editingStrategy }: DiscountStrategyFormProps) => {
   const [newDiscount, setNewDiscount] = useState<any>(null);
   const [affectedBooks, setAffectedBooks] = useState<string[]>([]);
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      value: 0,
-      type: "fixed",
+      name: editingStrategy?.name || "",
+      value: editingStrategy?.value || 0,
+      type: editingStrategy?.type || "fixed",
       books: [],
     },
   });
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const result = await onSubmit(values);
+      const { data, error } = await supabase
+        .from('discount_strategies')
+        .upsert([{
+          ...values,
+          ...(editingStrategy?.id ? { id: editingStrategy.id } : {})
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
       
       // After successful submission, store the new discount data
       setNewDiscount({
-        id: result.data.id,
+        id: data.id,
         name: values.name,
         value: values.value,
         type: values.type
@@ -48,8 +62,20 @@ export const DiscountStrategyForm = ({ onSubmit }: DiscountStrategyFormProps) =>
       // Store affected book titles
       setAffectedBooks(values.books?.map(book => book.title) || []);
       
+      toast({
+        title: "Success",
+        description: `Discount strategy ${editingStrategy ? 'updated' : 'created'} successfully`,
+      });
+
+      onSuccess?.();
+      
     } catch (error) {
       console.error("Error creating discount:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save discount strategy",
+        variant: "destructive",
+      });
     }
   };
 
@@ -80,6 +106,7 @@ export const DiscountStrategyForm = ({ onSubmit }: DiscountStrategyFormProps) =>
                 <input
                   type="number"
                   {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
                   className="border-purple-light focus:border-purple focus:ring-purple"
                 />
               </FormControl>
@@ -105,8 +132,6 @@ export const DiscountStrategyForm = ({ onSubmit }: DiscountStrategyFormProps) =>
           )}
         />
 
-        {/* Additional fields for selecting books can be added here */}
-
         {newDiscount && (
           <div className="mt-4 flex justify-end">
             <NotifyNewDiscount
@@ -120,11 +145,11 @@ export const DiscountStrategyForm = ({ onSubmit }: DiscountStrategyFormProps) =>
         )}
 
         <div className="flex gap-4">
-          <Button type="button" variant="outline" className="flex-1" onClick={() => { /* handle cancel */ }}>
+          <Button type="button" variant="outline" className="flex-1" onClick={onCancel}>
             Cancel
           </Button>
           <Button type="submit" className="flex-1 bg-purple hover:bg-purple/90 text-white">
-            Create Discount
+            {editingStrategy ? 'Update' : 'Create'} Discount
           </Button>
         </div>
       </form>

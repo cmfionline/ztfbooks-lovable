@@ -5,9 +5,9 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 
 export const Settings = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
@@ -15,11 +15,41 @@ export const Settings = () => {
   const [marketingEmails, setMarketingEmails] = useState(false);
   const { toast } = useToast();
 
+  useEffect(() => {
+    const fetchSettings = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('user_settings')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching settings:', error);
+        return;
+      }
+
+      if (data) {
+        setEmailNotifications(data.email_notifications);
+        setPushNotifications(data.push_notifications);
+        setMarketingEmails(data.marketing_emails);
+      }
+    };
+
+    fetchSettings();
+  }, []);
+
   const handleSaveNotificationSettings = async () => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('No user found');
+
       const { error } = await supabase
         .from('user_settings')
         .upsert({
+          user_id: user.id,
           email_notifications: emailNotifications,
           push_notifications: pushNotifications,
           marketing_emails: marketingEmails,
@@ -32,6 +62,7 @@ export const Settings = () => {
         description: "Your notification preferences have been updated.",
       });
     } catch (error) {
+      console.error('Error saving settings:', error);
       toast({
         title: "Error",
         description: "Failed to save settings. Please try again.",
