@@ -136,26 +136,26 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <Card>
+        <Card className="bg-white shadow-sm">
           <CardContent className="grid gap-6 p-6">
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Basic Information</h3>
+                  <h3 className="text-lg font-medium text-gray-900">Basic Information</h3>
                   <BasicInfoFields control={form.control} />
                 </div>
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Schedule</h3>
+                  <h3 className="text-lg font-medium text-gray-900">Schedule</h3>
                   <SchedulingFields control={form.control} />
                 </div>
               </div>
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Creative Content</h3>
+                  <h3 className="text-lg font-medium text-gray-900">Creative Content</h3>
                   <CreativeFields control={form.control} />
                 </div>
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Discount Settings</h3>
+                  <h3 className="text-lg font-medium text-gray-900">Discount Settings</h3>
                   <DiscountFields control={form.control} watch={form.watch} />
                 </div>
               </div>
@@ -163,7 +163,7 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
             <div className="flex justify-end">
               <Button 
                 type="submit"
-                className="min-w-[120px]"
+                className="min-w-[120px] bg-purple hover:bg-purple/90 text-white focus:ring-2 focus:ring-purple/50"
                 disabled={form.formState.isSubmitting}
               >
                 {form.formState.isSubmitting ? (

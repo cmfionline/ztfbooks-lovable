@@ -20,14 +20,14 @@ export const BasicInfoFields = ({ control }: BasicInfoFieldsProps) => {
         name="name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-1">
+            <FormLabel className="flex items-center gap-1 text-gray-700 font-medium">
               Campaign Name
               <span className="text-red-500">*</span>
             </FormLabel>
             <FormControl>
               <Input 
                 placeholder="e.g., Summer Sale 2024" 
-                className="focus:ring-2 focus:ring-primary/20 transition-all"
+                className="bg-white border-gray-200 focus:border-purple focus:ring-2 focus:ring-purple/20 transition-all"
                 {...field} 
               />
             </FormControl>
@@ -42,7 +42,7 @@ export const BasicInfoFields = ({ control }: BasicInfoFieldsProps) => {
           name="type"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center gap-1">
+              <FormLabel className="flex items-center gap-1 text-gray-700 font-medium">
                 Type
                 <span className="text-red-500">*</span>
               </FormLabel>
@@ -51,13 +51,17 @@ export const BasicInfoFields = ({ control }: BasicInfoFieldsProps) => {
               ) : (
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className="focus:ring-2 focus:ring-primary/20 transition-all">
+                    <SelectTrigger className="bg-white border-gray-200 focus:border-purple focus:ring-2 focus:ring-purple/20 transition-all">
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     {adTypes?.map((type) => (
-                      <SelectItem key={type.type} value={type.type}>
+                      <SelectItem 
+                        key={type.type} 
+                        value={type.type}
+                        className="hover:bg-purple-light/50"
+                      >
                         {type.name}
                       </SelectItem>
                     ))}
@@ -74,22 +78,22 @@ export const BasicInfoFields = ({ control }: BasicInfoFieldsProps) => {
           name="placement"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center gap-1">
+              <FormLabel className="flex items-center gap-1 text-gray-700 font-medium">
                 Placement
                 <span className="text-red-500">*</span>
               </FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger className="focus:ring-2 focus:ring-primary/20 transition-all">
+                  <SelectTrigger className="bg-white border-gray-200 focus:border-purple focus:ring-2 focus:ring-purple/20 transition-all">
                     <SelectValue placeholder="Select placement" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
-                  <SelectItem value="home">Home</SelectItem>
-                  <SelectItem value="category">Category</SelectItem>
-                  <SelectItem value="checkout">Checkout</SelectItem>
-                  <SelectItem value="series">Series</SelectItem>
-                  <SelectItem value="book">Book</SelectItem>
+                <SelectContent className="bg-white">
+                  <SelectItem value="home" className="hover:bg-purple-light/50">Home</SelectItem>
+                  <SelectItem value="category" className="hover:bg-purple-light/50">Category</SelectItem>
+                  <SelectItem value="checkout" className="hover:bg-purple-light/50">Checkout</SelectItem>
+                  <SelectItem value="series" className="hover:bg-purple-light/50">Series</SelectItem>
+                  <SelectItem value="book" className="hover:bg-purple-light/50">Book</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage className="text-xs" />
