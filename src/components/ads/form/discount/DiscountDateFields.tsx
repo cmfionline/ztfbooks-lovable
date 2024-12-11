@@ -24,6 +24,7 @@ export const DiscountDateFields = ({ control }: DiscountDateFieldsProps) => {
                 type="date"
                 className="bg-white border-gray-200 focus:border-purple focus:ring-2 focus:ring-purple/20 transition-all"
                 {...field}
+                value={field.value || ""}
               />
             </FormControl>
             <FormMessage className="text-xs" />
@@ -45,6 +46,7 @@ export const DiscountDateFields = ({ control }: DiscountDateFieldsProps) => {
                 type="date"
                 className="bg-white border-gray-200 focus:border-purple focus:ring-2 focus:ring-purple/20 transition-all"
                 {...field}
+                value={field.value || ""}
               />
             </FormControl>
             <FormMessage className="text-xs" />
