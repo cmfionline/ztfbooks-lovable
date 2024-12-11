@@ -11,12 +11,16 @@ import { DiscountFields } from "./form/DiscountFields";
 import { adSchema, type AdFormValues } from "./schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import { addDays } from "date-fns";
 
 interface AdFormProps {
   onSuccess: () => void;
 }
 
 export const AdForm = ({ onSuccess }: AdFormProps) => {
+  const tomorrow = addDays(new Date(), 1);
+  const nextWeek = addDays(new Date(), 7);
+
   const form = useForm<AdFormValues>({
     resolver: zodResolver(adSchema),
     defaultValues: {
@@ -26,8 +30,11 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
       content: "",
       cta_text: "Learn More",
       is_stackable: false,
-      discount_start_date: "",
-      discount_end_date: "",
+      discount_type: "percentage",
+      start_date: tomorrow.toISOString().split('T')[0],
+      end_date: nextWeek.toISOString().split('T')[0],
+      discount_start_date: tomorrow.toISOString().split('T')[0],
+      discount_end_date: nextWeek.toISOString().split('T')[0],
     },
   });
 
@@ -149,7 +156,7 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
                 </div>
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium">Discount Settings</h3>
-                  <DiscountFields control={form.control} />
+                  <DiscountFields control={form.control} watch={form.watch} />
                 </div>
               </div>
             </div>
