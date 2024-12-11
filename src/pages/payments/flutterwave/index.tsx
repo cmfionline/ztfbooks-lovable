@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, CreditCard } from "lucide-react";
 import { EnableFlutterwaveCard } from "./components/EnableFlutterwaveCard";
 import { TestPaymentCard } from "./components/TestPaymentCard";
 import { ApiConfigCard } from "./components/ApiConfigCard";
@@ -19,40 +19,28 @@ const FlutterwaveSettings = () => {
     queryFn: async () => {
       try {
         console.log('Fetching Flutterwave gateway...');
-        // First, check if the gateway exists
         const { data, error } = await supabase
           .from('payment_gateways')
           .select('*')
-          .eq('type', 'flutterwave')  // Changed to lowercase to match enum
+          .eq('type', 'flutterwave')
           .maybeSingle();
         
-        if (error) {
-          console.error('Error fetching gateway:', error);
-          throw error;
-        }
+        if (error) throw error;
         
-        console.log('Existing gateway data:', data);
-        
-        // If no gateway exists, create it
         if (!data) {
           console.log('No gateway found, creating new one...');
           const { data: newGateway, error: createError } = await supabase
             .from('payment_gateways')
             .insert({
               name: 'Flutterwave',
-              type: 'flutterwave',  // Changed to lowercase to match enum
+              type: 'flutterwave',
               is_active: false,
               config: {}
             })
             .select()
             .single();
 
-          if (createError) {
-            console.error('Error creating gateway:', createError);
-            throw createError;
-          }
-          
-          console.log('New gateway created:', newGateway);
+          if (createError) throw createError;
           return newGateway;
         }
 
@@ -142,16 +130,19 @@ const FlutterwaveSettings = () => {
   if (isLoadingGateway) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">
-        <Loader2 className="w-8 h-8 animate-spin" />
+        <Loader2 className="w-8 h-8 animate-spin text-purple" />
       </div>
     );
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-8">Flutterwave Settings</h1>
+    <div className="p-6 max-w-5xl mx-auto">
+      <div className="flex items-center gap-3 mb-8">
+        <CreditCard className="w-8 h-8 text-purple" />
+        <h1 className="text-2xl font-bold">Flutterwave Settings</h1>
+      </div>
       
-      <div className="grid gap-6">
+      <div className="grid gap-4 md:grid-cols-2">
         <EnableFlutterwaveCard
           isActive={gateway?.is_active || false}
           isLoading={isLoading}

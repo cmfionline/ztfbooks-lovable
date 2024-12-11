@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Key } from "lucide-react";
 
 export const ApiConfigCard = () => {
   const { toast } = useToast();
@@ -44,12 +45,17 @@ export const ApiConfigCard = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>API Configuration</CardTitle>
-        <CardDescription>
-          Configure your Stripe API keys for payment processing
-        </CardDescription>
+    <Card className="bg-white shadow-sm">
+      <CardHeader className="pb-3">
+        <div className="flex items-center gap-2">
+          <Key className="w-5 h-5 text-purple" />
+          <div>
+            <CardTitle className="text-lg">API Configuration</CardTitle>
+            <CardDescription className="text-sm">
+              Configure your Stripe API keys
+            </CardDescription>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSaveKeys} className="space-y-4">
@@ -60,24 +66,27 @@ export const ApiConfigCard = () => {
               name="secretKey"
               type="password"
               placeholder="sk_test_..."
+              className="bg-gray-50 border-gray-200"
               required
             />
           </div>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-2">
             <Button
               type="submit"
               disabled={isLoading}
+              className="bg-purple hover:bg-purple/90 text-white"
             >
               {isLoading ? "Saving..." : "Save API Keys"}
             </Button>
             <Button
               type="button"
               variant="outline"
+              className="border-purple text-purple hover:bg-purple/10"
               onClick={() => {
                 window.open('https://dashboard.stripe.com/apikeys', '_blank');
               }}
             >
-              Get Stripe API Keys
+              Get API Keys
             </Button>
           </div>
         </form>

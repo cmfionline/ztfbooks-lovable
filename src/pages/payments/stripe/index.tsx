@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
-import { Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2, CreditCard, DollarSign } from "lucide-react";
 import { EnableStripeCard } from "./components/EnableStripeCard";
 import { TestPaymentCard } from "./components/TestPaymentCard";
 import { ApiConfigCard } from "./components/ApiConfigCard";
@@ -80,16 +80,19 @@ const StripeSettings = () => {
   if (isLoadingGateway) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">
-        <Loader2 className="w-8 h-8 animate-spin" />
+        <Loader2 className="w-8 h-8 animate-spin text-purple" />
       </div>
     );
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-8">Stripe Settings</h1>
+    <div className="p-6 max-w-5xl mx-auto">
+      <div className="flex items-center gap-3 mb-8">
+        <CreditCard className="w-8 h-8 text-purple" />
+        <h1 className="text-2xl font-bold">Stripe Settings</h1>
+      </div>
       
-      <div className="grid gap-6">
+      <div className="grid gap-4 md:grid-cols-2">
         <EnableStripeCard
           isActive={gateway?.is_active || false}
           isLoading={isLoading}
