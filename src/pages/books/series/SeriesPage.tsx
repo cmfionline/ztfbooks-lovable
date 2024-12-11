@@ -12,8 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { format } from "date-fns";
-import { useToast } from "@/components/ui/use-toast";
+import { format, isValid, parseISO } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
 
 const SeriesPage = () => {
   const { toast } = useToast();
@@ -65,6 +65,19 @@ const SeriesPage = () => {
     refetch();
   };
 
+  const formatDate = (dateString: string) => {
+    try {
+      const date = parseISO(dateString);
+      if (!isValid(date)) {
+        return "Invalid date";
+      }
+      return format(date, "PPP");
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Invalid date";
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
@@ -96,7 +109,7 @@ const SeriesPage = () => {
                     <TableCell className="font-medium">{series.name}</TableCell>
                     <TableCell>{series.languages?.name || "N/A"}</TableCell>
                     <TableCell>
-                      {format(new Date(series.created_at), "PPP")}
+                      {formatDate(series.created_at)}
                     </TableCell>
                     <TableCell className="text-right space-x-2">
                       <Button
