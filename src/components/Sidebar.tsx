@@ -34,6 +34,10 @@ const Sidebar = () => {
     setOpenItem(openItem === itemValue ? undefined : itemValue);
   };
 
+  const handleLinkClick = () => {
+    setOpenItem(undefined);
+  };
+
   const menuItems = [
     {
       title: "Dashboard",
@@ -151,7 +155,7 @@ const Sidebar = () => {
                           <Link
                             key={subItem.path}
                             to={subItem.path}
-                            onClick={() => setOpenItem(undefined)}
+                            onClick={handleLinkClick}
                             className={cn(
                               "flex items-center px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors",
                               location.pathname === subItem.path && "bg-accent text-foreground"
@@ -168,7 +172,7 @@ const Sidebar = () => {
               ) : (
                 <Link
                   to={item.path}
-                  onClick={() => setOpenItem(undefined)}
+                  onClick={handleLinkClick}
                   className={cn(
                     "flex items-center px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors",
                     isCollapsed && "justify-center",
