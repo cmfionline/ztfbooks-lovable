@@ -5,13 +5,13 @@ import { PlusCircle, Settings, Eye, Trash, Grid, List } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { format } from "date-fns";
-import CreateAdDialog from "@/components/ads/CreateAdDialog";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { AdForm } from "@/components/ads/AdForm";
 
 const Ads = () => {
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [showForm, setShowForm] = useState(false);
 
   const { data: ads, isLoading, refetch } = useQuery({
     queryKey: ['ads'],
@@ -67,6 +67,9 @@ const Ads = () => {
                 variant={viewMode === 'grid' ? 'default' : 'ghost'}
                 size="icon"
                 onClick={() => setViewMode('grid')}
+                className={cn(
+                  viewMode === 'grid' && "bg-purple hover:bg-purple/90"
+                )}
               >
                 <Grid className="h-4 w-4" />
               </Button>
@@ -74,23 +77,43 @@ const Ads = () => {
                 variant={viewMode === 'list' ? 'default' : 'ghost'}
                 size="icon"
                 onClick={() => setViewMode('list')}
+                className={cn(
+                  viewMode === 'list' && "bg-purple hover:bg-purple/90"
+                )}
               >
                 <List className="h-4 w-4" />
               </Button>
             </div>
-            <Button onClick={() => setIsCreateDialogOpen(true)}>
+            <Button 
+              onClick={() => setShowForm(!showForm)}
+              className="bg-purple hover:bg-purple/90"
+            >
               <PlusCircle className="mr-2 h-4 w-4" />
-              New Ad
+              {showForm ? 'Hide Form' : 'New Ad'}
             </Button>
           </div>
         </div>
+
+        {showForm && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Create New Advertisement</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <AdForm onSuccess={() => {
+                setShowForm(false);
+                refetch();
+              }} />
+            </CardContent>
+          </Card>
+        )}
 
         {isLoading ? (
           <div>Loading...</div>
         ) : viewMode === 'grid' ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {ads?.map((ad) => (
-              <Card key={ad.id}>
+              <Card key={ad.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <CardTitle className="flex justify-between items-center">
                     <span>{ad.name}</span>
@@ -105,6 +128,7 @@ const Ads = () => {
                         variant="ghost" 
                         size="icon"
                         onClick={() => handleDeleteAd(ad.id)}
+                        className="hover:bg-red-100 hover:text-red-600"
                       >
                         <Trash className="h-4 w-4" />
                       </Button>
@@ -133,7 +157,7 @@ const Ads = () => {
         ) : (
           <div className="space-y-4">
             {ads?.map((ad) => (
-              <Card key={ad.id}>
+              <Card key={ad.id} className="hover:shadow-lg transition-shadow">
                 <CardContent className="flex items-center justify-between p-4">
                   <div>
                     <h3 className="font-semibold">{ad.name}</h3>
@@ -152,6 +176,7 @@ const Ads = () => {
                       variant="ghost" 
                       size="icon"
                       onClick={() => handleDeleteAd(ad.id)}
+                      className="hover:bg-red-100 hover:text-red-600"
                     >
                       <Trash className="h-4 w-4" />
                     </Button>
@@ -161,11 +186,6 @@ const Ads = () => {
             ))}
           </div>
         )}
-
-        <CreateAdDialog 
-          open={isCreateDialogOpen} 
-          onOpenChange={setIsCreateDialogOpen} 
-        />
       </div>
     </div>
   );
