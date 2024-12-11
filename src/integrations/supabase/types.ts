@@ -911,6 +911,36 @@ export type Database = {
           },
         ]
       }
+      voucher_tags: {
+        Row: {
+          tag_id: string
+          voucher_id: string
+        }
+        Insert: {
+          tag_id: string
+          voucher_id: string
+        }
+        Update: {
+          tag_id?: string
+          voucher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voucher_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voucher_tags_voucher_id_fkey"
+            columns: ["voucher_id"]
+            isOneToOne: false
+            referencedRelation: "vouchers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vouchers: {
         Row: {
           client_id: string
@@ -988,7 +1018,12 @@ export type Database = {
       ad_type: "banner" | "interstitial" | "popup" | "sponsored"
       discount_type: "percentage" | "fixed" | "volume" | "cart"
       subscription_duration: "day" | "week" | "month" | "year"
-      voucher_type: "single_book" | "series" | "all_books"
+      voucher_type:
+        | "single_book"
+        | "series"
+        | "all_books"
+        | "multiple_books"
+        | "book_tag"
     }
     CompositeTypes: {
       [_ in never]: never
