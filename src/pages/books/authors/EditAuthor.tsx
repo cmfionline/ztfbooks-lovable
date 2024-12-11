@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
@@ -13,31 +12,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BasicInfoFields } from "./components/BasicInfoFields";
 import { SocialMediaFields } from "./components/SocialMediaFields";
-
-const authorFormSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  designation: z.string().optional(),
-  education: z.string().optional(),
-  nationality: z.string().optional(),
-  date_of_birth: z.string().optional(),
-  bio: z.string().optional(),
-  mobile: z.string().optional(),
-  address: z.string().optional(),
-  description: z.string().optional(),
-  website: z.string().url().optional().or(z.literal("")),
-  facebook_url: z.string().url().optional().or(z.literal("")),
-  twitter_url: z.string().url().optional().or(z.literal("")),
-  instagram_url: z.string().url().optional().or(z.literal("")),
-});
-
-type FormValues = z.infer<typeof authorFormSchema>;
+import { authorFormSchema, AuthorFormValues } from "./schema";
 
 const EditAuthor = () => {
   const { id } = useParams();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const form = useForm<FormValues>({
+  const form = useForm<AuthorFormValues>({
     resolver: zodResolver(authorFormSchema),
     defaultValues: {
       name: "",
@@ -97,7 +79,7 @@ const EditAuthor = () => {
     }
   }, [author, form]);
 
-  const onSubmit = async (values: FormValues) => {
+  const onSubmit = async (values: AuthorFormValues) => {
     try {
       const { error } = await supabase
         .from("authors")

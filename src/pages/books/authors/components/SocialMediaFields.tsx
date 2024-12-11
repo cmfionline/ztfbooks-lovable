@@ -1,17 +1,17 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { UseFormReturn } from "react-hook-form";
+import { Control } from "react-hook-form";
 import { AuthorFormValues } from "../schema";
 
 type SocialMediaFieldsProps = {
-  form: UseFormReturn<AuthorFormValues>;
+  control: Control<AuthorFormValues>;
 };
 
-export const SocialMediaFields = ({ form }: SocialMediaFieldsProps) => {
+export const SocialMediaFields = ({ control }: SocialMediaFieldsProps) => {
   return (
     <div className="grid grid-cols-2 gap-4">
       <FormField
-        control={form.control}
+        control={control}
         name="website"
         render={({ field }) => (
           <FormItem>
@@ -24,7 +24,7 @@ export const SocialMediaFields = ({ form }: SocialMediaFieldsProps) => {
         )}
       />
       <FormField
-        control={form.control}
+        control={control}
         name="facebook_url"
         render={({ field }) => (
           <FormItem>
@@ -37,7 +37,7 @@ export const SocialMediaFields = ({ form }: SocialMediaFieldsProps) => {
         )}
       />
       <FormField
-        control={form.control}
+        control={control}
         name="twitter_url"
         render={({ field }) => (
           <FormItem>
@@ -50,7 +50,7 @@ export const SocialMediaFields = ({ form }: SocialMediaFieldsProps) => {
         )}
       />
       <FormField
-        control={form.control}
+        control={control}
         name="instagram_url"
         render={({ field }) => (
           <FormItem>

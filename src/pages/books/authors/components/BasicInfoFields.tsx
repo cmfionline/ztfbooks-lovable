@@ -1,7 +1,7 @@
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { UseFormReturn } from "react-hook-form";
+import { Control } from "react-hook-form";
 import { AuthorFormValues } from "../schema";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -30,14 +30,14 @@ const countries = [
 ];
 
 type BasicInfoFieldsProps = {
-  form: UseFormReturn<AuthorFormValues>;
+  control: Control<AuthorFormValues>;
 };
 
-export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
+export const BasicInfoFields = ({ control }: BasicInfoFieldsProps) => {
   return (
     <div className="grid grid-cols-2 gap-4">
       <FormField
-        control={form.control}
+        control={control}
         name="name"
         render={({ field }) => (
           <FormItem className="col-span-2">
@@ -55,7 +55,7 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
         )}
       />
       <FormField
-        control={form.control}
+        control={control}
         name="designation"
         render={({ field }) => (
           <FormItem>
@@ -68,7 +68,7 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
         )}
       />
       <FormField
-        control={form.control}
+        control={control}
         name="education"
         render={({ field }) => (
           <FormItem>
@@ -81,7 +81,7 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
         )}
       />
       <FormField
-        control={form.control}
+        control={control}
         name="nationality"
         render={({ field }) => (
           <FormItem>
@@ -105,7 +105,7 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
         )}
       />
       <FormField
-        control={form.control}
+        control={control}
         name="date_of_birth"
         render={({ field }) => (
           <FormItem>
@@ -118,7 +118,7 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
         )}
       />
       <FormField
-        control={form.control}
+        control={control}
         name="mobile"
         render={({ field }) => (
           <FormItem>
@@ -131,7 +131,7 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
         )}
       />
       <FormField
-        control={form.control}
+        control={control}
         name="address"
         render={({ field }) => (
           <FormItem className="col-span-2">
@@ -144,7 +144,7 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
         )}
       />
       <FormField
-        control={form.control}
+        control={control}
         name="photo"
         render={({ field }) => (
           <FormItem className="col-span-2">
@@ -157,7 +157,7 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
         )}
       />
       <FormField
-        control={form.control}
+        control={control}
         name="bio"
         render={({ field }) => (
           <FormItem className="col-span-2">
@@ -174,7 +174,7 @@ export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
         )}
       />
       <FormField
-        control={form.control}
+        control={control}
         name="description"
         render={({ field }) => (
           <FormItem className="col-span-2">
