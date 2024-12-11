@@ -35,32 +35,41 @@ const Ads = () => {
   });
 
   const handleDeleteAd = async (id: string) => {
-    const { error } = await supabase
-      .from('ads')
-      .delete()
-      .eq('id', id);
+    try {
+      const { error } = await supabase
+        .from('ads')
+        .delete()
+        .eq('id', id);
 
-    if (error) {
+      if (error) {
+        toast({
+          title: "Error deleting ad",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
       toast({
-        title: "Error deleting ad",
-        description: error.message,
+        title: "Success",
+        description: "The ad has been successfully deleted.",
+      });
+      refetch();
+    } catch (error) {
+      console.error('Error deleting ad:', error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
-      return;
     }
-
-    toast({
-      title: "Ad deleted",
-      description: "The ad has been successfully deleted.",
-    });
-    refetch();
   };
 
   return (
     <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Advertisements</h1>
+          <h1 className="text-3xl font-bold text-primary">Advertisements</h1>
           <div className="flex gap-4">
             <div className="flex items-center bg-background border rounded-lg">
               <Button
@@ -68,7 +77,8 @@ const Ads = () => {
                 size="icon"
                 onClick={() => setViewMode('grid')}
                 className={cn(
-                  viewMode === 'grid' && "bg-purple hover:bg-purple/90"
+                  "focus:ring-2 focus:ring-purple/50",
+                  viewMode === 'grid' && "bg-purple hover:bg-purple/90 text-white"
                 )}
               >
                 <Grid className="h-4 w-4" />
@@ -78,7 +88,8 @@ const Ads = () => {
                 size="icon"
                 onClick={() => setViewMode('list')}
                 className={cn(
-                  viewMode === 'list' && "bg-purple hover:bg-purple/90"
+                  "focus:ring-2 focus:ring-purple/50",
+                  viewMode === 'list' && "bg-purple hover:bg-purple/90 text-white"
                 )}
               >
                 <List className="h-4 w-4" />
@@ -86,7 +97,7 @@ const Ads = () => {
             </div>
             <Button 
               onClick={() => setShowForm(!showForm)}
-              className="bg-purple hover:bg-purple/90 text-white"
+              className="bg-accent hover:bg-accent/90 text-primary font-medium focus:ring-2 focus:ring-accent/50"
             >
               <PlusCircle className="mr-2 h-4 w-4" />
               {showForm ? 'Hide Form' : 'New Ad'}
@@ -109,7 +120,9 @@ const Ads = () => {
         )}
 
         {isLoading ? (
-          <div>Loading...</div>
+          <div className="flex justify-center items-center h-32">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple"></div>
+          </div>
         ) : viewMode === 'grid' ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {ads?.map((ad) => (
@@ -118,17 +131,25 @@ const Ads = () => {
                   <CardTitle className="flex justify-between items-center">
                     <span>{ad.name}</span>
                     <div className="flex gap-2">
-                      <Button variant="ghost" size="icon">
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
+                      >
                         <Eye className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon">
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
+                      >
                         <Settings className="h-4 w-4" />
                       </Button>
                       <Button 
                         variant="ghost" 
                         size="icon"
                         onClick={() => handleDeleteAd(ad.id)}
-                        className="hover:bg-red-100 hover:text-red-600"
+                        className="hover:bg-red-50 text-red-600 focus:ring-2 focus:ring-red-500/50"
                       >
                         <Trash className="h-4 w-4" />
                       </Button>
@@ -166,17 +187,25 @@ const Ads = () => {
                     </p>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="icon">
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
+                    >
                       <Eye className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon">
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
+                    >
                       <Settings className="h-4 w-4" />
                     </Button>
                     <Button 
                       variant="ghost" 
                       size="icon"
                       onClick={() => handleDeleteAd(ad.id)}
-                      className="hover:bg-red-100 hover:text-red-600"
+                      className="hover:bg-red-50 text-red-600 focus:ring-2 focus:ring-red-500/50"
                     >
                       <Trash className="h-4 w-4" />
                     </Button>
