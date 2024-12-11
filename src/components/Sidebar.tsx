@@ -10,6 +10,7 @@ import {
   MessageSquare,
   PlusCircle,
   Bell,
+  Ticket,
 } from "lucide-react";
 import {
   Accordion,
@@ -51,14 +52,13 @@ const Sidebar = () => {
       ],
     },
     {
-      title: "Users",
-      icon: <Users className="w-4 h-4" />,
-      path: "/users",
+      title: "Vouchers",
+      icon: <Ticket className="w-4 h-4" />,
+      path: "/vouchers",
       submenu: [
-        { title: "Admins", path: "/users/admins" },
-        { title: "Groups", path: "/users/groups" },
-        { title: "Permissions", path: "/users/permissions" },
-        { title: "Clients", path: "/users/clients" },
+        { title: "All Vouchers", path: "/vouchers" },
+        { title: "Create Voucher", path: "/vouchers/create" },
+        { title: "Analytics", path: "/vouchers/analytics" },
       ],
     },
     {

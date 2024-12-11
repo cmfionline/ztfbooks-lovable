@@ -15,6 +15,7 @@ import Faqs from "./pages/Faqs";
 import Settings from "./pages/Settings";
 import Notifications from "./pages/Notifications";
 import SubscriptionPlans from "./pages/SubscriptionPlans";
+import Vouchers from "./pages/Vouchers";
 import Navigation from "./components/Navigation";
 import Sidebar from "./components/Sidebar";
 
@@ -52,6 +53,11 @@ const App = () => (
           <Route path="/payments/*" element={
             <Layout>
               <Payments />
+            </Layout>
+          } />
+          <Route path="/vouchers/*" element={
+            <Layout>
+              <Vouchers />
             </Layout>
           } />
           <Route path="/users/*" element={
