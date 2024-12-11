@@ -37,7 +37,7 @@ export const DiscountStrategyRules = ({ control, discountType }: DiscountStrateg
       {discountType !== 'volume' && (
         <FormField
           control={control}
-          name="minPurchaseAmount"
+          name="min_purchase_amount"
           render={({ field: { value, onChange, ...field } }) => (
             <FormItem>
               <FormLabel>Minimum Purchase Amount</FormLabel>
@@ -59,7 +59,7 @@ export const DiscountStrategyRules = ({ control, discountType }: DiscountStrateg
       {discountType === 'volume' && (
         <FormField
           control={control}
-          name="minBooksCount"
+          name="min_books_count"
           render={({ field: { value, onChange, ...field } }) => (
             <FormItem>
               <FormLabel>Minimum Books Count</FormLabel>
@@ -80,7 +80,7 @@ export const DiscountStrategyRules = ({ control, discountType }: DiscountStrateg
 
       <FormField
         control={control}
-        name="isStackable"
+        name="is_stackable"
         render={({ field }) => (
           <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
             <div className="space-y-0.5">

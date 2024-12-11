@@ -26,9 +26,9 @@ export const DiscountStrategyForm = ({
       name: "",
       type: "percentage",
       value: 0,
-      minPurchaseAmount: 0,
-      minBooksCount: 0,
-      isStackable: false,
+      min_purchase_amount: 0,
+      min_books_count: 0,
+      is_stackable: false,
     },
   });
 
