@@ -38,6 +38,12 @@ export const adSchema = z.object({
     .optional(),
   target_audience: z.record(z.any()).optional(),
   ab_test_group: z.string().optional(),
+  // New discount fields
+  discount_type: z.enum(["percentage", "fixed", "volume", "cart"]).optional(),
+  discount_value: z.number().min(0).optional(),
+  min_purchase_amount: z.number().min(0).optional(),
+  min_books_count: z.number().int().min(0).optional(),
+  is_stackable: z.boolean().default(false),
 });
 
 export type AdFormValues = z.infer<typeof adSchema>;

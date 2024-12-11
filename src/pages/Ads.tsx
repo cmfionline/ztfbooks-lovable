@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { AdForm } from "@/components/ads/AdForm";
+import { DiscountAnalytics } from "@/components/ads/analytics/DiscountAnalytics";
 
 const Ads = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -18,7 +19,7 @@ const Ads = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('ads')
-        .select('id, name, type, placement, content, html_content, start_date, end_date, cta_text, image_url, video_url, is_active')
+        .select('id, name, type, placement, content, html_content, start_date, end_date, cta_text, image_url, video_url, is_active, discount_type, discount_value, min_purchase_amount, min_books_count')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -157,19 +158,38 @@ const Ads = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground">
-                      Type: {ad.type}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Placement: {ad.placement}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Active: {ad.is_active ? "Yes" : "No"}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Duration: {format(new Date(ad.start_date), 'PP')} - {format(new Date(ad.end_date), 'PP')}
-                    </p>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <p className="text-sm text-muted-foreground">
+                        Type: {ad.type}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Placement: {ad.placement}
+                      </p>
+                      {ad.discount_type && (
+                        <>
+                          <p className="text-sm text-muted-foreground">
+                            Discount: {ad.discount_type === 'percentage' ? `${ad.discount_value}%` : `$${ad.discount_value}`}
+                          </p>
+                          {ad.min_purchase_amount && (
+                            <p className="text-sm text-muted-foreground">
+                              Min Purchase: ${ad.min_purchase_amount}
+                            </p>
+                          )}
+                          {ad.min_books_count && (
+                            <p className="text-sm text-muted-foreground">
+                              Min Books: {ad.min_books_count}
+                            </p>
+                          )}
+                        </>
+                      )}
+                      <p className="text-sm text-muted-foreground">
+                        Duration: {format(new Date(ad.start_date), 'PP')} - {format(new Date(ad.end_date), 'PP')}
+                      </p>
+                    </div>
+                    {ad.discount_type && (
+                      <DiscountAnalytics adId={ad.id} />
+                    )}
                   </div>
                 </CardContent>
               </Card>

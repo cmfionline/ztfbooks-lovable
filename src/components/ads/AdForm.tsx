@@ -7,6 +7,7 @@ import { toast } from "@/hooks/use-toast";
 import { BasicInfoFields } from "./form/BasicInfoFields";
 import { CreativeFields } from "./form/CreativeFields";
 import { SchedulingFields } from "./form/SchedulingFields";
+import { DiscountFields } from "./form/DiscountFields";
 import { adSchema, type AdFormValues } from "./schema";
 
 interface AdFormProps {
@@ -117,13 +118,16 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-border">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-background p-6 rounded-lg shadow-sm border border-border">
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-6">
             <BasicInfoFields control={form.control} />
             <SchedulingFields control={form.control} />
           </div>
-          <CreativeFields control={form.control} />
+          <div className="space-y-6">
+            <CreativeFields control={form.control} />
+            <DiscountFields control={form.control} />
+          </div>
         </div>
         <div className="flex justify-end">
           <Button 
