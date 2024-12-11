@@ -9,6 +9,8 @@ import { CreativeFields } from "./form/CreativeFields";
 import { SchedulingFields } from "./form/SchedulingFields";
 import { DiscountFields } from "./form/DiscountFields";
 import { adSchema, type AdFormValues } from "./schema";
+import { Card, CardContent } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 
 interface AdFormProps {
   onSuccess: () => void;
@@ -23,6 +25,7 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
       placement: "home",
       content: "",
       cta_text: "Learn More",
+      is_stackable: false,
     },
   });
 
@@ -36,7 +39,7 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
         const fileExt = file.name.split('.').pop();
         const filePath = `${crypto.randomUUID()}.${fileExt}`;
         
-        const { error: uploadError, data } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from('ads')
           .upload(filePath, file);
 
@@ -101,7 +104,6 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
       toast({
         title: "Success",
         description: "The ad has been successfully created.",
-        variant: "default",
       });
 
       onSuccess();
@@ -118,26 +120,49 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-background p-6 rounded-lg shadow-sm border border-border">
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="space-y-6">
-            <BasicInfoFields control={form.control} />
-            <SchedulingFields control={form.control} />
-          </div>
-          <div className="space-y-6">
-            <CreativeFields control={form.control} />
-            <DiscountFields control={form.control} />
-          </div>
-        </div>
-        <div className="flex justify-end">
-          <Button 
-            type="submit"
-            className="bg-purple hover:bg-purple/90 text-white min-w-[120px] focus:ring-2 focus:ring-purple/50"
-            disabled={form.formState.isSubmitting}
-          >
-            {form.formState.isSubmitting ? "Creating..." : "Create Ad"}
-          </Button>
-        </div>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <Card>
+          <CardContent className="grid gap-6 p-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">Basic Information</h3>
+                  <BasicInfoFields control={form.control} />
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">Schedule</h3>
+                  <SchedulingFields control={form.control} />
+                </div>
+              </div>
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">Creative Content</h3>
+                  <CreativeFields control={form.control} />
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">Discount Settings</h3>
+                  <DiscountFields control={form.control} />
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <Button 
+                type="submit"
+                className="min-w-[120px]"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  'Create Ad'
+                )}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </form>
     </Form>
   );

@@ -1,8 +1,9 @@
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Control } from "react-hook-form";
 import { AdFormValues } from "../schema";
+import { FileUpload } from "@/components/ui/file-upload";
 
 interface CreativeFieldsProps {
   control: Control<AdFormValues>;
@@ -16,11 +17,18 @@ export const CreativeFields = ({ control }: CreativeFieldsProps) => {
         name="content"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Content</FormLabel>
+            <FormLabel className="flex items-center gap-1">
+              Content
+              <span className="text-red-500">*</span>
+            </FormLabel>
             <FormControl>
-              <Textarea placeholder="Ad content or description" {...field} />
+              <Textarea 
+                placeholder="Enter your ad content or description" 
+                className="resize-none h-24"
+                {...field} 
+              />
             </FormControl>
-            <FormMessage />
+            <FormMessage className="text-xs" />
           </FormItem>
         )}
       />
@@ -30,69 +38,83 @@ export const CreativeFields = ({ control }: CreativeFieldsProps) => {
         name="html_content"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>HTML Content (Optional)</FormLabel>
+            <FormLabel>HTML Content</FormLabel>
             <FormControl>
-              <Textarea placeholder="Custom HTML content" {...field} />
+              <Textarea 
+                placeholder="Custom HTML content (optional)" 
+                className="resize-none h-24 font-mono text-sm"
+                {...field} 
+              />
             </FormControl>
-            <FormMessage />
+            <FormMessage className="text-xs" />
           </FormItem>
         )}
       />
 
-      <FormField
-        control={control}
-        name="image_file"
-        render={({ field: { value, onChange, ...field } }) => (
-          <FormItem>
-            <FormLabel>Image</FormLabel>
-            <FormControl>
-              <Input 
-                type="file" 
-                accept=".jpg,.jpeg,.png,.webp"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) onChange(file);
-                }}
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <FormField
+          control={control}
+          name="image_file"
+          render={({ field: { value, onChange, ...field } }) => (
+            <FormItem>
+              <FormLabel>Image</FormLabel>
+              <FormControl>
+                <Input 
+                  type="file" 
+                  accept=".jpg,.jpeg,.png,.webp"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) onChange(file);
+                  }}
+                  className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-primary/10 hover:file:bg-primary/20"
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription className="text-xs">
+                Accepts JPG, PNG, WebP up to 5MB
+              </FormDescription>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
 
-      <FormField
-        control={control}
-        name="video_file"
-        render={({ field: { value, onChange, ...field } }) => (
-          <FormItem>
-            <FormLabel>Video (Optional)</FormLabel>
-            <FormControl>
-              <Input 
-                type="file" 
-                accept=".mp4,.webm"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) onChange(file);
-                }}
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+        <FormField
+          control={control}
+          name="video_file"
+          render={({ field: { value, onChange, ...field } }) => (
+            <FormItem>
+              <FormLabel>Video</FormLabel>
+              <FormControl>
+                <Input 
+                  type="file" 
+                  accept=".mp4,.webm"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) onChange(file);
+                  }}
+                  className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-primary/10 hover:file:bg-primary/20"
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription className="text-xs">
+                Accepts MP4, WebM up to 5MB
+              </FormDescription>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
+      </div>
 
       <FormField
         control={control}
         name="cta_text"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Call to Action Text</FormLabel>
+            <FormLabel>Call to Action</FormLabel>
             <FormControl>
-              <Input placeholder="Learn More" {...field} />
+              <Input placeholder="e.g., Learn More, Shop Now" {...field} />
             </FormControl>
-            <FormMessage />
+            <FormMessage className="text-xs" />
           </FormItem>
         )}
       />

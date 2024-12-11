@@ -25,72 +25,71 @@ export const DiscountFields = ({ control }: DiscountFieldsProps) => {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="percentage">Percentage Discount</SelectItem>
-                <SelectItem value="fixed">Fixed Amount Discount</SelectItem>
+                <SelectItem value="percentage">Percentage Off</SelectItem>
+                <SelectItem value="fixed">Fixed Amount Off</SelectItem>
                 <SelectItem value="volume">Volume Discount</SelectItem>
                 <SelectItem value="cart">Cart Value Discount</SelectItem>
               </SelectContent>
             </Select>
-            <FormDescription>
+            <FormDescription className="text-xs">
               Choose how the discount will be applied
             </FormDescription>
-            <FormMessage />
+            <FormMessage className="text-xs" />
           </FormItem>
         )}
       />
 
-      <FormField
-        control={control}
-        name="discount_value"
-        render={({ field: { value, onChange, ...field }, formState }) => (
-          <FormItem>
-            <FormLabel>Discount Value</FormLabel>
-            <FormControl>
-              <Input 
-                type="number" 
-                min="0" 
-                step={formState.defaultValues?.discount_type === "percentage" ? "0.01" : "1"}
-                placeholder={formState.defaultValues?.discount_type === "percentage" ? "e.g., 15 for 15%" : "Amount"}
-                {...field}
-                value={value || ""}
-                onChange={(e) => onChange(e.target.value ? parseFloat(e.target.value) : null)}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <FormField
+          control={control}
+          name="discount_value"
+          render={({ field: { value, onChange, ...field }, formState }) => (
+            <FormItem>
+              <FormLabel>Discount Value</FormLabel>
+              <FormControl>
+                <Input 
+                  type="number" 
+                  min="0" 
+                  step={formState.defaultValues?.discount_type === "percentage" ? "0.01" : "1"}
+                  placeholder={formState.defaultValues?.discount_type === "percentage" ? "e.g., 15 for 15%" : "Amount"}
+                  {...field}
+                  value={value || ""}
+                  onChange={(e) => onChange(e.target.value ? parseFloat(e.target.value) : null)}
+                />
+              </FormControl>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
 
-      <FormField
-        control={control}
-        name="min_purchase_amount"
-        render={({ field: { value, onChange, ...field } }) => (
-          <FormItem>
-            <FormLabel>Minimum Purchase Amount</FormLabel>
-            <FormControl>
-              <Input 
-                type="number" 
-                min="0" 
-                placeholder="e.g., 50"
-                {...field}
-                value={value || ""}
-                onChange={(e) => onChange(e.target.value ? parseFloat(e.target.value) : null)}
-              />
-            </FormControl>
-            <FormDescription>
-              Minimum cart value required for the discount to apply
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+        <FormField
+          control={control}
+          name="min_purchase_amount"
+          render={({ field: { value, onChange, ...field } }) => (
+            <FormItem>
+              <FormLabel>Min. Purchase</FormLabel>
+              <FormControl>
+                <Input 
+                  type="number" 
+                  min="0" 
+                  placeholder="e.g., 50"
+                  {...field}
+                  value={value || ""}
+                  onChange={(e) => onChange(e.target.value ? parseFloat(e.target.value) : null)}
+                />
+              </FormControl>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
+      </div>
 
       <FormField
         control={control}
         name="min_books_count"
         render={({ field: { value, onChange, ...field } }) => (
           <FormItem>
-            <FormLabel>Minimum Books Count</FormLabel>
+            <FormLabel>Min. Books Count</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
@@ -101,10 +100,10 @@ export const DiscountFields = ({ control }: DiscountFieldsProps) => {
                 onChange={(e) => onChange(e.target.value ? parseInt(e.target.value) : null)}
               />
             </FormControl>
-            <FormDescription>
+            <FormDescription className="text-xs">
               Minimum number of books required for volume discount
             </FormDescription>
-            <FormMessage />
+            <FormMessage className="text-xs" />
           </FormItem>
         )}
       />
@@ -113,11 +112,11 @@ export const DiscountFields = ({ control }: DiscountFieldsProps) => {
         control={control}
         name="is_stackable"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
             <div className="space-y-0.5">
-              <FormLabel className="text-base">Stackable Discount</FormLabel>
-              <FormDescription>
-                Allow this discount to be combined with other active discounts
+              <FormLabel>Stackable Discount</FormLabel>
+              <FormDescription className="text-xs">
+                Allow combining with other active discounts
               </FormDescription>
             </div>
             <FormControl>
