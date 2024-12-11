@@ -1,10 +1,17 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { VoucherForm } from "./components/VoucherForm";
+import { ClientInfoFields } from "./components/ClientInfoFields";
+import { VoucherTypeSelect } from "./components/VoucherTypeSelect";
+import { BookMultiSelect } from "./components/BookMultiSelect";
+import { SeriesSelectionField } from "@/components/vouchers/components/SeriesSelectionField";
 
 interface CreateVoucherDialogProps {
   open: boolean;
@@ -15,7 +22,7 @@ interface CreateVoucherDialogProps {
 const CreateVoucherDialog = ({ open, onOpenChange, clientId }: CreateVoucherDialogProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBooks, setSelectedBooks] = useState<string[]>([]);
-
+  
   const { data: books } = useQuery({
     queryKey: ['books'],
     queryFn: async () => {
@@ -58,7 +65,6 @@ const CreateVoucherDialog = ({ open, onOpenChange, clientId }: CreateVoucherDial
       clientName: "",
       clientEmail: "",
       amount: "",
-      numberOfDownloads: "1",
     }
   });
 
@@ -78,7 +84,6 @@ const CreateVoucherDialog = ({ open, onOpenChange, clientId }: CreateVoucherDial
           client_id: clientId,
           created_by: userData.user.id,
           total_amount: Number(values.amount),
-          number_of_downloads: Number(values.numberOfDownloads),
         })
         .select()
         .single();
@@ -132,16 +137,94 @@ const CreateVoucherDialog = ({ open, onOpenChange, clientId }: CreateVoucherDial
         <DialogHeader>
           <DialogTitle>Create New Voucher</DialogTitle>
         </DialogHeader>
-        <VoucherForm
-          form={form}
-          onSubmit={onSubmit}
-          isLoading={isLoading}
-          books={books || []}
-          series={series || []}
-          tags={tags || []}
-          selectedBooks={selectedBooks}
-          setSelectedBooks={setSelectedBooks}
-        />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <ClientInfoFields form={form} />
+            <VoucherTypeSelect form={form} />
+            
+            {form.watch("type") === "single_book" && (
+              <FormField
+                control={form.control}
+                name="bookId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Select Book</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a book" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {books?.map((book) => (
+                          <SelectItem key={book.id} value={book.id}>
+                            {book.title}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {form.watch("type") === "multiple_books" && (
+              <BookMultiSelect
+                form={form}
+                books={books || []}
+                selectedBooks={selectedBooks}
+                setSelectedBooks={setSelectedBooks}
+              />
+            )}
+
+            {form.watch("type") === "series" && (
+              <SeriesSelectionField form={form} series={series || []} />
+            )}
+
+            {form.watch("type") === "book_tag" && (
+              <FormField
+                control={form.control}
+                name="tagId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Select Tag</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a tag" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {tags?.map((tag) => (
+                          <SelectItem key={tag.id} value={tag.id}>
+                            {tag.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+            )}
+
+            <FormField
+              control={form.control}
+              name="amount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Amount</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" min="0" step="0.01" />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <Button 
+              type="submit" 
+              className="w-full bg-purple hover:bg-purple/90 text-white" 
+              disabled={isLoading}
+            >
+              Create Voucher
+            </Button>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
