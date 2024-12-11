@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Grid, List } from "lucide-react";
+import { PlusCircle, Grid, List, CheckCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/hooks/use-toast";
@@ -77,6 +77,7 @@ const Ads = () => {
       toast({
         title: "Success",
         description: "The ad has been successfully deleted.",
+        icon: <CheckCircle className="h-4 w-4 text-green-500" />,
       });
       refetch();
     } catch (error) {
@@ -87,6 +88,16 @@ const Ads = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleAdCreated = () => {
+    setShowForm(false);
+    refetch();
+    toast({
+      title: "Ad Created Successfully",
+      description: "Your new advertisement has been created and is now live.",
+      icon: <CheckCircle className="h-4 w-4 text-green-500" />,
+    });
   };
 
   return (
@@ -142,10 +153,7 @@ const Ads = () => {
                   <CardTitle>Create New Advertisement</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <AdForm onSuccess={() => {
-                    setShowForm(false);
-                    refetch();
-                  }} />
+                  <AdForm onSuccess={handleAdCreated} />
                 </CardContent>
               </Card>
             )}
