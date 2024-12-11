@@ -1,134 +1,132 @@
-import { Form } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { supabase } from "@/lib/supabase";
-import { toast } from "@/hooks/use-toast";
-import { DiscountStrategyBasicInfo } from "./DiscountStrategyBasicInfo";
-import { DiscountStrategyRules } from "./DiscountStrategyRules";
-import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, X } from "lucide-react";
-import { discountStrategySchema, type DiscountStrategyFormValues } from "../schema";
-import { addDays } from "date-fns";
-import { DiscountDateFields } from "../../form/discount/DiscountDateFields";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { NotifyNewDiscount } from "@/components/notifications/NotifyNewDiscount";
 
-interface DiscountStrategyFormProps {
-  onSuccess: () => void;
-  onCancel: () => void;
-  editingStrategy?: any;
-}
+const formSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  value: z.number().min(0, "Value must be greater than or equal to 0"),
+  type: z.enum(["percentage", "fixed"]),
+  books: z.array(z.object({
+    title: z.string(),
+  })).optional(),
+});
 
-export const DiscountStrategyForm = ({ onSuccess, onCancel, editingStrategy }: DiscountStrategyFormProps) => {
-  const tomorrow = addDays(new Date(), 1);
-  const fiveDaysLater = addDays(tomorrow, 5);
+type DiscountStrategyFormProps = {
+  onSubmit: (values: z.infer<typeof formSchema>) => Promise<void>;
+};
 
-  const form = useForm<DiscountStrategyFormValues>({
-    resolver: zodResolver(discountStrategySchema),
+export const DiscountStrategyForm = ({ onSubmit }: DiscountStrategyFormProps) => {
+  const [newDiscount, setNewDiscount] = useState<any>(null);
+  const [affectedBooks, setAffectedBooks] = useState<string[]>([]);
+  
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      type: "percentage",
       value: 0,
-      is_stackable: false,
-      start_date: tomorrow.toISOString().split('T')[0],
-      end_date: fiveDaysLater.toISOString().split('T')[0],
+      type: "fixed",
+      books: [],
     },
   });
 
-  const onSubmit = async (values: DiscountStrategyFormValues) => {
+  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const { error } = await supabase
-        .from('discount_strategies')
-        .insert([values]);
-
-      if (error) {
-        toast({
-          title: "Error creating discount strategy",
-          description: error.message,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      toast({
-        title: "Success",
-        description: "The discount strategy has been successfully created.",
+      const result = await onSubmit(values);
+      
+      // After successful submission, store the new discount data
+      setNewDiscount({
+        id: result.data.id,
+        name: values.name,
+        value: values.value,
+        type: values.type
       });
-
-      onSuccess();
-      form.reset();
+      
+      // Store affected book titles
+      setAffectedBooks(values.books?.map(book => book.title) || []);
+      
     } catch (error) {
-      console.error('Error creating discount strategy:', error);
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
+      console.error("Error creating discount:", error);
     }
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <Card className="bg-white shadow-sm">
-          <CardContent className="grid gap-6 p-6">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium text-gray-900">
-                {editingStrategy ? 'Edit' : 'Create'} Discount Strategy
-              </h3>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={onCancel}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-primary">Discount Name</FormLabel>
+              <FormControl>
+                <input {...field} className="border-purple-light focus:border-purple focus:ring-purple" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <div className="space-y-4">
-              <DiscountStrategyBasicInfo control={form.control} />
-            </div>
-            
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900">Schedule</h3>
-              <DiscountDateFields control={form.control} />
-            </div>
+        <FormField
+          control={form.control}
+          name="value"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-primary">Discount Value</FormLabel>
+              <FormControl>
+                <input
+                  type="number"
+                  {...field}
+                  className="border-purple-light focus:border-purple focus:ring-purple"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900">Discount Rules</h3>
-              <DiscountStrategyRules 
-                control={form.control} 
-                discountType={form.watch('type')}
-              />
-            </div>
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-primary">Discount Type</FormLabel>
+              <FormControl>
+                <select {...field} className="border-purple-light focus:border-purple focus:ring-purple">
+                  <option value="fixed">Fixed Amount</option>
+                  <option value="percentage">Percentage</option>
+                </select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <div className="flex justify-end gap-3">
-              <Button 
-                type="button"
-                variant="outline"
-                onClick={onCancel}
-                className="px-4"
-              >
-                Cancel
-              </Button>
-              <Button 
-                type="submit"
-                className="min-w-[120px] bg-purple hover:bg-purple/90 text-white focus:ring-2 focus:ring-purple/50"
-                disabled={form.formState.isSubmitting}
-              >
-                {form.formState.isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {editingStrategy ? 'Updating...' : 'Creating...'}
-                  </>
-                ) : (
-                  editingStrategy ? 'Update Strategy' : 'Create Strategy'
-                )}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Additional fields for selecting books can be added here */}
+
+        {newDiscount && (
+          <div className="mt-4 flex justify-end">
+            <NotifyNewDiscount
+              discountName={newDiscount.name}
+              discountId={newDiscount.id}
+              discountValue={newDiscount.value}
+              discountType={newDiscount.type}
+              bookTitles={affectedBooks}
+            />
+          </div>
+        )}
+
+        <div className="flex gap-4">
+          <Button type="button" variant="outline" className="flex-1" onClick={() => { /* handle cancel */ }}>
+            Cancel
+          </Button>
+          <Button type="submit" className="flex-1 bg-purple hover:bg-purple/90 text-white">
+            Create Discount
+          </Button>
+        </div>
       </form>
     </Form>
   );
