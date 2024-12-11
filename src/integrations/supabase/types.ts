@@ -210,6 +210,36 @@ export type Database = {
           },
         ]
       }
+      ad_types: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          status: Database["public"]["Enums"]["ad_type_status"] | null
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          status?: Database["public"]["Enums"]["ad_type_status"] | null
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          status?: Database["public"]["Enums"]["ad_type_status"] | null
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       ads: {
         Row: {
           ab_test_group: string | null
@@ -1287,6 +1317,7 @@ export type Database = {
     Enums: {
       ad_placement: "home" | "category" | "checkout" | "series" | "book"
       ad_type: "banner" | "interstitial" | "popup" | "sponsored"
+      ad_type_status: "active" | "inactive"
       discount_strategy_type: "percentage" | "fixed" | "volume"
       discount_type: "percentage" | "fixed" | "volume" | "cart"
       subscription_duration: "day" | "week" | "month" | "year"

@@ -6,22 +6,14 @@ export const useAdConfigurations = () => {
     queryKey: ['adTypes'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('ads')
-        .select('type')
-        .eq('is_active', true)
+        .from('ad_types')
+        .select('*')
+        .eq('status', 'active')
         .order('type');
       
       if (error) throw error;
       
-      // Get unique types
-      const uniqueTypes = Array.from(new Set(data.map(ad => ad.type)))
-        .map(type => ({
-          id: type,
-          type,
-          name: type.charAt(0).toUpperCase() + type.slice(1)
-        }));
-      
-      return uniqueTypes;
+      return data;
     }
   });
 

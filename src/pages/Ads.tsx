@@ -8,6 +8,8 @@ import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { AdForm } from "@/components/ads/AdForm";
 import { AdsList } from "@/components/ads/AdsList";
+import { AdTypesList } from "@/components/ads/types/AdTypesList";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Ads = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -105,31 +107,44 @@ const Ads = () => {
           </div>
         </div>
 
-        {showForm && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle>Create New Advertisement</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <AdForm onSuccess={() => {
-                setShowForm(false);
-                refetch();
-              }} />
-            </CardContent>
-          </Card>
-        )}
+        <Tabs defaultValue="ads" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="ads">Ads</TabsTrigger>
+            <TabsTrigger value="types">Ad Types</TabsTrigger>
+          </TabsList>
 
-        {isLoading ? (
-          <div className="flex justify-center items-center h-32">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple"></div>
-          </div>
-        ) : (
-          <AdsList 
-            ads={ads || []} 
-            viewMode={viewMode} 
-            onDeleteAd={handleDeleteAd}
-          />
-        )}
+          <TabsContent value="ads" className="space-y-4">
+            {showForm && (
+              <Card className="mb-8">
+                <CardHeader>
+                  <CardTitle>Create New Advertisement</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <AdForm onSuccess={() => {
+                    setShowForm(false);
+                    refetch();
+                  }} />
+                </CardContent>
+              </Card>
+            )}
+
+            {isLoading ? (
+              <div className="flex justify-center items-center h-32">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple"></div>
+              </div>
+            ) : (
+              <AdsList 
+                ads={ads || []} 
+                viewMode={viewMode} 
+                onDeleteAd={handleDeleteAd}
+              />
+            )}
+          </TabsContent>
+
+          <TabsContent value="types">
+            <AdTypesList />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
