@@ -25,7 +25,7 @@ import {
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
-const VoucherAnalytics = () => {
+export const VoucherAnalytics = () => {
   const { data: voucherStats } = useQuery({
     queryKey: ["voucher-stats"],
     queryFn: async () => {
@@ -54,10 +54,9 @@ const VoucherAnalytics = () => {
         .order("total_sales", { ascending: false })
         .limit(5);
 
+      // Using a raw SQL query for grouping by type
       const { data: voucherTypes } = await supabase
-        .from("vouchers")
-        .select("type, count")
-        .group("type");
+        .rpc('get_voucher_type_counts');
 
       const revenue = totalRevenue?.reduce((sum, v) => sum + (v.total_amount || 0), 0) || 0;
 
