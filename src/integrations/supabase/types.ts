@@ -646,6 +646,33 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: string
+          location: string | null
+          role: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          full_name: string
+          id: string
+          location?: string | null
+          role?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: string
+          location?: string | null
+          role?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       publishers: {
         Row: {
           address: string | null
@@ -688,6 +715,36 @@ export type Database = {
           postcode?: string | null
           social_media_url?: string | null
           website?: string | null
+        }
+        Relationships: []
+      }
+      sales_agents: {
+        Row: {
+          commission_rate: number
+          created_at: string
+          manager_id: string | null
+          total_commission: number | null
+          total_sales: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          commission_rate?: number
+          created_at?: string
+          manager_id?: string | null
+          total_commission?: number | null
+          total_sales?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          commission_rate?: number
+          created_at?: string
+          manager_id?: string | null
+          total_commission?: number | null
+          total_sales?: number | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -786,6 +843,114 @@ export type Database = {
         }
         Relationships: []
       }
+      voucher_books: {
+        Row: {
+          book_id: string
+          voucher_id: string
+        }
+        Insert: {
+          book_id: string
+          voucher_id: string
+        }
+        Update: {
+          book_id?: string
+          voucher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voucher_books_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voucher_books_voucher_id_fkey"
+            columns: ["voucher_id"]
+            isOneToOne: false
+            referencedRelation: "vouchers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      voucher_series: {
+        Row: {
+          series_id: string
+          voucher_id: string
+        }
+        Insert: {
+          series_id: string
+          voucher_id: string
+        }
+        Update: {
+          series_id?: string
+          voucher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voucher_series_series_id_fkey"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "series"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voucher_series_voucher_id_fkey"
+            columns: ["voucher_id"]
+            isOneToOne: false
+            referencedRelation: "vouchers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vouchers: {
+        Row: {
+          client_id: string
+          code: string
+          commission_paid: boolean | null
+          commission_rate: number
+          created_at: string
+          created_by: string
+          id: string
+          payment_received: boolean | null
+          redeemed: boolean | null
+          redeemed_at: string | null
+          total_amount: number
+          type: Database["public"]["Enums"]["voucher_type"]
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          code: string
+          commission_paid?: boolean | null
+          commission_rate?: number
+          created_at?: string
+          created_by: string
+          id?: string
+          payment_received?: boolean | null
+          redeemed?: boolean | null
+          redeemed_at?: string | null
+          total_amount: number
+          type: Database["public"]["Enums"]["voucher_type"]
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          code?: string
+          commission_paid?: boolean | null
+          commission_rate?: number
+          created_at?: string
+          created_by?: string
+          id?: string
+          payment_received?: boolean | null
+          redeemed?: boolean | null
+          redeemed_at?: string | null
+          total_amount?: number
+          type?: Database["public"]["Enums"]["voucher_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -798,6 +963,7 @@ export type Database = {
       ad_type: "banner" | "interstitial" | "popup" | "sponsored"
       discount_type: "percentage" | "fixed" | "volume" | "cart"
       subscription_duration: "day" | "week" | "month" | "year"
+      voucher_type: "single_book" | "series" | "all_books"
     }
     CompositeTypes: {
       [_ in never]: never
