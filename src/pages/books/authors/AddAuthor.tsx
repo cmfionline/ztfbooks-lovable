@@ -64,8 +64,8 @@ const AddAuthor = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <BasicInfoFields form={form} />
-              <SocialMediaFields form={form} />
+              <BasicInfoFields control={form.control} />
+              <SocialMediaFields control={form.control} />
               
               <div className="flex gap-4 pt-2">
                 <Button
