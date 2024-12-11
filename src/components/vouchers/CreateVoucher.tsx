@@ -20,7 +20,9 @@ const CreateVoucher = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('books')
-        .select('id, title');
+        .select('id, title, price, is_free')
+        .eq('is_free', false)  // Only fetch paid books
+        .order('title');
       if (error) throw error;
       return data;
     }
@@ -42,7 +44,6 @@ const CreateVoucher = () => {
       type: "single_book",
       bookId: "",
       seriesId: "",
-      amount: "",
       clientEmail: "",
       numberOfDownloads: "1",
     }
@@ -53,6 +54,14 @@ const CreateVoucher = () => {
     try {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) throw new Error("Not authenticated");
+
+      // Calculate total amount based on book price or set to 0 for series
+      let totalAmount = 0;
+      if (values.type === 'single_book' && values.bookId) {
+        const selectedBook = books?.find(book => book.id === values.bookId);
+        totalAmount = selectedBook?.price || 0;
+      }
+      // For series type, totalAmount remains 0
 
       // Generate a random voucher code
       const voucherCode = Math.random().toString(36).substring(2, 10).toUpperCase();
@@ -65,7 +74,7 @@ const CreateVoucher = () => {
           type: values.type,
           client_id: values.clientId,
           created_by: userData.user.id,
-          total_amount: Number(values.amount),
+          total_amount: totalAmount,
           number_of_downloads: Number(values.numberOfDownloads),
         })
         .select()

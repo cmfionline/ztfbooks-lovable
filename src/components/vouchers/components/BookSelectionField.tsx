@@ -30,7 +30,7 @@ export const BookSelectionField = ({ form, books }: BookSelectionFieldProps) => 
                   value={book.id}
                   className="hover:bg-purple-light/10"
                 >
-                  {book.title}
+                  {book.title} - ${book.price}
                 </SelectItem>
               ))}
             </SelectContent>

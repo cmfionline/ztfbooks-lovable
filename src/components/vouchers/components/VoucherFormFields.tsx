@@ -25,20 +25,6 @@ export const VoucherFormFields = ({ form }: VoucherFormFieldsProps) => {
 
       <FormField
         control={form.control}
-        name="amount"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Amount</FormLabel>
-            <FormControl>
-              <Input {...field} type="number" min="0" step="0.01" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
         name="numberOfDownloads"
         render={({ field }) => (
           <FormItem>
