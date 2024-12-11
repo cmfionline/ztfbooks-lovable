@@ -45,11 +45,16 @@ const AdminsList = () => {
   return (
     <>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Administrators</h1>
-        <Button onClick={() => setIsCreateDialogOpen(true)}>
-          <UserPlus className="w-4 h-4 mr-2" />
-          Add Admin
-        </Button>
+        <h1 className="text-3xl font-bold tracking-tight">Administrators</h1>
+        <div className="flex items-center gap-2">
+          <Button 
+            onClick={() => setIsCreateDialogOpen(true)}
+            className="shadow-sm transition-all duration-200 hover:shadow-md"
+          >
+            <UserPlus className="w-4 h-4 mr-2" />
+            Add Admin
+          </Button>
+        </div>
       </div>
 
       <Table>
