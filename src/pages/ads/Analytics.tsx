@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import { MetricsCards } from "@/components/ads/analytics/MetricsCards";
 import { PerformanceChart } from "@/components/ads/analytics/PerformanceChart";
 import { DeviceDistribution } from "@/components/ads/analytics/DeviceDistribution";
@@ -45,7 +45,7 @@ const Analytics = () => {
         .from('ad_analytics')
         .select('device_type, count(*)')
         .not('device_type', 'is', null)
-        .groupBy('device_type');
+        .group('device_type');  // Changed from groupBy to group
 
       if (error) throw error;
       return data || [];
