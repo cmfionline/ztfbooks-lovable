@@ -86,7 +86,7 @@ const Ads = () => {
             </div>
             <Button 
               onClick={() => setShowForm(!showForm)}
-              className="bg-purple hover:bg-purple/90"
+              className="bg-purple hover:bg-purple/90 text-white"
             >
               <PlusCircle className="mr-2 h-4 w-4" />
               {showForm ? 'Hide Form' : 'New Ad'}
