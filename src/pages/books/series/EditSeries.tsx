@@ -1,60 +1,49 @@
 import { useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { User, Loader2 } from "lucide-react";
+import { Library, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BasicInfoFields } from "./components/BasicInfoFields";
-import { SocialMediaFields } from "./components/SocialMediaFields";
-import { authorSchema } from "./schema";
+import { SeriesBasicInfo } from "./components/SeriesBasicInfo";
+import { SeriesLanguage } from "./components/SeriesLanguage";
+import { SeriesImage } from "./components/SeriesImage";
 
-type FormValues = z.infer<typeof authorSchema>;
+const formSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  description: z.string().optional(),
+  languageId: z.string().optional(),
+  image: z.string().url().optional().or(z.literal("")),
+});
 
-const EditAuthor = () => {
+type FormValues = z.infer<typeof formSchema>;
+
+const EditSeries = () => {
   const { id } = useParams();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(authorSchema),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      designation: "",
-      education: "",
-      nationality: "",
-      date_of_birth: "",
-      mobile: "",
-      address: "",
-      photo: "",
-      bio: "",
       description: "",
-      website: "",
-      facebook_url: "",
-      twitter_url: "",
-      instagram_url: "",
+      languageId: "",
+      image: "",
     },
   });
 
-  const { data: author, isLoading } = useQuery({
-    queryKey: ["author", id],
+  const { data: series, isLoading } = useQuery({
+    queryKey: ["series", id],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("authors")
+        .from("series")
         .select("*")
         .eq("id", id)
         .single();
@@ -65,45 +54,40 @@ const EditAuthor = () => {
   });
 
   useEffect(() => {
-    if (author) {
+    if (series) {
       form.reset({
-        name: author.name,
-        designation: author.designation || "",
-        education: author.education || "",
-        nationality: author.nationality || "",
-        date_of_birth: author.date_of_birth || "",
-        mobile: author.mobile || "",
-        address: author.address || "",
-        photo: author.photo || "",
-        bio: author.bio || "",
-        description: author.description || "",
-        website: author.website || "",
-        facebook_url: author.facebook_url || "",
-        twitter_url: author.twitter_url || "",
-        instagram_url: author.instagram_url || "",
+        name: series.name,
+        description: series.description || "",
+        languageId: series.language_id || "",
+        image: series.image || "",
       });
     }
-  }, [author, form]);
+  }, [series, form]);
 
   const onSubmit = async (values: FormValues) => {
     try {
       const { error } = await supabase
-        .from("authors")
-        .update(values)
+        .from("series")
+        .update({
+          name: values.name,
+          description: values.description,
+          language_id: values.languageId,
+          image: values.image,
+        })
         .eq("id", id);
 
       if (error) throw error;
 
       toast({
         title: "Success",
-        description: `Author "${values.name}" has been updated successfully.`,
+        description: `Series "${values.name}" has been updated successfully.`,
       });
-      navigate("/books/authors");
+      navigate("/books/series");
     } catch (error) {
-      console.error("Error updating author:", error);
+      console.error("Error updating series:", error);
       toast({
         title: "Error",
-        description: "Failed to update author. Please try again.",
+        description: "Failed to update series. Please try again.",
         variant: "destructive",
       });
     }
@@ -130,22 +114,23 @@ const EditAuthor = () => {
       <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
-            <User className="w-6 h-6" />
-            Edit Author
+            <Library className="w-6 h-6" />
+            Edit Series
           </CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <BasicInfoFields form={form} />
-              <SocialMediaFields form={form} />
+              <SeriesBasicInfo control={form.control} />
+              <SeriesLanguage control={form.control} />
+              <SeriesImage control={form.control} />
 
               <div className="flex gap-4">
                 <Button
                   type="button"
                   variant="outline"
                   className="flex-1"
-                  onClick={() => navigate("/books/authors")}
+                  onClick={() => navigate("/books/series")}
                 >
                   Cancel
                 </Button>
@@ -157,7 +142,7 @@ const EditAuthor = () => {
                   {form.formState.isSubmitting ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
-                    "Update Author"
+                    "Update Series"
                   )}
                 </Button>
               </div>
@@ -169,4 +154,4 @@ const EditAuthor = () => {
   );
 };
 
-export default EditAuthor;
+export default EditSeries;

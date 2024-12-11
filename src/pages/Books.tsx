@@ -18,14 +18,19 @@ import { useToast } from "@/components/ui/use-toast";
 import AddBook from "./books/AddBook";
 import AuthorsPage from "./books/authors/AuthorsPage";
 import AddAuthor from "./books/authors/AddAuthor";
+import EditAuthor from "./books/authors/EditAuthor";
 import SeriesPage from "./books/series/SeriesPage";
 import AddSeries from "./books/series/AddSeries";
+import EditSeries from "./books/series/EditSeries";
 import PublishersPage from "./books/publishers/PublishersPage";
 import AddPublisher from "./books/publishers/AddPublisher";
+import EditPublisher from "./books/publishers/EditPublisher";
 import TagsPage from "./books/tags/TagsPage";
 import AddTag from "./books/tags/AddTag";
+import EditTag from "./books/tags/EditTag";
 import LanguagesPage from "./books/languages/LanguagesPage";
 import AddLanguage from "./books/languages/AddLanguage";
+import EditLanguage from "./books/languages/EditLanguage";
 import EbooksPage from "./books/ebooks/EbooksPage";
 
 const BooksListing = () => {
@@ -167,14 +172,19 @@ const Books = () => {
       <Route path="/add" element={<AddBook />} />
       <Route path="/authors" element={<AuthorsPage />} />
       <Route path="/authors/add" element={<AddAuthor />} />
+      <Route path="/authors/:id" element={<EditAuthor />} />
       <Route path="/series" element={<SeriesPage />} />
       <Route path="/series/add" element={<AddSeries />} />
+      <Route path="/series/:id" element={<EditSeries />} />
       <Route path="/publishers" element={<PublishersPage />} />
       <Route path="/publishers/add" element={<AddPublisher />} />
+      <Route path="/publishers/:id" element={<EditPublisher />} />
       <Route path="/tags" element={<TagsPage />} />
       <Route path="/tags/add" element={<AddTag />} />
+      <Route path="/tags/:id" element={<EditTag />} />
       <Route path="/languages" element={<LanguagesPage />} />
       <Route path="/languages/add" element={<AddLanguage />} />
+      <Route path="/languages/:id" element={<EditLanguage />} />
     </Routes>
   );
 };
