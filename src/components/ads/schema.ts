@@ -31,19 +31,44 @@ export const adSchema = z.object({
     .refine(date => new Date(date) >= new Date(), "Start date must be in the future"),
   end_date: z.string()
     .min(1, "End date is required")
-    .refine(date => new Date(date) >= new Date(), "End date must be in the future"),
+    .refine(
+      (date, ctx) => {
+        const startDate = new Date(ctx.parent.start_date);
+        const endDate = new Date(date);
+        return endDate > startDate;
+      },
+      "End date must be after start date"
+    ),
   cta_text: z.string()
     .min(2, "CTA text must be at least 2 characters")
     .max(30, "CTA text must not exceed 30 characters")
     .optional(),
   target_audience: z.record(z.any()).optional(),
   ab_test_group: z.string().optional(),
-  // New discount fields
   discount_type: z.enum(["percentage", "fixed", "volume", "cart"]).optional(),
   discount_value: z.number().min(0).optional(),
   min_purchase_amount: z.number().min(0).optional(),
   min_books_count: z.number().int().min(0).optional(),
   is_stackable: z.boolean().default(false),
+  discount_start_date: z.string()
+    .min(1, "Discount start date is required when applying a discount")
+    .refine(
+      date => new Date(date) >= new Date(),
+      "Discount start date must be in the future"
+    )
+    .optional(),
+  discount_end_date: z.string()
+    .min(1, "Discount end date is required when applying a discount")
+    .refine(
+      (date, ctx) => {
+        if (!ctx.parent.discount_start_date) return true;
+        const startDate = new Date(ctx.parent.discount_start_date);
+        const endDate = new Date(date);
+        return endDate > startDate;
+      },
+      "Discount end date must be after discount start date"
+    )
+    .optional(),
 });
 
 export type AdFormValues = z.infer<typeof adSchema>;

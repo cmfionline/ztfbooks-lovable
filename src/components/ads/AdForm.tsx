@@ -26,6 +26,8 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
       content: "",
       cta_text: "Learn More",
       is_stackable: false,
+      discount_start_date: "",
+      discount_end_date: "",
     },
   });
 
@@ -84,12 +86,18 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
         video_url = publicUrl;
       }
 
+      // Format dates for database
+      const formattedStartDate = values.discount_start_date ? new Date(values.discount_start_date).toISOString() : null;
+      const formattedEndDate = values.discount_end_date ? new Date(values.discount_end_date).toISOString() : null;
+
       const { error } = await supabase
         .from('ads')
         .insert([{
           ...values,
           image_url,
           video_url,
+          discount_start_date: formattedStartDate,
+          discount_end_date: formattedEndDate,
         }]);
 
       if (error) {
