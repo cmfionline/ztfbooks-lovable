@@ -59,9 +59,8 @@ export const VoucherAnalytics = () => {
         .order("total_sales", { ascending: false })
         .limit(5);
 
-      // Using our new RPC function for voucher type counts
       const { data: voucherTypes } = await supabase
-        .rpc<VoucherTypeCount, Record<string, never>>('get_voucher_type_counts');
+        .rpc('get_voucher_type_counts');
 
       const revenue = totalRevenue?.reduce((sum, v) => sum + (v.total_amount || 0), 0) || 0;
 
@@ -173,7 +172,7 @@ export const VoucherAnalytics = () => {
                     fill="#8884d8"
                     dataKey="value"
                   >
-                    {voucherStats?.voucherTypes.map((entry, index) => (
+                    {voucherStats?.voucherTypes?.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
