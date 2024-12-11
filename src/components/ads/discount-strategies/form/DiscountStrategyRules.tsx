@@ -6,9 +6,10 @@ import { DiscountStrategyFormValues } from "../schema";
 
 interface DiscountStrategyRulesProps {
   control: Control<DiscountStrategyFormValues>;
+  discountType: string;
 }
 
-export const DiscountStrategyRules = ({ control }: DiscountStrategyRulesProps) => {
+export const DiscountStrategyRules = ({ control, discountType }: DiscountStrategyRulesProps) => {
   return (
     <div className="space-y-4">
       <FormField
@@ -16,11 +17,13 @@ export const DiscountStrategyRules = ({ control }: DiscountStrategyRulesProps) =
         name="value"
         render={({ field: { value, onChange, ...field } }) => (
           <FormItem>
-            <FormLabel>Discount Value</FormLabel>
+            <FormLabel>
+              {discountType === 'percentage' ? 'Discount Percentage' : 'Fixed Amount'}
+            </FormLabel>
             <FormControl>
               <Input 
                 type="number"
-                placeholder="Enter discount value"
+                placeholder={discountType === 'percentage' ? "Enter percentage" : "Enter amount"}
                 {...field}
                 value={value || ""}
                 onChange={(e) => onChange(e.target.value ? parseFloat(e.target.value) : 0)}
@@ -31,45 +34,49 @@ export const DiscountStrategyRules = ({ control }: DiscountStrategyRulesProps) =
         )}
       />
 
-      <FormField
-        control={control}
-        name="minPurchaseAmount"
-        render={({ field: { value, onChange, ...field } }) => (
-          <FormItem>
-            <FormLabel>Minimum Purchase Amount</FormLabel>
-            <FormControl>
-              <Input 
-                type="number"
-                placeholder="Enter minimum purchase amount"
-                {...field}
-                value={value || ""}
-                onChange={(e) => onChange(e.target.value ? parseFloat(e.target.value) : 0)}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      {discountType !== 'volume' && (
+        <FormField
+          control={control}
+          name="minPurchaseAmount"
+          render={({ field: { value, onChange, ...field } }) => (
+            <FormItem>
+              <FormLabel>Minimum Purchase Amount</FormLabel>
+              <FormControl>
+                <Input 
+                  type="number"
+                  placeholder="Enter minimum purchase amount"
+                  {...field}
+                  value={value || ""}
+                  onChange={(e) => onChange(e.target.value ? parseFloat(e.target.value) : 0)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
 
-      <FormField
-        control={control}
-        name="minBooksCount"
-        render={({ field: { value, onChange, ...field } }) => (
-          <FormItem>
-            <FormLabel>Minimum Books Count</FormLabel>
-            <FormControl>
-              <Input 
-                type="number"
-                placeholder="Enter minimum books count"
-                {...field}
-                value={value || ""}
-                onChange={(e) => onChange(e.target.value ? parseInt(e.target.value) : 0)}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      {discountType === 'volume' && (
+        <FormField
+          control={control}
+          name="minBooksCount"
+          render={({ field: { value, onChange, ...field } }) => (
+            <FormItem>
+              <FormLabel>Minimum Books Count</FormLabel>
+              <FormControl>
+                <Input 
+                  type="number"
+                  placeholder="Enter minimum books count"
+                  {...field}
+                  value={value || ""}
+                  onChange={(e) => onChange(e.target.value ? parseInt(e.target.value) : 0)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
 
       <FormField
         control={control}
