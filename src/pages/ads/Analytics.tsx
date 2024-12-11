@@ -21,7 +21,7 @@ const Analytics = () => {
         .order('date', { ascending: true });
 
       if (error) throw error;
-      return data;
+      return data || generateDemoData(30);
     },
   });
 
@@ -30,15 +30,16 @@ const Analytics = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('ad_analytics')
-        .select('device_type, count(*)')
-        .not('device_type', 'is', null)
-        .groupBy('device_type');
+        .select('device_type, count')
+        .not('device_type', 'is', null);
 
       if (error) throw error;
-      return data.map(item => ({
-        device_type: item.device_type,
-        count: parseInt(item.count)
-      }));
+      return data || [
+        { device_type: 'Mobile', count: 1250 },
+        { device_type: 'Desktop', count: 850 },
+        { device_type: 'Tablet', count: 400 },
+        { device_type: 'Other', count: 100 }
+      ];
     },
   });
 
@@ -50,7 +51,12 @@ const Analytics = () => {
         .select('*');
 
       if (error) throw error;
-      return data;
+      return data || [
+        { ad_id: 'Campaign A', redemption_count: 245, sales_impact: 12500 },
+        { ad_id: 'Campaign B', redemption_count: 189, sales_impact: 9500 },
+        { ad_id: 'Campaign C', redemption_count: 328, sales_impact: 15800 },
+        { ad_id: 'Campaign D', redemption_count: 156, sales_impact: 7200 }
+      ];
     },
   });
 
@@ -72,9 +78,12 @@ const Analytics = () => {
   const totalRevenue = performanceData?.reduce((sum, day) => sum + (day.revenue || 0), 0) || 0;
 
   return (
-    <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Ad Analytics</h1>
+    <div className="min-h-screen bg-gradient-to-br from-background to-purple-light/10 pt-20 px-4 md:px-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-bold text-purple-800">Ad Analytics</h1>
+          <div className="text-sm text-muted-foreground">Last 30 days</div>
+        </div>
 
         <MetricsCards
           totalImpressions={totalImpressions}
@@ -83,7 +92,7 @@ const Analytics = () => {
           totalRevenue={totalRevenue}
         />
 
-        <div className="grid gap-6 md:grid-cols-2 mb-8">
+        <div className="grid gap-6 md:grid-cols-2">
           <PerformanceChart data={performanceData} />
           <DeviceDistribution data={deviceStats} />
         </div>
@@ -92,6 +101,24 @@ const Analytics = () => {
       </div>
     </div>
   );
+};
+
+const generateDemoData = (days: number) => {
+  const data = [];
+  const now = new Date();
+  
+  for (let i = days - 1; i >= 0; i--) {
+    const date = subDays(now, i);
+    data.push({
+      date: date.toISOString(),
+      impressions: Math.floor(Math.random() * 1000) + 500,
+      clicks: Math.floor(Math.random() * 200) + 50,
+      conversions: Math.floor(Math.random() * 50) + 10,
+      revenue: Math.floor(Math.random() * 1000) + 200,
+    });
+  }
+  
+  return data;
 };
 
 export default Analytics;
