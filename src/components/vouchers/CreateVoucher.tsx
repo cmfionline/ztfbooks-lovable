@@ -3,24 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { VoucherTypeField } from "./components/VoucherTypeField";
+import { BookSelectionField } from "./components/BookSelectionField";
+import { SeriesSelectionField } from "./components/SeriesSelectionField";
+import { VoucherFormFields } from "./components/VoucherFormFields";
 
 const CreateVoucher = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -55,6 +44,7 @@ const CreateVoucher = () => {
       seriesId: "",
       amount: "",
       clientEmail: "",
+      numberOfDownloads: "1",
     }
   });
 
@@ -76,6 +66,7 @@ const CreateVoucher = () => {
           client_id: values.clientId,
           created_by: userData.user.id,
           total_amount: Number(values.amount),
+          number_of_downloads: Number(values.numberOfDownloads),
         })
         .select()
         .single();
@@ -116,112 +107,10 @@ const CreateVoucher = () => {
       
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Voucher Type</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="bg-white border-purple-light focus:border-purple">
-                      <SelectValue placeholder="Select voucher type" className="text-foreground" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="single_book" className="hover:bg-purple-light/10">Single Book</SelectItem>
-                    <SelectItem value="series" className="hover:bg-purple-light/10">Book Series</SelectItem>
-                    <SelectItem value="all_books" className="hover:bg-purple-light/10">All Books</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {form.watch("type") === "single_book" && (
-            <FormField
-              control={form.control}
-              name="bookId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Select Book</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="bg-white border-purple-light focus:border-purple">
-                        <SelectValue placeholder="Select a book" className="text-foreground" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-white">
-                      {books?.map((book) => (
-                        <SelectItem 
-                          key={book.id} 
-                          value={book.id}
-                          className="hover:bg-purple-light/10"
-                        >
-                          {book.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-
-          {form.watch("type") === "series" && (
-            <FormField
-              control={form.control}
-              name="seriesId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Select Series</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="bg-white border-purple-light focus:border-purple">
-                        <SelectValue placeholder="Select a series" className="text-foreground" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-white">
-                      {series?.map((s) => (
-                        <SelectItem key={s.id} value={s.id}>
-                          {s.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-
-          <FormField
-            control={form.control}
-            name="clientEmail"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Client Email</FormLabel>
-                <FormControl>
-                  <Input {...field} type="email" placeholder="client@example.com" />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="amount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Amount</FormLabel>
-                <FormControl>
-                  <Input {...field} type="number" min="0" step="0.01" />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+          <VoucherTypeField form={form} />
+          <BookSelectionField form={form} books={books || []} />
+          <SeriesSelectionField form={form} series={series || []} />
+          <VoucherFormFields form={form} />
 
           <div className="flex justify-end space-x-4">
             <Button

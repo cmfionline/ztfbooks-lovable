@@ -920,6 +920,7 @@ export type Database = {
           created_at: string
           created_by: string
           id: string
+          number_of_downloads: number
           payment_received: boolean | null
           redeemed: boolean | null
           redeemed_at: string | null
@@ -935,6 +936,7 @@ export type Database = {
           created_at?: string
           created_by: string
           id?: string
+          number_of_downloads?: number
           payment_received?: boolean | null
           redeemed?: boolean | null
           redeemed_at?: string | null
@@ -950,6 +952,7 @@ export type Database = {
           created_at?: string
           created_by?: string
           id?: string
+          number_of_downloads?: number
           payment_received?: boolean | null
           redeemed?: boolean | null
           redeemed_at?: string | null
