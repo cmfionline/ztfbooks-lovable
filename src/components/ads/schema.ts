@@ -65,7 +65,9 @@ export const adSchema = z.object({
   discount_end_date: z.string()
     .min(1, "Discount end date is required when applying a discount")
     .superRefine((date, ctx: z.RefinementCtx & { parent: { discount_start_date?: string } }) => {
-      if (!ctx.parent.discount_start_date) return true;
+      // If there's no discount_start_date, skip validation
+      if (!ctx.parent?.discount_start_date) return true;
+      
       const startDate = new Date(ctx.parent.discount_start_date);
       const endDate = new Date(date);
       if (endDate <= startDate) {
@@ -78,6 +80,18 @@ export const adSchema = z.object({
       return true;
     })
     .optional(),
+}).refine((data) => {
+  // If any discount-related field is provided, ensure all required discount fields are present
+  const hasDiscountFields = data.discount_type || data.discount_value || data.discount_start_date || data.discount_end_date;
+  if (hasDiscountFields) {
+    return data.discount_type && 
+           data.discount_value !== undefined && 
+           data.discount_start_date && 
+           data.discount_end_date;
+  }
+  return true;
+}, {
+  message: "All discount fields are required when setting up a discount",
 });
 
 export type AdFormValues = z.infer<typeof adSchema>;
