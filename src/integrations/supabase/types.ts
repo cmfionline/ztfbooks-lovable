@@ -806,6 +806,60 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_subscriptions: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          id: string
+          notification_type: Database["public"]["Enums"]["notification_type"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          notification_type: Database["public"]["Enums"]["notification_type"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          notification_type?: Database["public"]["Enums"]["notification_type"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notification_templates: {
+        Row: {
+          created_at: string
+          id: string
+          message_template: string
+          title_template: string
+          type: Database["public"]["Enums"]["notification_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message_template: string
+          title_template: string
+          type: Database["public"]["Enums"]["notification_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message_template?: string
+          title_template?: string
+          type?: Database["public"]["Enums"]["notification_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string
@@ -1338,6 +1392,12 @@ export type Database = {
       ad_type_status: "active" | "inactive"
       discount_strategy_type: "percentage" | "fixed" | "volume"
       discount_type: "percentage" | "fixed" | "volume" | "cart"
+      notification_type:
+        | "new_book"
+        | "new_promotion"
+        | "new_discount"
+        | "new_feature"
+        | "system_update"
       subscription_duration: "day" | "week" | "month" | "year"
       voucher_type:
         | "single_book"
