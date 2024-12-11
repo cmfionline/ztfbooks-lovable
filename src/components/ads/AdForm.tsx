@@ -29,12 +29,8 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
       placement: "home",
       content: "",
       cta_text: "Learn More",
-      is_stackable: false,
-      discount_type: "percentage",
       start_date: tomorrow.toISOString().split('T')[0],
       end_date: fiveDaysLater.toISOString().split('T')[0],
-      discount_start_date: tomorrow.toISOString().split('T')[0],
-      discount_end_date: fiveDaysLater.toISOString().split('T')[0],
     },
   });
 
@@ -93,18 +89,12 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
         video_url = publicUrl;
       }
 
-      // Format dates for database
-      const formattedStartDate = values.discount_start_date ? new Date(values.discount_start_date).toISOString() : null;
-      const formattedEndDate = values.discount_end_date ? new Date(values.discount_end_date).toISOString() : null;
-
       const { error } = await supabase
         .from('ads')
         .insert([{
           ...values,
           image_url,
           video_url,
-          discount_start_date: formattedStartDate,
-          discount_end_date: formattedEndDate,
         }]);
 
       if (error) {
@@ -156,7 +146,7 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
                 </div>
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium text-gray-900">Discount Settings</h3>
-                  <DiscountFields control={form.control} watch={form.watch} />
+                  <DiscountFields control={form.control} />
                 </div>
               </div>
             </div>

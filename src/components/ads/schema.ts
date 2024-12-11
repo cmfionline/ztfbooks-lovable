@@ -34,11 +34,9 @@ export const adSchema = z.object({
   end_date: z.string()
     .min(1, "End date is required")
     .superRefine((date, ctx: z.RefinementCtx & { parent: any }) => {
-      type ParentInput = { start_date?: string; discount_start_date?: string };
+      type ParentInput = { start_date?: string };
       const parent = ctx.parent as ParentInput;
-      const startDate = ctx.path.includes('discount') 
-        ? parent?.discount_start_date
-        : parent?.start_date;
+      const startDate = parent?.start_date;
       
       if (!startDate) return;
       
@@ -55,47 +53,7 @@ export const adSchema = z.object({
     .optional(),
   target_audience: z.record(z.any()).optional(),
   ab_test_group: z.string().optional(),
-  discount_type: z.string().optional(),
-  discount_value: z.number().min(0).optional(),
-  min_purchase_amount: z.number().min(0).optional(),
-  min_books_count: z.number().int().min(0).optional(),
-  is_stackable: z.boolean().default(false),
-  max_uses_per_user: z.number().int().min(1).optional(),
-  max_total_uses: z.number().int().min(1).optional(),
-  discount_start_date: z.string()
-    .min(1, "Discount start date is required when applying a discount")
-    .refine((date: string) => new Date(date) >= new Date(), {
-      message: "Discount start date must be in the future"
-    })
-    .optional(),
-  discount_end_date: z.string()
-    .min(1, "Discount end date is required when applying a discount")
-    .superRefine((date, ctx: z.RefinementCtx & { parent: any }) => {
-      type ParentInput = { discount_start_date?: string };
-      const parent = ctx.parent as ParentInput;
-      const startDate = parent?.discount_start_date;
-      
-      if (!startDate) return;
-      
-      if (new Date(date) <= new Date(startDate)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Discount end date must be after discount start date"
-        });
-      }
-    })
-    .optional(),
-}).refine((data) => {
-  const hasDiscountFields = data.discount_type || data.discount_value || data.discount_start_date || data.discount_end_date;
-  if (hasDiscountFields) {
-    return data.discount_type && 
-           data.discount_value !== undefined && 
-           data.discount_start_date && 
-           data.discount_end_date;
-  }
-  return true;
-}, {
-  message: "All discount fields are required when setting up a discount",
+  discount_strategy_id: z.string().uuid("Please select a valid discount strategy").optional(),
 });
 
 export type AdFormValues = z.infer<typeof adSchema>;
