@@ -33,20 +33,15 @@ export const adSchema = z.object({
     }),
   end_date: z.string()
     .min(1, "End date is required")
-    .superRefine((date, ctx) => {
-      if (!ctx.parent?.start_date) return true;
+    .refine((date: string, ctx) => {
+      const startDate = ctx.path.includes('discount') 
+        ? z.string().parse(ctx.path.includes('discount') && (ctx.parent as any)?.discount_start_date)
+        : z.string().parse((ctx.parent as any)?.start_date);
       
-      const startDate = new Date(ctx.parent.start_date);
-      const endDate = new Date(date);
-      if (endDate <= startDate) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "End date must be after start date"
-        });
-        return false;
-      }
-      return true;
-    }),
+      if (!startDate) return true;
+      
+      return new Date(date) > new Date(startDate);
+    }, "End date must be after start date"),
   cta_text: z.string()
     .min(2, "CTA text must be at least 2 characters")
     .max(30, "CTA text must not exceed 30 characters")
@@ -66,20 +61,12 @@ export const adSchema = z.object({
     .optional(),
   discount_end_date: z.string()
     .min(1, "Discount end date is required when applying a discount")
-    .superRefine((date, ctx) => {
-      if (!ctx.parent?.discount_start_date) return true;
+    .refine((date: string, ctx) => {
+      const startDate = z.string().parse((ctx.parent as any)?.discount_start_date);
+      if (!startDate) return true;
       
-      const startDate = new Date(ctx.parent.discount_start_date);
-      const endDate = new Date(date);
-      if (endDate <= startDate) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Discount end date must be after discount start date"
-        });
-        return false;
-      }
-      return true;
-    })
+      return new Date(date) > new Date(startDate);
+    }, "Discount end date must be after discount start date")
     .optional(),
 }).refine((data) => {
   const hasDiscountFields = data.discount_type || data.discount_value || data.discount_start_date || data.discount_end_date;

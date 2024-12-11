@@ -6,27 +6,35 @@ export const useAdConfigurations = () => {
     queryKey: ['adTypes'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('ad_types')
-        .select('*')
+        .from('ads')
+        .select('type')
         .eq('is_active', true)
-        .order('name');
+        .order('type');
       
       if (error) throw error;
-      return data;
+      
+      // Get unique types
+      const uniqueTypes = Array.from(new Set(data.map(ad => ad.type)))
+        .map(type => ({
+          id: type,
+          type,
+          name: type.charAt(0).toUpperCase() + type.slice(1)
+        }));
+      
+      return uniqueTypes;
     }
   });
 
   const { data: discountStrategies, isLoading: isLoadingDiscountStrategies } = useQuery({
-    queryKey: ['discountStrategies'],
+    queryKey: ['discountTypes'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('discount_strategies')
-        .select('*')
-        .eq('is_active', true)
-        .order('name');
-      
-      if (error) throw error;
-      return data;
+      // For now, return hardcoded values until we create the table
+      return [
+        { id: 'percentage', type: 'percentage', name: 'Percentage' },
+        { id: 'fixed', type: 'fixed', name: 'Fixed Amount' },
+        { id: 'volume', type: 'volume', name: 'Volume Discount' },
+        { id: 'cart', type: 'cart', name: 'Cart Value Discount' }
+      ];
     }
   });
 
