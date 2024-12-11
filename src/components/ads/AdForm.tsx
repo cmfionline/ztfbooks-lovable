@@ -19,7 +19,7 @@ interface AdFormProps {
 
 export const AdForm = ({ onSuccess }: AdFormProps) => {
   const tomorrow = addDays(new Date(), 1);
-  const nextWeek = addDays(new Date(), 7);
+  const fiveDaysLater = addDays(tomorrow, 5);
 
   const form = useForm<AdFormValues>({
     resolver: zodResolver(adSchema),
@@ -32,9 +32,9 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
       is_stackable: false,
       discount_type: "percentage",
       start_date: tomorrow.toISOString().split('T')[0],
-      end_date: nextWeek.toISOString().split('T')[0],
+      end_date: fiveDaysLater.toISOString().split('T')[0],
       discount_start_date: tomorrow.toISOString().split('T')[0],
-      discount_end_date: nextWeek.toISOString().split('T')[0],
+      discount_end_date: fiveDaysLater.toISOString().split('T')[0],
     },
   });
 
