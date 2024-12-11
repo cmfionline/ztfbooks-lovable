@@ -30,9 +30,9 @@ const CreateAdminDialog = ({ open, onOpenChange }: CreateAdminDialogProps) => {
     try {
       // First check if the user exists in auth
       const { data: { users }, error: getUserError } = await supabase.auth.admin.listUsers({
-        filters: {
-          email: values.email
-        }
+        page: 1,
+        perPage: 1,
+        query: values.email
       });
 
       if (getUserError) throw getUserError;
