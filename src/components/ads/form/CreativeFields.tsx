@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Control } from "react-hook-form";
 import { AdFormValues } from "../schema";
-import { FileUpload } from "@/components/ui/file-upload";
 
 interface CreativeFieldsProps {
   control: Control<AdFormValues>;
