@@ -1,60 +1,65 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle } from "lucide-react";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 import CreateDiscountStrategyDialog from "./CreateDiscountStrategyDialog";
 
 export const DiscountStrategiesList = () => {
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+
+  const { data: strategies, isLoading } = useQuery({
+    queryKey: ['discountStrategies'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('discount_strategies')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Discount Strategies</h1>
-        <Button onClick={() => setShowCreateDialog(true)}>
-          <PlusCircle className="w-4 h-4 mr-2" />
-          New Strategy
+        <h2 className="text-2xl font-bold">Discount Strategies</h2>
+        <Button onClick={() => setIsCreateDialogOpen(true)}>
+          <Plus className="w-4 h-4 mr-2" />
+          Create Strategy
         </Button>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle>Percentage Discount</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Apply a percentage discount to selected books or categories
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Fixed Amount</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Apply a fixed amount discount to selected items
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Volume Discount</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Offer discounts based on quantity purchased
-            </p>
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {strategies?.map((strategy) => (
+          <div
+            key={strategy.id}
+            className="p-4 rounded-lg border bg-card text-card-foreground shadow-sm"
+          >
+            <h3 className="font-semibold">{strategy.name}</h3>
+            <div className="mt-2 space-y-1 text-sm text-muted-foreground">
+              <p>Type: {strategy.type}</p>
+              <p>Value: {strategy.value}{strategy.type === 'percentage' ? '%' : ''}</p>
+              {strategy.min_purchase_amount > 0 && (
+                <p>Min Purchase: ${strategy.min_purchase_amount}</p>
+              )}
+              {strategy.min_books_count > 0 && (
+                <p>Min Books: {strategy.min_books_count}</p>
+              )}
+              <p>Stackable: {strategy.is_stackable ? 'Yes' : 'No'}</p>
+            </div>
+          </div>
+        ))}
       </div>
 
-      <CreateDiscountStrategyDialog 
-        open={showCreateDialog} 
-        onOpenChange={setShowCreateDialog} 
+      <CreateDiscountStrategyDialog
+        open={isCreateDialogOpen}
+        onOpenChange={setIsCreateDialogOpen}
       />
     </div>
   );

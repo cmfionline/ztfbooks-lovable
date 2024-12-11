@@ -529,6 +529,45 @@ export type Database = {
           },
         ]
       }
+      discount_strategies: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean | null
+          is_stackable: boolean | null
+          min_books_count: number | null
+          min_purchase_amount: number | null
+          name: string
+          type: Database["public"]["Enums"]["discount_strategy_type"]
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          is_stackable?: boolean | null
+          min_books_count?: number | null
+          min_purchase_amount?: number | null
+          name: string
+          type: Database["public"]["Enums"]["discount_strategy_type"]
+          updated_at?: string
+          value: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          is_stackable?: boolean | null
+          min_books_count?: number | null
+          min_purchase_amount?: number | null
+          name?: string
+          type?: Database["public"]["Enums"]["discount_strategy_type"]
+          updated_at?: string
+          value?: number
+        }
+        Relationships: []
+      }
       discounts: {
         Row: {
           created_at: string
@@ -1203,6 +1242,7 @@ export type Database = {
     Enums: {
       ad_placement: "home" | "category" | "checkout" | "series" | "book"
       ad_type: "banner" | "interstitial" | "popup" | "sponsored"
+      discount_strategy_type: "percentage" | "fixed" | "volume"
       discount_type: "percentage" | "fixed" | "volume" | "cart"
       subscription_duration: "day" | "week" | "month" | "year"
       voucher_type:
