@@ -17,7 +17,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export const VoucherAnalytics = () => {
+const VoucherAnalytics = () => {
   const { data: voucherStats } = useQuery({
     queryKey: ["voucher-stats"],
     queryFn: async () => {
@@ -81,3 +81,5 @@ export const VoucherAnalytics = () => {
     </div>
   );
 };
+
+export default VoucherAnalytics;
