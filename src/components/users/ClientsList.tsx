@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { User, Eye } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import ClientVouchersList from "./ClientVouchersList";
+import VoucherManagement from "./vouchers/VoucherManagement";
 import { useToast } from "@/components/ui/use-toast";
 
 const ClientsList = () => {
@@ -110,7 +110,7 @@ const ClientsList = () => {
                       <SheetTitle>Vouchers for {client.full_name}</SheetTitle>
                     </SheetHeader>
                     {selectedClientId && (
-                      <ClientVouchersList clientId={selectedClientId} />
+                      <VoucherManagement clientId={selectedClientId} />
                     )}
                   </SheetContent>
                 </Sheet>
