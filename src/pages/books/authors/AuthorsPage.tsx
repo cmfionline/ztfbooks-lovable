@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import { User, UserPlus, Pencil, Trash, Search } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { User, UserPlus, Pencil, Trash, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,14 +15,13 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Input } from "@/components/ui/input";
+import { SearchInput } from "@/components/ui/search-input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const AuthorsPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [search, setSearch] = useState("");
-  const [entriesPerPage, setEntriesPerPage] = useState("10");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: authors = [], isLoading, error } = useQuery({
     queryKey: ["authors"],
@@ -44,10 +43,6 @@ export const AuthorsPage = () => {
       variant: "destructive",
     });
   }
-
-  const handleEdit = (id: string) => {
-    navigate(`/books/authors/edit/${id}`);
-  };
 
   const handleDelete = async (id: string) => {
     try {
@@ -73,13 +68,11 @@ export const AuthorsPage = () => {
   };
 
   const filteredAuthors = authors.filter((author) =>
-    author.name.toLowerCase().includes(search.toLowerCase()) ||
-    author.nationality?.toLowerCase().includes(search.toLowerCase()) ||
-    author.designation?.toLowerCase().includes(search.toLowerCase()) ||
-    author.education?.toLowerCase().includes(search.toLowerCase())
+    author.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    author.nationality?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    author.designation?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    author.education?.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const displayedAuthors = filteredAuthors.slice(0, parseInt(entriesPerPage));
 
   return (
     <div className="p-6">
@@ -98,29 +91,12 @@ export const AuthorsPage = () => {
           </Button>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-between items-center mb-4">
-            <div className="relative w-72">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search authors..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-8"
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <span>Show</span>
-              <select
-                className="border rounded p-1"
-                value={entriesPerPage}
-                onChange={(e) => setEntriesPerPage(e.target.value)}
-              >
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-              </select>
-              <span>entries</span>
-            </div>
+          <div className="mb-6">
+            <SearchInput
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="Search by name, nationality, designation..."
+            />
           </div>
 
           {isLoading ? (
@@ -146,7 +122,7 @@ export const AuthorsPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {displayedAuthors.map((author, index) => (
+                {filteredAuthors.map((author, index) => (
                   <TableRow key={author.id}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>
@@ -165,14 +141,25 @@ export const AuthorsPage = () => {
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
                         <Button
-                          variant="outline"
+                          variant="ghost"
                           size="icon"
-                          onClick={() => handleEdit(author.id)}
+                          asChild
                         >
-                          <Pencil className="h-4 w-4" />
+                          <Link to={`/books/authors/${author.id}`}>
+                            <Eye className="h-4 w-4" />
+                          </Link>
                         </Button>
                         <Button
-                          variant="outline"
+                          variant="ghost"
+                          size="icon"
+                          asChild
+                        >
+                          <Link to={`/books/authors/${author.id}/edit`}>
+                            <Pencil className="h-4 w-4" />
+                          </Link>
+                        </Button>
+                        <Button
+                          variant="ghost"
                           size="icon"
                           onClick={() => handleDelete(author.id)}
                           className="text-red-500 hover:text-red-600"

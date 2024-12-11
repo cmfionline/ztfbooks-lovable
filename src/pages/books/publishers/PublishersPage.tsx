@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,9 +15,11 @@ import {
 } from "@/components/ui/table";
 import { format } from "date-fns";
 import { useToast } from "@/components/ui/use-toast";
+import { SearchInput } from "@/components/ui/search-input";
 
 const PublishersPage = () => {
   const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: publishers = [], isLoading, refetch } = useQuery({
     queryKey: ["publishers"],
@@ -60,6 +63,13 @@ const PublishersPage = () => {
     refetch();
   };
 
+  const filteredPublishers = publishers.filter(publisher => 
+    publisher.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    publisher.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    publisher.city?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    publisher.country?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
@@ -72,6 +82,15 @@ const PublishersPage = () => {
             </Button>
           </Link>
         </div>
+
+        <div className="mb-6">
+          <SearchInput
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Search by name, email, city, or country..."
+          />
+        </div>
+
         <Card className="p-6">
           {isLoading ? (
             <div className="text-center py-4">Loading...</div>
@@ -89,7 +108,7 @@ const PublishersPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {publishers.map((publisher) => (
+                {filteredPublishers.map((publisher) => (
                   <TableRow key={publisher.id}>
                     <TableCell className="font-medium">{publisher.name}</TableCell>
                     <TableCell>{publisher.email || "N/A"}</TableCell>

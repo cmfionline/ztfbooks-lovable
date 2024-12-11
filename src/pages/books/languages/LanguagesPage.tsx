@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,10 +15,12 @@ import {
 } from "@/components/ui/table";
 import { format } from "date-fns";
 import { useToast } from "@/components/ui/use-toast";
+import { SearchInput } from "@/components/ui/search-input";
 
 const LanguagesPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: languages = [], isLoading, refetch } = useQuery({
     queryKey: ["languages"],
@@ -61,13 +64,10 @@ const LanguagesPage = () => {
     refetch();
   };
 
-  const handleView = (id: string) => {
-    navigate(`/books/languages/${id}`);
-  };
-
-  const handleEdit = (id: string) => {
-    navigate(`/books/languages/${id}/edit`);
-  };
+  const filteredLanguages = languages.filter(language => 
+    language.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    language.code.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
@@ -81,6 +81,15 @@ const LanguagesPage = () => {
             </Button>
           </Link>
         </div>
+
+        <div className="mb-6">
+          <SearchInput
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Search by name or code..."
+          />
+        </div>
+
         <Card className="p-6">
           {isLoading ? (
             <div className="text-center py-4">Loading...</div>
@@ -95,7 +104,7 @@ const LanguagesPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {languages.map((language) => (
+                {filteredLanguages.map((language) => (
                   <TableRow key={language.id}>
                     <TableCell className="font-medium">{language.name}</TableCell>
                     <TableCell>{language.code}</TableCell>
@@ -106,14 +115,14 @@ const LanguagesPage = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleView(language.id)}
+                        onClick={() => navigate(`/books/languages/${language.id}`)}
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleEdit(language.id)}
+                        onClick={() => navigate(`/books/languages/${language.id}/edit`)}
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>

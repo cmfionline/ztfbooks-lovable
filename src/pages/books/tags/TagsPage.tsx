@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,9 +15,11 @@ import {
 } from "@/components/ui/table";
 import { format } from "date-fns";
 import { useToast } from "@/components/ui/use-toast";
+import { SearchInput } from "@/components/ui/search-input";
 
 const TagsPage = () => {
   const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: tags = [], isLoading, refetch } = useQuery({
     queryKey: ["tags"],
@@ -60,6 +63,10 @@ const TagsPage = () => {
     refetch();
   };
 
+  const filteredTags = tags.filter(tag => 
+    tag.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
@@ -72,6 +79,15 @@ const TagsPage = () => {
             </Button>
           </Link>
         </div>
+
+        <div className="mb-6">
+          <SearchInput
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Search tags..."
+          />
+        </div>
+
         <Card className="p-6">
           {isLoading ? (
             <div className="text-center py-4">Loading...</div>
@@ -85,7 +101,7 @@ const TagsPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {tags.map((tag) => (
+                {filteredTags.map((tag) => (
                   <TableRow key={tag.id}>
                     <TableCell className="font-medium">{tag.name}</TableCell>
                     <TableCell>
