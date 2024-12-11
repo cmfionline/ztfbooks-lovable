@@ -1,21 +1,13 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { UserPlus, Shield, UserCog, DollarSign, Percent } from "lucide-react";
+import { UserPlus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
 import CreateAdminDialog from "./CreateAdminDialog";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AdminTableHeader } from "./components/AdminTableHeader";
+import { AdminTableRow } from "./components/AdminTableRow";
 import { toast } from "sonner";
 
 const AdminsList = () => {
@@ -46,20 +38,6 @@ const AdminsList = () => {
     }
   });
 
-  const updateCommissionRate = async (adminId: string, newRate: number) => {
-    const { error } = await supabase
-      .from('sales_agents')
-      .update({ commission_rate: newRate })
-      .eq('user_id', adminId);
-
-    if (error) {
-      toast.error("Failed to update commission rate");
-      throw error;
-    }
-    
-    toast.success("Commission rate updated successfully");
-  };
-
   if (isLoading) {
     return <Skeleton className="w-full h-[400px]" />;
   }
@@ -75,83 +53,15 @@ const AdminsList = () => {
       </div>
 
       <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Role</TableHead>
-            <TableHead>Location</TableHead>
-            <TableHead>Sales Performance</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
+        <AdminTableHeader />
         <TableBody>
           {adminsData?.map((admin) => (
-            <TableRow key={admin.id}>
-              <TableCell>{admin.full_name}</TableCell>
-              <TableCell className="flex items-center gap-2">
-                <Shield className="w-4 h-4" />
-                <Badge variant={admin.role === 'super_admin' ? 'destructive' : 'default'}>
-                  {admin.role}
-                </Badge>
-              </TableCell>
-              <TableCell>{admin.location || 'N/A'}</TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <DollarSign className="w-4 h-4" />
-                  {admin.sales_agents?.[0]?.total_sales || 0}
-                </div>
-              </TableCell>
-              <TableCell>
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      onClick={() => setSelectedAdmin(admin)}
-                    >
-                      <UserCog className="w-4 h-4" />
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent>
-                    <SheetHeader>
-                      <SheetTitle>Admin Details</SheetTitle>
-                    </SheetHeader>
-                    {selectedAdmin && (
-                      <div className="mt-6 space-y-6">
-                        <Card>
-                          <CardHeader>
-                            <CardTitle>Sales Agent Information</CardTitle>
-                          </CardHeader>
-                          <CardContent className="space-y-4">
-                            <div className="flex items-center justify-between">
-                              <span className="font-medium">Commission Rate</span>
-                              <div className="flex items-center gap-2">
-                                <Percent className="w-4 h-4" />
-                                {selectedAdmin.sales_agents?.[0]?.commission_rate || 0}%
-                              </div>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="font-medium">Total Sales</span>
-                              <div className="flex items-center gap-2">
-                                <DollarSign className="w-4 h-4" />
-                                {selectedAdmin.sales_agents?.[0]?.total_sales || 0}
-                              </div>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="font-medium">Total Commission</span>
-                              <div className="flex items-center gap-2">
-                                <DollarSign className="w-4 h-4" />
-                                {selectedAdmin.sales_agents?.[0]?.total_commission || 0}
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </div>
-                    )}
-                  </SheetContent>
-                </Sheet>
-              </TableCell>
-            </TableRow>
+            <AdminTableRow
+              key={admin.id}
+              admin={admin}
+              selectedAdmin={selectedAdmin}
+              onSelectAdmin={setSelectedAdmin}
+            />
           ))}
         </TableBody>
       </Table>

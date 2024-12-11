@@ -1,31 +1,13 @@
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { countries } from "@/lib/countries";
 
 interface CreateAdminDialogProps {
   open: boolean;
@@ -34,36 +16,45 @@ interface CreateAdminDialogProps {
 
 const CreateAdminDialog = ({ open, onOpenChange }: CreateAdminDialogProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const queryClient = useQueryClient();
   const form = useForm({
     defaultValues: {
       email: "",
-      full_name: "",
-      role: "admin",
+      fullName: "",
       location: "",
-    },
+      role: "admin"
+    }
   });
 
   const onSubmit = async (values: any) => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signUp({
+      // Create user in Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email: values.email,
         password: Math.random().toString(36).slice(-8),
         options: {
           data: {
-            full_name: values.full_name,
-            role: values.role,
-            location: values.location,
-          },
-        },
+            full_name: values.fullName,
+          }
+        }
       });
 
-      if (error) throw error;
+      if (authError) throw authError;
+
+      // Update profile with role and location
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          role: values.role,
+          location: values.location
+        })
+        .eq('id', authData.user!.id);
+
+      if (profileError) throw profileError;
 
       toast.success("Admin created successfully");
-      queryClient.invalidateQueries({ queryKey: ["admins"] });
       onOpenChange(false);
+      form.reset();
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -88,20 +79,41 @@ const CreateAdminDialog = ({ open, onOpenChange }: CreateAdminDialogProps) => {
                   <FormControl>
                     <Input {...field} type="email" />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
-              name="full_name"
+              name="fullName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Full Name</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
-                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Country</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a country" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {countries.map((country) => (
+                        <SelectItem key={country.code} value={country.name}>
+                          {country.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </FormItem>
               )}
             />
@@ -111,13 +123,10 @@ const CreateAdminDialog = ({ open, onOpenChange }: CreateAdminDialogProps) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Role</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select role" />
+                        <SelectValue placeholder="Select a role" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -125,35 +134,12 @@ const CreateAdminDialog = ({ open, onOpenChange }: CreateAdminDialogProps) => {
                       <SelectItem value="super_admin">Super Admin</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="location"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Location</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex justify-end gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isLoading}>
-                Create Admin
-              </Button>
-            </div>
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              Create Admin
+            </Button>
           </form>
         </Form>
       </DialogContent>
