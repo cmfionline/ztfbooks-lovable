@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Eye, Settings, Trash, Bell } from "lucide-react";
-import { format, isWithinDays } from "date-fns";
+import { format, differenceInDays, addDays } from "date-fns";
 import { PriceManagement } from "./pricing/PriceManagement";
 import { DiscountAnalytics } from "./analytics/DiscountAnalytics";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,8 @@ interface AdsListProps {
 export const AdsList = ({ ads, viewMode, onDeleteAd }: AdsListProps) => {
   const isDiscountExpiringSoon = (endDate: string) => {
     if (!endDate) return false;
-    return isWithinDays(new Date(endDate), new Date(), 3);
+    const daysUntilExpiry = differenceInDays(new Date(endDate), new Date());
+    return daysUntilExpiry >= 0 && daysUntilExpiry <= 3;
   };
 
   if (!ads?.length) {
