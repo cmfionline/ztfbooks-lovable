@@ -57,7 +57,7 @@ export const BasicInfoFields = ({ control }: BasicInfoFieldsProps) => {
                   </FormControl>
                   <SelectContent>
                     {adTypes?.map((type) => (
-                      <SelectItem key={type.id} value={type.type}>
+                      <SelectItem key={type.type} value={type.type}>
                         {type.name}
                       </SelectItem>
                     ))}
