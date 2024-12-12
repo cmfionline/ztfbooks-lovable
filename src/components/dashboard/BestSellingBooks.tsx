@@ -38,7 +38,7 @@ const BestSellingBooks = () => {
         .limit(5);
 
       if (error) throw error;
-      return data as OrderItem[];
+      return data;
     },
   });
 
