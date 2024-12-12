@@ -101,7 +101,6 @@ const TagsPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-
                 {filteredTags.map((tag) => (
                   <TableRow key={tag.id}>
                     <TableCell className="font-medium">{tag.name}</TableCell>
@@ -123,7 +122,7 @@ const TagsPage = () => {
                         size="icon"
                         asChild
                       >
-                        <Link to={`/books/tags/${tag.id}/edit`}>
+                        <Link to={`/books/tags/edit/${tag.id}`}>
                           <Pencil className="h-4 w-4" />
                         </Link>
                       </Button>
@@ -137,7 +136,6 @@ const TagsPage = () => {
                     </TableCell>
                   </TableRow>
                 ))}
-
               </TableBody>
             </Table>
           )}

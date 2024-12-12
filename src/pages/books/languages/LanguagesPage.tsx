@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PlusCircle, Eye, Pencil, Trash2 } from "lucide-react";
@@ -19,7 +19,6 @@ import { SearchInput } from "@/components/ui/search-input";
 
 const LanguagesPage = () => {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: languages = [], isLoading, refetch } = useQuery({
@@ -126,7 +125,7 @@ const LanguagesPage = () => {
                         size="icon"
                         asChild
                       >
-                        <Link to={`/books/languages/${language.id}/edit`}>
+                        <Link to={`/books/languages/edit/${language.id}`}>
                           <Pencil className="h-4 w-4" />
                         </Link>
                       </Button>
