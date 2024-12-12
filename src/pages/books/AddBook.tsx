@@ -15,6 +15,27 @@ const AddBook = () => {
 
   const handleSubmit = async (values: BookFormValues) => {
     try {
+      let coverImagePath = null;
+      let epubFilePath = null;
+
+      if (values.cover_image) {
+        const { data: coverData, error: coverError } = await supabase.storage
+          .from("books")
+          .upload(`covers/${Date.now()}-${values.cover_image.name}`, values.cover_image);
+
+        if (coverError) throw coverError;
+        coverImagePath = coverData.path;
+      }
+
+      if (values.epub_file) {
+        const { data: epubData, error: epubError } = await supabase.storage
+          .from("books")
+          .upload(`epubs/${Date.now()}-${values.epub_file.name}`, values.epub_file);
+
+        if (epubError) throw epubError;
+        epubFilePath = epubData.path;
+      }
+
       const { data: newBook, error } = await supabase
         .from("books")
         .insert([
@@ -22,12 +43,15 @@ const AddBook = () => {
             title: values.title,
             description: values.description,
             isbn: values.isbn,
-            price: values.price,
+            is_free: values.is_free,
+            price: values.is_free ? 0 : values.price,
             series_id: values.series_id || null,
             author_id: values.author_id,
             publisher_id: values.publisher_id,
             tags: values.tags,
             language_id: values.language_id,
+            cover_image: coverImagePath,
+            epub_file: epubFilePath,
           },
         ])
         .select()

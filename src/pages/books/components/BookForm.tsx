@@ -14,17 +14,22 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { useBookFormData } from "@/hooks/useBookFormData";
+import { FileUploadField } from "@/components/books/FileUploadField";
+import { PricingFields } from "@/components/books/PricingFields";
 
 const formSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
   isbn: z.string().min(10, "ISBN must be at least 10 characters"),
+  is_free: z.boolean().default(false),
   price: z.number().min(0, "Price must be greater than or equal to 0"),
   series_id: z.string().optional(),
   author_id: z.string(),
   publisher_id: z.string(),
   tags: z.array(z.string()),
   language_id: z.string(),
+  cover_image: z.any().optional(),
+  epub_file: z.any().optional(),
 });
 
 export type BookFormValues = z.infer<typeof formSchema>;
@@ -43,6 +48,7 @@ export const BookForm = ({ onSubmit, onCancel }: BookFormProps) => {
       title: "",
       description: "",
       isbn: "",
+      is_free: false,
       price: 0,
       series_id: undefined,
       author_id: "",
@@ -92,6 +98,23 @@ export const BookForm = ({ onSubmit, onCancel }: BookFormProps) => {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FileUploadField
+            control={form.control}
+            name="cover_image"
+            label="Cover Image"
+            accept="image/*"
+            helperText="Recommended size: 300x450 pixels"
+          />
+
+          <FileUploadField
+            control={form.control}
+            name="epub_file"
+            label="EPUB File"
+            accept=".epub"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="isbn"
@@ -106,25 +129,7 @@ export const BookForm = ({ onSubmit, onCancel }: BookFormProps) => {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-primary">Price</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    {...field}
-                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                    className="border-purple-light focus:border-purple focus:ring-purple"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <PricingFields control={form.control} />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
