@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import PageForm from "./PageForm";
 import { useToast } from "@/components/ui/use-toast";
+import { FileEdit, Loader2 } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 const EditPage = () => {
   const { id } = useParams();
@@ -31,17 +33,36 @@ const EditPage = () => {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
+        <div className="max-w-4xl mx-auto flex items-center justify-center">
+          <Card className="p-8">
+            <Loader2 className="w-8 h-8 animate-spin text-purple" />
+          </Card>
+        </div>
+      </div>
+    );
   }
 
   if (!page) {
-    return <div>Page not found</div>;
+    return (
+      <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
+        <div className="max-w-4xl mx-auto">
+          <Card className="p-8 text-center">
+            <p className="text-lg text-muted-foreground">Page not found</p>
+          </Card>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Edit Page</h1>
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8 flex items-center gap-2 text-primary">
+          <FileEdit className="w-8 h-8 text-purple" />
+          Edit Page
+        </h1>
         <PageForm initialData={page} isEditing />
       </div>
     </div>
