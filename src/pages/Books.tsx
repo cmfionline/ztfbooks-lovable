@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PlusCircle, Eye, Pencil, Trash2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import {
   Table,
   TableBody,
@@ -168,25 +168,25 @@ const BooksListing = () => {
 const Books = () => {
   return (
     <Routes>
-      <Route path="/" element={<BooksListing />} />
-      <Route path="/ebooks" element={<EbooksPage />} />
-      <Route path="/add" element={<AddBook />} />
-      <Route path="/:id/edit" element={<EditBook />} />
-      <Route path="/authors" element={<AuthorsPage />} />
-      <Route path="/authors/add" element={<AddAuthor />} />
-      <Route path="/authors/edit/:id" element={<EditAuthor />} />
-      <Route path="/series" element={<SeriesPage />} />
-      <Route path="/series/add" element={<AddSeries />} />
-      <Route path="/series/edit/:id" element={<EditSeries />} />
-      <Route path="/publishers" element={<PublishersPage />} />
-      <Route path="/publishers/add" element={<AddPublisher />} />
-      <Route path="/publishers/edit/:id" element={<EditPublisher />} />
-      <Route path="/tags" element={<TagsPage />} />
-      <Route path="/tags/add" element={<AddTag />} />
-      <Route path="/tags/edit/:id" element={<EditTag />} />
-      <Route path="/languages" element={<LanguagesPage />} />
-      <Route path="/languages/add" element={<AddLanguage />} />
-      <Route path="/languages/edit/:id" element={<EditLanguage />} />
+      <Route index element={<BooksListing />} />
+      <Route path="add" element={<AddBook />} />
+      <Route path=":id/edit" element={<EditBook />} />
+      <Route path="ebooks/*" element={<EbooksPage />} />
+      <Route path="authors" element={<AuthorsPage />} />
+      <Route path="authors/add" element={<AddAuthor />} />
+      <Route path="authors/:id/edit" element={<EditAuthor />} />
+      <Route path="series" element={<SeriesPage />} />
+      <Route path="series/add" element={<AddSeries />} />
+      <Route path="series/:id/edit" element={<EditSeries />} />
+      <Route path="publishers" element={<PublishersPage />} />
+      <Route path="publishers/add" element={<AddPublisher />} />
+      <Route path="publishers/:id/edit" element={<EditPublisher />} />
+      <Route path="tags" element={<TagsPage />} />
+      <Route path="tags/add" element={<AddTag />} />
+      <Route path="tags/:id/edit" element={<EditTag />} />
+      <Route path="languages" element={<LanguagesPage />} />
+      <Route path="languages/add" element={<AddLanguage />} />
+      <Route path="languages/:id/edit" element={<EditLanguage />} />
     </Routes>
   );
 };

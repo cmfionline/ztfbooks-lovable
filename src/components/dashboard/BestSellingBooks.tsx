@@ -17,10 +17,10 @@ interface OrderItem {
 }
 
 const BestSellingBooks = () => {
-  const { data: books } = useQuery<OrderItem[]>({
+  const { data: orderItems } = useQuery<OrderItem[]>({
     queryKey: ["best-selling-books"],
     queryFn: async () => {
-      const { data: orderItems, error } = await supabase
+      const { data, error } = await supabase
         .from("order_items")
         .select(`
           quantity,
@@ -38,8 +38,7 @@ const BestSellingBooks = () => {
         .limit(5);
 
       if (error) throw error;
-
-      return orderItems as OrderItem[];
+      return data as OrderItem[];
     },
   });
 
@@ -53,12 +52,12 @@ const BestSellingBooks = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {books?.map((item) => (
+          {orderItems?.map((item) => (
             <div key={item.book_id} className="flex items-center gap-4">
               {item.books?.cover_image && (
                 <img
                   src={item.books.cover_image}
-                  alt={item.books?.title}
+                  alt={item.books.title}
                   className="h-16 w-12 object-cover rounded-sm"
                 />
               )}

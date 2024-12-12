@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +21,9 @@ export const SidebarMenuItem = ({
   onClick,
   isSubmenuItem = false,
 }: SidebarMenuItemProps) => {
+  const location = useLocation();
+  const isCurrentPath = location.pathname === path || location.pathname.startsWith(`${path}/`);
+
   return (
     <Link
       to={path}
@@ -28,7 +31,7 @@ export const SidebarMenuItem = ({
       className={cn(
         "flex items-center px-4 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg transition-all duration-200",
         "hover:bg-purple-light/10 hover:text-purple",
-        isActive && "bg-purple-light/10 text-purple font-medium",
+        (isActive || isCurrentPath) && "bg-purple-light/10 text-purple font-medium",
         isCollapsed && "justify-center",
         isSubmenuItem && "ml-6"
       )}

@@ -6,6 +6,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { SidebarMenuItem } from "./SidebarMenuItem";
+import { useLocation } from "react-router-dom";
 
 interface SidebarSubmenuProps {
   title: string;
@@ -28,6 +29,8 @@ export const SidebarSubmenu = ({
   onToggle,
   onItemClick,
 }: SidebarSubmenuProps) => {
+  const location = useLocation();
+
   return (
     <Collapsible open={isOpen && !isCollapsed} onOpenChange={onToggle}>
       <CollapsibleTrigger
@@ -59,7 +62,7 @@ export const SidebarSubmenu = ({
               title={item.title}
               path={item.path}
               icon={item.icon}
-              isActive={false}
+              isActive={location.pathname === item.path}
               isCollapsed={isCollapsed}
               onClick={onItemClick}
               isSubmenuItem
