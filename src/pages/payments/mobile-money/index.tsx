@@ -78,7 +78,11 @@ const MobileMoneySettings = () => {
 
       if (error) throw error;
 
-      await queryClient.invalidateQueries({ queryKey: ['payment-gateway', 'mobile_money'] });
+      // Invalidate the query to trigger a refetch
+      await queryClient.invalidateQueries({ 
+        queryKey: ['payment-gateway', 'mobile_money'],
+        exact: true 
+      });
 
       toast({
         title: "Success",
