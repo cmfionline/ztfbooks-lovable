@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import StripeSettings from "./payments/stripe";
 import PayStackSettings from "./payments/paystack";
 import FlutterwaveSettings from "./payments/flutterwave";
+import MobileMoneySettings from "./payments/mobile-money";
 
 const PaymentGatewayCard = ({ 
   name, 
@@ -95,6 +96,7 @@ const PaymentGateways = () => {
           <Route path="/stripe/*" element={<StripeSettings />} />
           <Route path="/paystack/*" element={<PayStackSettings />} />
           <Route path="/flutterwave/*" element={<FlutterwaveSettings />} />
+          <Route path="/mobile-money/*" element={<MobileMoneySettings />} />
         </Routes>
       </div>
     </div>

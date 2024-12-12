@@ -25,7 +25,7 @@ export const TestPaymentCard = ({
         <Button
           onClick={onTestPayment}
           disabled={!isActive || isProcessing}
-          className="w-full"
+          className="w-full bg-purple hover:bg-purple/90 text-white"
         >
           {isProcessing ? (
             <>

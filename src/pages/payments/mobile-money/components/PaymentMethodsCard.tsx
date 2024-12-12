@@ -1,12 +1,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Phone, CreditCard } from "lucide-react";
+import { Phone } from "lucide-react";
 
 export const PaymentMethodsCard = () => {
   const supportedMethods = [
     { name: "MTN Mobile Money", icon: Phone },
     { name: "Orange Money", icon: Phone },
-    { name: "YooMee Money", icon: CreditCard },
   ];
 
   return (
