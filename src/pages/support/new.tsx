@@ -6,19 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { CategorySelect } from "@/components/support/CategorySelect";
 import { PrioritySelect } from "@/components/support/PrioritySelect";
 import { NewTicketFormData } from "@/components/support/types";
-import { useAuth } from "@supabase/auth-helpers-react";
+import { useSession } from "@supabase/auth-helpers-react";
 
 const NewTicketPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const auth = useAuth();
+  const session = useSession();
 
   const form = useForm<NewTicketFormData>({
     defaultValues: {
@@ -33,8 +33,7 @@ const NewTicketPage = () => {
     try {
       setIsSubmitting(true);
       
-      const user = auth?.user();
-      if (!user) {
+      if (!session?.user) {
         throw new Error("You must be logged in to create a ticket");
       }
 
@@ -42,7 +41,7 @@ const NewTicketPage = () => {
         .from("support_tickets")
         .insert([
           {
-            user_id: user.id,
+            user_id: session.user.id,
             subject: data.subject,
             description: data.description,
             category: data.category,
