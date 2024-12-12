@@ -33,7 +33,7 @@ export const SidebarMenuItem = ({
         isSubmenuItem && "ml-6"
       )}
     >
-      {isSubmenuItem && <ChevronRight className="w-3 h-3 mr-2 text-current" />}
+      {isSubmenuItem && !icon && <ChevronRight className="w-3 h-3 mr-2 text-current" />}
       {icon}
       {!isCollapsed && <span className={cn("ml-3", isSubmenuItem && "text-sm")}>{title}</span>}
     </Link>

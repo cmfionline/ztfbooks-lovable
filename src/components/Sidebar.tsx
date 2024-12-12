@@ -13,6 +13,12 @@ import {
   Menu,
   X,
   ShoppingCart,
+  BookText,
+  Users,
+  BookMarked,
+  Languages,
+  Tags,
+  Building2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -34,7 +40,6 @@ export const Sidebar = () => {
   };
 
   const handleItemClick = () => {
-    // Only collapse on mobile view
     if (window.innerWidth < 768) {
       setIsCollapsed(true);
     }
@@ -59,12 +64,12 @@ export const Sidebar = () => {
       title: "Books",
       icon: <BookOpen className="w-4 h-4" />,
       submenu: [
-        { title: "eBooks", path: "/books/ebooks" },
-        { title: "Authors", path: "/books/authors" },
-        { title: "Series", path: "/books/series" },
-        { title: "Publishers", path: "/books/publishers" },
-        { title: "Tags", path: "/books/tags" },
-        { title: "Languages", path: "/books/languages" },
+        { title: "eBooks", icon: <BookText className="w-4 h-4" />, path: "/books/ebooks" },
+        { title: "Authors", icon: <Users className="w-4 h-4" />, path: "/books/authors" },
+        { title: "Series", icon: <BookMarked className="w-4 h-4" />, path: "/books/series" },
+        { title: "Publishers", icon: <Building2 className="w-4 h-4" />, path: "/books/publishers" },
+        { title: "Tags", icon: <Tags className="w-4 h-4" />, path: "/books/tags" },
+        { title: "Languages", icon: <Languages className="w-4 h-4" />, path: "/books/languages" },
       ],
     },
     {

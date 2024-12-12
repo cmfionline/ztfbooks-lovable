@@ -10,7 +10,7 @@ import { SidebarMenuItem } from "./SidebarMenuItem";
 interface SidebarSubmenuProps {
   title: string;
   icon: React.ReactNode;
-  items: Array<{ title: string; path: string }>;
+  items: Array<{ title: string; path: string; icon?: React.ReactNode }>;
   isActive: boolean;
   isCollapsed: boolean;
   isOpen: boolean;
@@ -58,6 +58,7 @@ export const SidebarSubmenu = ({
               key={item.path}
               title={item.title}
               path={item.path}
+              icon={item.icon}
               isActive={false}
               isCollapsed={isCollapsed}
               onClick={onItemClick}
