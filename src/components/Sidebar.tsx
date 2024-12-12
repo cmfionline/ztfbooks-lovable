@@ -12,31 +12,31 @@ import {
   Percent,
   Menu,
   X,
-  ChevronRight,
 } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { SidebarMenuItem } from "./sidebar/SidebarMenuItem";
+import { SidebarSubmenu } from "./sidebar/SidebarSubmenu";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [openItem, setOpenItem] = useState<string | undefined>(undefined);
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const location = useLocation();
 
-  const handleItemClick = (itemValue: string) => {
-    if (!isCollapsed) {
-      setOpenItem(openItem === itemValue ? undefined : itemValue);
+  const handleSubmenuToggle = (submenuName: string) => {
+    if (isCollapsed) {
+      setIsCollapsed(false);
+      setOpenSubmenu(submenuName);
+    } else {
+      setOpenSubmenu(openSubmenu === submenuName ? null : submenuName);
     }
   };
 
-  const handleLinkClick = () => {
-    setOpenItem(undefined);
+  const handleItemClick = () => {
+    if (isCollapsed) {
+      setIsCollapsed(false);
+    }
+    setOpenSubmenu(null);
   };
 
   const menuItems = [
@@ -48,7 +48,6 @@ const Sidebar = () => {
     {
       title: "Books",
       icon: <BookOpen className="w-4 h-4" />,
-      path: "/books",
       submenu: [
         { title: "eBooks", path: "/books/ebooks" },
         { title: "Authors", path: "/books/authors" },
@@ -61,7 +60,6 @@ const Sidebar = () => {
     {
       title: "Ads & Discounts",
       icon: <Percent className="w-4 h-4" />,
-      path: "/ads",
       submenu: [
         { title: "All Ads", path: "/ads" },
         { title: "Discount Strategies", path: "/ads/discount-strategies" },
@@ -71,7 +69,6 @@ const Sidebar = () => {
     {
       title: "Payment Gateways",
       icon: <CreditCard className="w-4 h-4" />,
-      path: "/payments",
       submenu: [
         { title: "Stripe", path: "/payments/stripe" },
         { title: "Paystack", path: "/payments/paystack" },
@@ -125,7 +122,10 @@ const Sidebar = () => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={() => {
+            setIsCollapsed(!isCollapsed);
+            setOpenSubmenu(null);
+          }}
           className="ml-auto hover:bg-purple-light/10"
         >
           {isCollapsed ? (
@@ -136,82 +136,32 @@ const Sidebar = () => {
         </Button>
       </div>
       
-      <nav className="flex-1 overflow-y-auto scrollbar-none">
-        <Accordion
-          type="single"
-          collapsible
-          className="space-y-1 p-2"
-          value={openItem}
-          onValueChange={setOpenItem}
-        >
-          {menuItems.map((item, index) => (
-            <AccordionItem
-              value={`item-${index}`}
-              key={item.path}
-              className="border-none"
-            >
-              {item.submenu ? (
-                <>
-                  <AccordionTrigger
-                    className={cn(
-                      "flex items-center py-2 px-4 text-sm text-muted-foreground",
-                      "hover:bg-purple-light/10 hover:text-purple rounded-lg",
-                      "hover:no-underline transition-colors",
-                      location.pathname.startsWith(item.path) &&
-                        "bg-purple-light/10 text-purple font-medium"
-                    )}
-                    onClick={() => handleItemClick(`item-${index}`)}
-                  >
-                    <div
-                      className={cn(
-                        "flex items-center",
-                        isCollapsed && "justify-center"
-                      )}
-                    >
-                      {item.icon}
-                      {!isCollapsed && <span className="ml-3">{item.title}</span>}
-                    </div>
-                  </AccordionTrigger>
-                  {!isCollapsed && (
-                    <AccordionContent className="pt-1 pb-2">
-                      {item.submenu.map((subItem) => (
-                        <Link
-                          key={subItem.path}
-                          to={subItem.path}
-                          onClick={handleLinkClick}
-                          className={cn(
-                            "flex items-center px-4 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg transition-all duration-200",
-                            "hover:bg-purple-light/10 hover:text-purple",
-                            location.pathname === subItem.path && "bg-purple-light/10 text-purple font-medium",
-                            isCollapsed && "justify-center",
-                            "ml-6"
-                          )}
-                        >
-                          <ChevronRight className="w-3 h-3 mr-2 text-current" />
-                          {subItem.title}
-                        </Link>
-                      ))}
-                    </AccordionContent>
-                  )}
-                </>
-              ) : (
-                <Link
-                  to={item.path}
-                  onClick={handleLinkClick}
-                  className={cn(
-                    "flex items-center px-4 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg transition-all duration-200",
-                    "hover:bg-purple-light/10 hover:text-purple",
-                    location.pathname === item.path && "bg-purple-light/10 text-purple font-medium",
-                    isCollapsed && "justify-center"
-                  )}
-                >
-                  {item.icon}
-                  {!isCollapsed && <span className="ml-3">{item.title}</span>}
-                </Link>
-              )}
-            </AccordionItem>
-          ))}
-        </Accordion>
+      <nav className="flex-1 overflow-y-auto scrollbar-none p-2 space-y-1">
+        {menuItems.map((item) => (
+          item.submenu ? (
+            <SidebarSubmenu
+              key={item.title}
+              title={item.title}
+              icon={item.icon}
+              items={item.submenu}
+              isActive={location.pathname.startsWith(item.submenu[0].path)}
+              isCollapsed={isCollapsed}
+              isOpen={openSubmenu === item.title}
+              onToggle={() => handleSubmenuToggle(item.title)}
+              onItemClick={handleItemClick}
+            />
+          ) : (
+            <SidebarMenuItem
+              key={item.title}
+              title={item.title}
+              path={item.path}
+              icon={item.icon}
+              isActive={location.pathname === item.path}
+              isCollapsed={isCollapsed}
+              onClick={handleItemClick}
+            />
+          )
+        ))}
       </nav>
     </aside>
   );
