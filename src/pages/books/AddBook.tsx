@@ -42,7 +42,6 @@ const AddBook = () => {
           {
             title: values.title,
             description: values.description,
-            isbn: values.isbn,
             is_free: values.is_free,
             price: values.is_free ? 0 : values.price,
             series_id: values.series_id || null,
