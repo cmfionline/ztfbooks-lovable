@@ -1,32 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-} from "recharts";
 import { useState } from "react";
+import { StatCard } from "@/components/orders/analytics/StatCard";
+import { SalesChart } from "@/components/orders/analytics/SalesChart";
+import { OrdersChart } from "@/components/orders/analytics/OrdersChart";
 
 // Demo data for development and testing
 const DEMO_MODE = true;
@@ -94,16 +73,18 @@ const OrderAnalytics = () => {
   });
 
   return (
-    <div className="p-6 space-y-6 bg-gradient-to-br from-purple-50 to-white">
-      <div className="flex justify-between items-center">
+    <div className="p-4 md:p-6 space-y-6 bg-gradient-to-br from-purple-50 to-white min-h-screen">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0">
         <div>
-          <h1 className="text-2xl font-bold text-purple-900">Order Analytics</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-purple-900 animate-fade-in">
+            Order Analytics
+          </h1>
           <p className="text-muted-foreground">
             Track your order and revenue metrics
           </p>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
-          <SelectTrigger className="w-32">
+          <SelectTrigger className="w-full md:w-32">
             <SelectValue placeholder="Time range" />
           </SelectTrigger>
           <SelectContent>
@@ -114,127 +95,40 @@ const OrderAnalytics = () => {
         </Select>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card className="bg-white/50 backdrop-blur-sm border border-purple-100 shadow-lg hover:shadow-xl transition-all duration-300">
-          <CardHeader>
-            <CardTitle className="text-purple-800">Total Orders</CardTitle>
-            <CardDescription>All time orders</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-purple-600">{analytics?.totalOrders || 0}</p>
-            <p className="text-sm text-muted-foreground mt-2">
-              {Math.round((analytics?.completedOrders || 0) / (analytics?.totalOrders || 1) * 100)}% completion rate
-            </p>
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <StatCard
+          title="Total Orders"
+          value={analytics?.totalOrders || 0}
+          description="All time orders"
+          subValue={`${Math.round((analytics?.completedOrders || 0) / (analytics?.totalOrders || 1) * 100)}% completion rate`}
+        />
 
-        <Card className="bg-white/50 backdrop-blur-sm border border-purple-100 shadow-lg hover:shadow-xl transition-all duration-300">
-          <CardHeader>
-            <CardTitle className="text-purple-800">Total Revenue</CardTitle>
-            <CardDescription>All time revenue</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-purple-600">
-              ${analytics?.totalRevenue?.toFixed(2) || "0.00"}
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              ${((analytics?.totalRevenue || 0) / (analytics?.totalOrders || 1)).toFixed(2)} avg. per order
-            </p>
-          </CardContent>
-        </Card>
+        <StatCard
+          title="Total Revenue"
+          value={`$${analytics?.totalRevenue?.toFixed(2) || "0.00"}`}
+          description="All time revenue"
+          subValue={`$${((analytics?.totalRevenue || 0) / (analytics?.totalOrders || 1)).toFixed(2)} avg. per order`}
+        />
 
-        <Card className="bg-white/50 backdrop-blur-sm border border-purple-100 shadow-lg hover:shadow-xl transition-all duration-300">
-          <CardHeader>
-            <CardTitle className="text-purple-800">Completed Orders</CardTitle>
-            <CardDescription>Successfully delivered</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-purple-600">{analytics?.completedOrders || 0}</p>
-            <p className="text-sm text-muted-foreground mt-2">
-              {analytics?.totalOrders - (analytics?.completedOrders || 0)} pending
-            </p>
-          </CardContent>
-        </Card>
+        <StatCard
+          title="Completed Orders"
+          value={analytics?.completedOrders || 0}
+          description="Successfully delivered"
+          subValue={`${analytics?.totalOrders - (analytics?.completedOrders || 0)} pending`}
+        />
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="bg-white/50 backdrop-blur-sm border border-purple-100 shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-purple-800">Daily Sales</CardTitle>
-            <CardDescription>Revenue over time</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={analytics?.salesData || []}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E5DEFF" />
-                  <XAxis 
-                    dataKey="date" 
-                    stroke="#8B5CF6"
-                    tick={{ fill: '#6B7280', fontSize: 12 }}
-                  />
-                  <YAxis 
-                    stroke="#8B5CF6"
-                    tick={{ fill: '#6B7280', fontSize: 12 }}
-                  />
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                      border: '1px solid #E5DEFF',
-                      borderRadius: '8px'
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="sales"
-                    stroke="#8B5CF6"
-                    strokeWidth={2}
-                    dot={{ fill: '#8B5CF6', strokeWidth: 2 }}
-                    name="Sales ($)"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white/50 backdrop-blur-sm border border-purple-100 shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-purple-800">Orders by Day</CardTitle>
-            <CardDescription>Daily order volume</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={analytics?.salesData || []}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E5DEFF" />
-                  <XAxis 
-                    dataKey="date" 
-                    stroke="#8B5CF6"
-                    tick={{ fill: '#6B7280', fontSize: 12 }}
-                  />
-                  <YAxis 
-                    stroke="#8B5CF6"
-                    tick={{ fill: '#6B7280', fontSize: 12 }}
-                  />
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                      border: '1px solid #E5DEFF',
-                      borderRadius: '8px'
-                    }}
-                  />
-                  <Bar
-                    dataKey="orders"
-                    fill="#8B5CF6"
-                    radius={[4, 4, 0, 0]}
-                    name="Number of Orders"
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+        <SalesChart
+          data={analytics?.salesData || []}
+          title="Daily Sales"
+          description="Revenue over time"
+        />
+        <OrdersChart
+          data={analytics?.salesData || []}
+          title="Orders by Day"
+          description="Daily order volume"
+        />
       </div>
     </div>
   );
