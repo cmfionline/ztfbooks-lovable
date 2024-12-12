@@ -10,6 +10,7 @@ import OrderAnalytics from "./pages/orders/analytics";
 import SupportPage from "./pages/support";
 import NewTicketPage from "./pages/support/new";
 import TicketDetailsPage from "./pages/support/[id]";
+import Books from "./pages/Books";
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
             <Route path="/support" element={<SupportPage />} />
             <Route path="/support/new" element={<NewTicketPage />} />
             <Route path="/support/:id" element={<TicketDetailsPage />} />
+            <Route path="/books/*" element={<Books />} />
           </Routes>
         </div>
       </div>
