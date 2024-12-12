@@ -101,6 +101,7 @@ const TagsPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
+
                 {filteredTags.map((tag) => (
                   <TableRow key={tag.id}>
                     <TableCell className="font-medium">{tag.name}</TableCell>
@@ -136,6 +137,7 @@ const TagsPage = () => {
                     </TableCell>
                   </TableRow>
                 ))}
+
               </TableBody>
             </Table>
           )}
