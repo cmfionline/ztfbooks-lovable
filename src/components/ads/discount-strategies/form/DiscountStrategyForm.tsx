@@ -17,18 +17,20 @@ const formSchema = z.object({
   })).optional(),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 export type DiscountStrategyFormProps = {
-  onSubmit?: (values: z.infer<typeof formSchema>) => Promise<void>;
+  onSubmit?: (values: FormValues) => void;
   onSuccess?: () => void;
   onCancel?: () => void;
   editingStrategy?: any;
 };
 
-export const DiscountStrategyForm = ({ onSuccess, onCancel, editingStrategy }: DiscountStrategyFormProps) => {
+export const DiscountStrategyForm = ({ onSubmit, onSuccess, onCancel, editingStrategy }: DiscountStrategyFormProps) => {
   const [newDiscount, setNewDiscount] = useState<any>(null);
   const [affectedBooks, setAffectedBooks] = useState<string[]>([]);
   
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: editingStrategy?.name || "",
@@ -38,8 +40,13 @@ export const DiscountStrategyForm = ({ onSuccess, onCancel, editingStrategy }: D
     },
   });
 
-  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+  const handleSubmit = async (values: FormValues) => {
     try {
+      if (onSubmit) {
+        await onSubmit(values);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('discount_strategies')
         .upsert([{
@@ -51,23 +58,23 @@ export const DiscountStrategyForm = ({ onSuccess, onCancel, editingStrategy }: D
 
       if (error) throw error;
       
-      // After successful submission, store the new discount data
-      setNewDiscount({
-        id: data.id,
-        name: values.name,
-        value: values.value,
-        type: values.type
-      });
-      
-      // Store affected book titles
-      setAffectedBooks(values.books?.map(book => book.title) || []);
-      
-      toast({
-        title: "Success",
-        description: `Discount strategy ${editingStrategy ? 'updated' : 'created'} successfully`,
-      });
+      if (data) {
+        setNewDiscount({
+          id: data.id,
+          name: values.name,
+          value: values.value,
+          type: values.type
+        });
+        
+        setAffectedBooks(values.books?.map(book => book.title) || []);
+        
+        toast({
+          title: "Success",
+          description: `Discount strategy ${editingStrategy ? 'updated' : 'created'} successfully`,
+        });
 
-      onSuccess?.();
+        onSuccess?.();
+      }
       
     } catch (error) {
       console.error("Error creating discount:", error);
