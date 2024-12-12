@@ -11,6 +11,9 @@ import SupportPage from "./pages/support";
 import NewTicketPage from "./pages/support/new";
 import TicketDetailsPage from "./pages/support/[id]";
 import Books from "./pages/Books";
+import Ads from "./pages/Ads";
+import AdsAnalytics from "./pages/ads/Analytics";
+import DiscountStrategies from "./pages/ads/DiscountStrategies";
 
 const App = () => {
   return (
@@ -30,6 +33,9 @@ const App = () => {
             <Route path="/support/new" element={<NewTicketPage />} />
             <Route path="/support/:id" element={<TicketDetailsPage />} />
             <Route path="/books/*" element={<Books />} />
+            <Route path="/ads" element={<Ads />} />
+            <Route path="/ads/analytics" element={<AdsAnalytics />} />
+            <Route path="/ads/discount-strategies" element={<DiscountStrategies />} />
           </Routes>
         </div>
       </div>
