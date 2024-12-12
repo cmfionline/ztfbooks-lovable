@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Sidebar } from "@/components/Sidebar";
+import Sidebar from "@/components/Sidebar";
 import Analytics from "@/pages/Analytics";
 import Payments from "@/pages/Payments";
 import Statistics from "@/pages/Statistics";
@@ -7,6 +7,7 @@ import OrdersPage from "./pages/orders";
 import OrderDetailsPage from "./pages/orders/[id]";
 import DevicesPage from "./pages/orders/devices";
 import OrderAnalytics from "./pages/orders/analytics";
+import SupportPage from "./pages/support";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/orders/:id" element={<OrderDetailsPage />} />
           <Route path="/orders/devices" element={<DevicesPage />} />
           <Route path="/orders/analytics" element={<OrderAnalytics />} />
+          <Route path="/support/*" element={<SupportPage />} />
         </Routes>
       </div>
     </Router>

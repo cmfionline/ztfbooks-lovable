@@ -68,6 +68,11 @@ export const Sidebar = () => {
       ],
     },
     {
+      title: "Support",
+      icon: <MessageSquare className="w-4 h-4" />,
+      path: "/support",
+    },
+    {
       title: "Ads & Discounts",
       icon: <Percent className="w-4 h-4" />,
       submenu: [
