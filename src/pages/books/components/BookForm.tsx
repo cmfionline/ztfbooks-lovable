@@ -2,25 +2,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Form } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
 import { useBookFormData } from "@/hooks/useBookFormData";
 import { FileUploadField } from "@/components/books/FileUploadField";
 import { PricingFields } from "@/components/books/PricingFields";
+import { BookBasicInfo } from "./BookBasicInfo";
+import { BookMetadata } from "./BookMetadata";
 
 const formSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
-  isbn: z.string().min(10, "ISBN must be at least 10 characters"),
   is_free: z.boolean().default(false),
   price: z.number().min(0, "Price must be greater than or equal to 0"),
   series_id: z.string().optional(),
@@ -47,7 +39,6 @@ export const BookForm = ({ onSubmit, onCancel }: BookFormProps) => {
     defaultValues: {
       title: "",
       description: "",
-      isbn: "",
       is_free: false,
       price: 0,
       series_id: undefined,
@@ -69,32 +60,10 @@ export const BookForm = ({ onSubmit, onCancel }: BookFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
+        <BookBasicInfo
           control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-primary">Title</FormLabel>
-              <FormControl>
-                <Input {...field} className="border-purple-light focus:border-purple focus:ring-purple" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-primary">Description</FormLabel>
-              <FormControl>
-                <Textarea {...field} className="border-purple-light focus:border-purple focus:ring-purple" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          series={series}
+          languages={languages}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -114,151 +83,12 @@ export const BookForm = ({ onSubmit, onCancel }: BookFormProps) => {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="isbn"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-primary">ISBN</FormLabel>
-                <FormControl>
-                  <Input {...field} className="border-purple-light focus:border-purple focus:ring-purple" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <PricingFields control={form.control} />
 
-          <PricingFields control={form.control} />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="series_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-primary">Series</FormLabel>
-                <FormControl>
-                  <select
-                    {...field}
-                    className="w-full border border-purple-light rounded-md focus:border-purple focus:ring-purple"
-                  >
-                    <option value="">Select Series</option>
-                    {series.map((item) => (
-                      <option key={item.value} value={item.value}>
-                        {item.label}
-                      </option>
-                    ))}
-                  </select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="author_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-primary">Author</FormLabel>
-                <FormControl>
-                  <select
-                    {...field}
-                    className="w-full border border-purple-light rounded-md focus:border-purple focus:ring-purple"
-                  >
-                    <option value="">Select Author</option>
-                    {authors.map((item) => (
-                      <option key={item.value} value={item.value}>
-                        {item.label}
-                      </option>
-                    ))}
-                  </select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="publisher_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-primary">Publisher</FormLabel>
-                <FormControl>
-                  <select
-                    {...field}
-                    className="w-full border border-purple-light rounded-md focus:border-purple focus:ring-purple"
-                  >
-                    <option value="">Select Publisher</option>
-                    {publishers.map((item) => (
-                      <option key={item.value} value={item.value}>
-                        {item.label}
-                      </option>
-                    ))}
-                  </select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="language_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-primary">Language</FormLabel>
-                <FormControl>
-                  <select
-                    {...field}
-                    className="w-full border border-purple-light rounded-md focus:border-purple focus:ring-purple"
-                  >
-                    <option value="">Select Language</option>
-                    {languages.map((item) => (
-                      <option key={item.value} value={item.value}>
-                        {item.label}
-                      </option>
-                    ))}
-                  </select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <FormField
+        <BookMetadata
           control={form.control}
-          name="tags"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-primary">Tags</FormLabel>
-              <FormControl>
-                <select
-                  multiple
-                  {...field}
-                  onChange={(e) =>
-                    field.onChange(
-                      Array.from(e.target.selectedOptions, (option) => option.value)
-                    )
-                  }
-                  className="w-full border border-purple-light rounded-md focus:border-purple focus:ring-purple"
-                >
-                  {tags.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          authors={authors}
+          publishers={publishers}
         />
 
         <div className="flex gap-4">
