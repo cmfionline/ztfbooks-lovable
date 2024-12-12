@@ -174,19 +174,19 @@ const Books = () => {
       <Route path="/:id/edit" element={<EditBook />} />
       <Route path="/authors" element={<AuthorsPage />} />
       <Route path="/authors/add" element={<AddAuthor />} />
-      <Route path="/authors/:id" element={<EditAuthor />} />
+      <Route path="/authors/edit/:id" element={<EditAuthor />} />
       <Route path="/series" element={<SeriesPage />} />
       <Route path="/series/add" element={<AddSeries />} />
-      <Route path="/series/:id" element={<EditSeries />} />
+      <Route path="/series/edit/:id" element={<EditSeries />} />
       <Route path="/publishers" element={<PublishersPage />} />
       <Route path="/publishers/add" element={<AddPublisher />} />
-      <Route path="/publishers/:id" element={<EditPublisher />} />
+      <Route path="/publishers/edit/:id" element={<EditPublisher />} />
       <Route path="/tags" element={<TagsPage />} />
       <Route path="/tags/add" element={<AddTag />} />
-      <Route path="/tags/:id" element={<EditTag />} />
+      <Route path="/tags/edit/:id" element={<EditTag />} />
       <Route path="/languages" element={<LanguagesPage />} />
       <Route path="/languages/add" element={<AddLanguage />} />
-      <Route path="/languages/:id" element={<EditLanguage />} />
+      <Route path="/languages/edit/:id" element={<EditLanguage />} />
     </Routes>
   );
 };

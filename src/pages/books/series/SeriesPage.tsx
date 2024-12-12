@@ -122,12 +122,12 @@ const SeriesPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredSeries?.map((series) => (
-                  <TableRow key={series.id}>
-                    <TableCell className="font-medium">{series.name}</TableCell>
-                    <TableCell>{series.languages?.name || "N/A"}</TableCell>
+                {filteredSeries?.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell className="font-medium">{item.name}</TableCell>
+                    <TableCell>{item.languages?.name || "N/A"}</TableCell>
                     <TableCell>
-                      {formatDate(series.created_at)}
+                      {formatDate(item.created_at)}
                     </TableCell>
                     <TableCell className="text-right space-x-2">
                       <Button
@@ -135,7 +135,7 @@ const SeriesPage = () => {
                         size="icon"
                         asChild
                       >
-                        <Link to={`/books/series/${series.id}`}>
+                        <Link to={`/books/series/${item.id}`}>
                           <Eye className="h-4 w-4" />
                         </Link>
                       </Button>
@@ -144,14 +144,14 @@ const SeriesPage = () => {
                         size="icon"
                         asChild
                       >
-                        <Link to={`/books/series/${series.id}/edit`}>
+                        <Link to={`/books/series/edit/${item.id}`}>
                           <Pencil className="h-4 w-4" />
                         </Link>
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleDelete(series.id)}
+                        onClick={() => handleDelete(item.id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
