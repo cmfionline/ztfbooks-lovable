@@ -154,7 +154,7 @@ export const AuthorsPage = () => {
                           size="icon"
                           asChild
                         >
-                          <Link to={`/books/authors/${author.id}/edit`}>
+                          <Link to={`/books/authors/edit/${author.id}`}>
                             <Pencil className="h-4 w-4" />
                           </Link>
                         </Button>
