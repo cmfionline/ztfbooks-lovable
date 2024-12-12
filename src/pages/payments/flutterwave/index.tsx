@@ -29,12 +29,12 @@ const FlutterwaveSettings = () => {
         if (!data) {
           const { data: newGateway, error: createError } = await supabase
             .from('payment_gateways')
-            .insert({
+            .insert([{
               name: 'Flutterwave',
               type: 'flutterwave',
               is_active: false,
               config: {}
-            })
+            }])
             .select()
             .single();
 
