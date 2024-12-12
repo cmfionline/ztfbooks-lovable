@@ -33,10 +33,10 @@ const Sidebar = () => {
   };
 
   const handleItemClick = () => {
-    if (isCollapsed) {
-      setIsCollapsed(false);
+    // Only collapse on mobile view
+    if (window.innerWidth < 768) {
+      setIsCollapsed(true);
     }
-    setOpenSubmenu(null);
   };
 
   const menuItems = [
