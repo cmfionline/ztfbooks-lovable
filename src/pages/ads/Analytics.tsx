@@ -137,3 +137,4 @@ const generateDemoPerformanceData = (days: number) => {
 };
 
 export default Analytics;
+
