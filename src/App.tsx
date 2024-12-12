@@ -14,6 +14,9 @@ import Books from "./pages/Books";
 import Ads from "./pages/Ads";
 import AdsAnalytics from "./pages/ads/Analytics";
 import DiscountStrategies from "./pages/ads/DiscountStrategies";
+import Pages from "./pages/Pages";
+import AddPage from "./components/pages/AddPage";
+import EditPage from "./components/pages/EditPage";
 
 const App = () => {
   return (
@@ -36,6 +39,9 @@ const App = () => {
             <Route path="/ads" element={<Ads />} />
             <Route path="/ads/analytics" element={<AdsAnalytics />} />
             <Route path="/ads/discount-strategies" element={<DiscountStrategies />} />
+            <Route path="/pages" element={<Pages />} />
+            <Route path="/pages/add" element={<AddPage />} />
+            <Route path="/pages/:id/edit" element={<EditPage />} />
           </Routes>
         </div>
       </div>

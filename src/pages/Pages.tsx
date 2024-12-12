@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Link2, Pencil } from "lucide-react";
@@ -14,13 +14,8 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { Database } from "@/integrations/supabase/types";
-import AddPage from "@/components/pages/AddPage";
-import EditPage from "@/components/pages/EditPage";
 
-type Page = Database['public']['Tables']['pages']['Row'];
-
-const PagesListing = () => {
+const Pages = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -52,7 +47,7 @@ const PagesListing = () => {
           <h1 className="text-3xl font-bold">Pages Management</h1>
           <Button 
             onClick={() => navigate("add")} 
-            className="bg-accent hover:bg-accent/90"
+            className="bg-purple hover:bg-purple/90"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Page
@@ -86,8 +81,8 @@ const PagesListing = () => {
                         variant={page.status === 'active' ? 'default' : 'secondary'}
                         className={
                           page.status === 'active' 
-                            ? 'bg-success hover:bg-success/80' 
-                            : 'bg-muted hover:bg-muted/80'
+                            ? 'bg-green-500 hover:bg-green-600' 
+                            : 'bg-gray-500 hover:bg-gray-600'
                         }
                       >
                         {page.status}
@@ -118,16 +113,6 @@ const PagesListing = () => {
         </Card>
       </div>
     </div>
-  );
-};
-
-const Pages = () => {
-  return (
-    <Routes>
-      <Route index element={<PagesListing />} />
-      <Route path="add" element={<AddPage />} />
-      <Route path=":id/edit" element={<EditPage />} />
-    </Routes>
   );
 };
 
