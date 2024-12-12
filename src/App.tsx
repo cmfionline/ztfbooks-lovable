@@ -14,20 +14,22 @@ import TicketDetailsPage from "./pages/support/[id]";
 const App = () => {
   return (
     <Router>
-      <Sidebar />
-      <div className="main-content">
-        <Routes>
-          <Route path="/" element={<Analytics />} />
-          <Route path="/payments/*" element={<Payments />} />
-          <Route path="/statistics" element={<Statistics />} />
-          <Route path="/orders" element={<OrdersPage />} />
-          <Route path="/orders/:id" element={<OrderDetailsPage />} />
-          <Route path="/orders/devices" element={<DevicesPage />} />
-          <Route path="/orders/analytics" element={<OrderAnalytics />} />
-          <Route path="/support" element={<SupportPage />} />
-          <Route path="/support/new" element={<NewTicketPage />} />
-          <Route path="/support/:id" element={<TicketDetailsPage />} />
-        </Routes>
+      <div className="flex min-h-screen bg-background">
+        <Sidebar />
+        <div className="flex-1 ml-64">
+          <Routes>
+            <Route path="/" element={<Analytics />} />
+            <Route path="/payments/*" element={<Payments />} />
+            <Route path="/statistics" element={<Statistics />} />
+            <Route path="/orders" element={<OrdersPage />} />
+            <Route path="/orders/:id" element={<OrderDetailsPage />} />
+            <Route path="/orders/devices" element={<DevicesPage />} />
+            <Route path="/orders/analytics" element={<OrderAnalytics />} />
+            <Route path="/support" element={<SupportPage />} />
+            <Route path="/support/new" element={<NewTicketPage />} />
+            <Route path="/support/:id" element={<TicketDetailsPage />} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );
