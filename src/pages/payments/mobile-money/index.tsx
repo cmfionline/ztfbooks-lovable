@@ -5,7 +5,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Smartphone } from "lucide-react";
 import { EnableMobileMoneyCard } from "./components/EnableMobileMoneyCard";
 import { TestPaymentCard } from "./components/TestPaymentCard";
-import { ApiConfigCard } from "./components/ApiConfigCard";
+import { MtnMomoCard } from "./components/MtnMomoCard";
+import { OrangeMoneyCard } from "./components/OrangeMoneyCard";
 import { PaymentMethodsCard } from "./components/PaymentMethodsCard";
 
 const MobileMoneySettings = () => {
@@ -142,19 +143,26 @@ const MobileMoneySettings = () => {
         <h1 className="text-2xl font-bold">Mobile Money Settings</h1>
       </div>
       
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-6">
         <EnableMobileMoneyCard
           isActive={gateway?.is_active || false}
           isLoading={isLoading}
           onToggle={handleToggleActive}
         />
-        <PaymentMethodsCard />
-        <ApiConfigCard gatewayId={gateway?.id} />
-        <TestPaymentCard
-          isActive={gateway?.is_active || false}
-          isProcessing={isProcessing}
-          onTestPayment={handleTestPayment}
-        />
+        
+        <div className="grid gap-6 md:grid-cols-2">
+          <MtnMomoCard />
+          <OrangeMoneyCard />
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <PaymentMethodsCard />
+          <TestPaymentCard
+            isActive={gateway?.is_active || false}
+            isProcessing={isProcessing}
+            onTestPayment={handleTestPayment}
+          />
+        </div>
       </div>
     </div>
   );

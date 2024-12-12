@@ -782,6 +782,36 @@ export type Database = {
         }
         Relationships: []
       }
+      mobile_money_providers: {
+        Row: {
+          config: Json | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          name: string
+          provider: Database["public"]["Enums"]["mobile_money_provider"]
+          updated_at: string
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          provider: Database["public"]["Enums"]["mobile_money_provider"]
+          updated_at?: string
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          provider?: Database["public"]["Enums"]["mobile_money_provider"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       notification_settings: {
         Row: {
           app_id: string
@@ -1422,6 +1452,7 @@ export type Database = {
       ad_type_status: "active" | "inactive"
       discount_strategy_type: "percentage" | "fixed" | "volume"
       discount_type: "percentage" | "fixed" | "volume" | "cart"
+      mobile_money_provider: "mtn" | "orange"
       notification_type:
         | "new_book"
         | "new_promotion"
