@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { CategorySelect } from "@/components/support/CategorySelect";
 import { PrioritySelect } from "@/components/support/PrioritySelect";
@@ -26,7 +26,8 @@ const NewTicketPage = () => {
       description: "",
       category: "technical",
       priority: "medium",
-    }
+    },
+    mode: "onBlur"
   });
 
   const onSubmit = async (data: NewTicketFormData) => {
@@ -34,7 +35,12 @@ const NewTicketPage = () => {
       setIsSubmitting(true);
       
       if (!session?.user) {
-        throw new Error("You must be logged in to create a ticket");
+        toast({
+          title: "Authentication Error",
+          description: "You must be logged in to create a ticket",
+          variant: "destructive",
+        });
+        return;
       }
 
       const { error } = await supabase
