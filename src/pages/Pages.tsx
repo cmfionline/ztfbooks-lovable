@@ -1,4 +1,4 @@
-import { Link, Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Link2, Pencil } from "lucide-react";
@@ -51,7 +51,7 @@ const PagesListing = () => {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Pages Management</h1>
           <Button 
-            onClick={() => navigate("/pages/add")} 
+            onClick={() => navigate("add")} 
             className="bg-accent hover:bg-accent/90"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -105,7 +105,7 @@ const PagesListing = () => {
                         variant="ghost"
                         size="icon"
                         className="hover:bg-purple-light/30"
-                        onClick={() => navigate(`/pages/${page.id}/edit`)}
+                        onClick={() => navigate(`${page.id}/edit`)}
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
@@ -124,9 +124,9 @@ const PagesListing = () => {
 const Pages = () => {
   return (
     <Routes>
-      <Route path="/*" element={<PagesListing />} />
-      <Route path="/add" element={<AddPage />} />
-      <Route path="/:id/edit" element={<EditPage />} />
+      <Route index element={<PagesListing />} />
+      <Route path="add" element={<AddPage />} />
+      <Route path=":id/edit" element={<EditPage />} />
     </Routes>
   );
 };
