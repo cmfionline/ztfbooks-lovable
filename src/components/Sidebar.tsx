@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 import { SidebarMenuItem } from "./sidebar/SidebarMenuItem";
 import { SidebarSubmenu } from "./sidebar/SidebarSubmenu";
 
-const Sidebar = () => {
+export const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const location = useLocation();
