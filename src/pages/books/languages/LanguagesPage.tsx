@@ -115,16 +115,20 @@ const LanguagesPage = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => navigate(`/books/languages/${language.id}`)}
+                        asChild
                       >
-                        <Eye className="h-4 w-4" />
+                        <Link to={`/books/languages/${language.id}`}>
+                          <Eye className="h-4 w-4" />
+                        </Link>
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => navigate(`/books/languages/${language.id}/edit`)}
+                        asChild
                       >
-                        <Pencil className="h-4 w-4" />
+                        <Link to={`/books/languages/${language.id}/edit`}>
+                          <Pencil className="h-4 w-4" />
+                        </Link>
                       </Button>
                       <Button
                         variant="ghost"

@@ -1,7 +1,8 @@
 import { Book } from "@/types/book";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Eye, Link, Pencil, Trash2 } from "lucide-react";
+import { Eye, Link as LinkIcon, Pencil, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface EbookTableRowProps {
   book: Book;
@@ -53,16 +54,20 @@ export const EbookTableRow = ({
         <Button
           variant="ghost"
           size="icon"
-          className="hover:bg-teal-50 text-teal-600"
+          asChild
         >
-          <Link className="h-4 w-4" />
+          <Link to={`/books/${book.id}`}>
+            <Eye className="h-4 w-4" />
+          </Link>
         </Button>
         <Button
           variant="ghost"
           size="icon"
-          className="hover:bg-blue-50 text-blue-600"
+          asChild
         >
-          <Pencil className="h-4 w-4" />
+          <Link to={`/books/${book.id}/edit`}>
+            <Pencil className="h-4 w-4" />
+          </Link>
         </Button>
         <Button
           variant="ghost"
