@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
-import { Loader2 } from "lucide-react";
-import { EnablePayStackCard } from "./components/EnablePayStackCard";
-import { TestPaymentCard } from "./components/TestPaymentCard";
-import { ApiConfigCard } from "./components/ApiConfigCard";
+import { useToast } from "@/hooks/use-toast";
+import { CreditCard } from "lucide-react";
+import { PaymentGatewayHeader } from "@/components/payments/shared/PaymentGatewayHeader";
+import { EnableGatewayCard } from "@/components/payments/shared/EnableGatewayCard";
+import { ApiConfigCard } from "@/components/payments/shared/ApiConfigCard";
+import { TestPaymentCard } from "@/components/payments/shared/TestPaymentCard";
 import { PaymentMethodsCard } from "./components/PaymentMethodsCard";
-import { PayStackHeader } from "./components/PayStackHeader";
 
 const PayStackSettings = () => {
   const { toast } = useToast();
@@ -93,28 +93,39 @@ const PayStackSettings = () => {
   };
 
   if (isLoadingGateway) {
-    return (
-      <div className="flex items-center justify-center min-h-[200px]">
-        <Loader2 className="w-8 h-8 animate-spin" />
-      </div>
-    );
+    return null;
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-4xl mx-auto">
-      <PayStackHeader />
+    <div className="p-6 max-w-5xl mx-auto">
+      <PaymentGatewayHeader
+        title="PayStack Settings"
+        description="Configure your PayStack payment gateway settings"
+        icon={CreditCard}
+      />
       
-      <div className="grid gap-6">
-        <EnablePayStackCard
+      <div className="grid gap-4 md:grid-cols-2">
+        <EnableGatewayCard
+          title="Enable PayStack Payments"
+          description="Accept payments through PayStack"
           isActive={gateway?.is_active || false}
           isLoading={isLoading}
           onToggle={handleToggleActive}
         />
         <PaymentMethodsCard />
-        <ApiConfigCard />
+        <ApiConfigCard
+          title="API Configuration"
+          description="Configure your PayStack API keys"
+          secretKeyPlaceholder="sk_test_..."
+          getApiKeysUrl="https://dashboard.paystack.com/#/settings/developer"
+          gatewayType="paystack"
+        />
         <TestPaymentCard
+          title="Test Payment"
+          description="Process a test payment to verify your PayStack integration"
           isActive={gateway?.is_active || false}
           isProcessing={isProcessing}
+          testAmount="₦10.99 NGN"
           testEmail={testEmail}
           onEmailChange={setTestEmail}
           onTestPayment={handleTestPayment}

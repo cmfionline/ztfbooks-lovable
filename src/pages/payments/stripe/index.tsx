@@ -2,10 +2,11 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, CreditCard } from "lucide-react";
-import { EnableStripeCard } from "./components/EnableStripeCard";
-import { TestPaymentCard } from "./components/TestPaymentCard";
-import { ApiConfigCard } from "./components/ApiConfigCard";
+import { CreditCard } from "lucide-react";
+import { PaymentGatewayHeader } from "@/components/payments/shared/PaymentGatewayHeader";
+import { EnableGatewayCard } from "@/components/payments/shared/EnableGatewayCard";
+import { ApiConfigCard } from "@/components/payments/shared/ApiConfigCard";
+import { TestPaymentCard } from "@/components/payments/shared/TestPaymentCard";
 import { PaymentMethodsCard } from "./components/PaymentMethodsCard";
 
 const StripeSettings = () => {
@@ -78,31 +79,39 @@ const StripeSettings = () => {
   };
 
   if (isLoadingGateway) {
-    return (
-      <div className="flex items-center justify-center min-h-[200px]">
-        <Loader2 className="w-8 h-8 animate-spin text-purple" />
-      </div>
-    );
+    return null;
   }
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
-      <div className="flex items-center gap-3 mb-8">
-        <CreditCard className="w-8 h-8 text-purple" />
-        <h1 className="text-2xl font-bold">Stripe Settings</h1>
-      </div>
+      <PaymentGatewayHeader
+        title="Stripe Settings"
+        description="Configure your Stripe payment gateway settings"
+        icon={CreditCard}
+      />
       
       <div className="grid gap-4 md:grid-cols-2">
-        <EnableStripeCard
+        <EnableGatewayCard
+          title="Enable Stripe Payments"
+          description="Accept credit card payments through Stripe"
           isActive={gateway?.is_active || false}
           isLoading={isLoading}
           onToggle={handleToggleActive}
         />
         <PaymentMethodsCard />
-        <ApiConfigCard />
+        <ApiConfigCard
+          title="API Configuration"
+          description="Configure your Stripe API keys"
+          secretKeyPlaceholder="sk_test_..."
+          getApiKeysUrl="https://dashboard.stripe.com/apikeys"
+          gatewayType="stripe"
+        />
         <TestPaymentCard
+          title="Test Payment"
+          description="Process a test payment to verify your Stripe integration"
           isActive={gateway?.is_active || false}
           isProcessing={isProcessing}
+          testAmount="$10.99 USD"
           onTestPayment={handleTestPayment}
         />
       </div>

@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, CreditCard } from "lucide-react";
-import { EnableFlutterwaveCard } from "./components/EnableFlutterwaveCard";
-import { TestPaymentCard } from "./components/TestPaymentCard";
-import { ApiConfigCard } from "./components/ApiConfigCard";
+import { CreditCard } from "lucide-react";
+import { PaymentGatewayHeader } from "@/components/payments/shared/PaymentGatewayHeader";
+import { EnableGatewayCard } from "@/components/payments/shared/EnableGatewayCard";
+import { ApiConfigCard } from "@/components/payments/shared/ApiConfigCard";
+import { TestPaymentCard } from "@/components/payments/shared/TestPaymentCard";
 import { PaymentMethodsCard } from "./components/PaymentMethodsCard";
 
 const FlutterwaveSettings = () => {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -18,7 +18,6 @@ const FlutterwaveSettings = () => {
     queryKey: ['payment-gateway', 'flutterwave'],
     queryFn: async () => {
       try {
-        console.log('Fetching Flutterwave gateway...');
         const { data, error } = await supabase
           .from('payment_gateways')
           .select('*')
@@ -28,7 +27,6 @@ const FlutterwaveSettings = () => {
         if (error) throw error;
         
         if (!data) {
-          console.log('No gateway found, creating new one...');
           const { data: newGateway, error: createError } = await supabase
             .from('payment_gateways')
             .insert({
@@ -75,8 +73,6 @@ const FlutterwaveSettings = () => {
         .eq('id', gateway.id);
 
       if (error) throw error;
-
-      await queryClient.invalidateQueries({ queryKey: ['payment-gateway', 'flutterwave'] });
 
       toast({
         title: "Success",
@@ -128,31 +124,39 @@ const FlutterwaveSettings = () => {
   };
 
   if (isLoadingGateway) {
-    return (
-      <div className="flex items-center justify-center min-h-[200px]">
-        <Loader2 className="w-8 h-8 animate-spin text-purple" />
-      </div>
-    );
+    return null;
   }
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
-      <div className="flex items-center gap-3 mb-8">
-        <CreditCard className="w-8 h-8 text-purple" />
-        <h1 className="text-2xl font-bold">Flutterwave Settings</h1>
-      </div>
+      <PaymentGatewayHeader
+        title="Flutterwave Settings"
+        description="Configure your Flutterwave payment gateway settings"
+        icon={CreditCard}
+      />
       
       <div className="grid gap-4 md:grid-cols-2">
-        <EnableFlutterwaveCard
+        <EnableGatewayCard
+          title="Enable Flutterwave Payments"
+          description="Accept payments through Flutterwave"
           isActive={gateway?.is_active || false}
           isLoading={isLoading}
           onToggle={handleToggleActive}
         />
         <PaymentMethodsCard />
-        <ApiConfigCard gatewayId={gateway?.id} />
+        <ApiConfigCard
+          title="API Configuration"
+          description="Configure your Flutterwave API keys"
+          secretKeyPlaceholder="FLWSECK_TEST-..."
+          getApiKeysUrl="https://app.flutterwave.com/dashboard/settings/apis"
+          gatewayType="flutterwave"
+        />
         <TestPaymentCard
+          title="Test Payment"
+          description="Process a test payment to verify your Flutterwave integration"
           isActive={gateway?.is_active || false}
           isProcessing={isProcessing}
+          testAmount="₦10.99 NGN"
           onTestPayment={handleTestPayment}
         />
       </div>
