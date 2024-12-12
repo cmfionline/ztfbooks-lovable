@@ -12,6 +12,7 @@ import {
   Percent,
   Menu,
   X,
+  ShoppingCart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -44,6 +45,15 @@ const Sidebar = () => {
       title: "Dashboard",
       icon: <LineChart className="w-4 h-4" />,
       path: "/",
+    },
+    {
+      title: "Orders",
+      icon: <ShoppingCart className="w-4 h-4" />,
+      submenu: [
+        { title: "All Orders", path: "/orders" },
+        { title: "Device Management", path: "/orders/devices" },
+        { title: "Analytics", path: "/orders/analytics" },
+      ],
     },
     {
       title: "Books",

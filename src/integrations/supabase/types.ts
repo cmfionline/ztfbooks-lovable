@@ -336,6 +336,44 @@ export type Database = {
           },
         ]
       }
+      authorized_devices: {
+        Row: {
+          created_at: string
+          device_id: string
+          device_name: string | null
+          id: string
+          is_active: boolean | null
+          last_active: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_id: string
+          device_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_active?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_id?: string
+          device_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_active?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "authorized_devices_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       authors: {
         Row: {
           address: string | null
@@ -937,6 +975,149 @@ export type Database = {
           title?: string
         }
         Relationships: []
+      }
+      order_history: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          notes: string | null
+          order_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          id?: string
+          notes?: string | null
+          order_id: string
+          status: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          notes?: string | null
+          order_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_history_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_history_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_items: {
+        Row: {
+          book_id: string
+          created_at: string
+          discount_amount: number | null
+          encryption_key: string | null
+          id: string
+          last_read: string | null
+          order_id: string
+          price_at_time: number
+          quantity: number
+        }
+        Insert: {
+          book_id: string
+          created_at?: string
+          discount_amount?: number | null
+          encryption_key?: string | null
+          id?: string
+          last_read?: string | null
+          order_id: string
+          price_at_time: number
+          quantity?: number
+        }
+        Update: {
+          book_id?: string
+          created_at?: string
+          discount_amount?: number | null
+          encryption_key?: string | null
+          id?: string
+          last_read?: string | null
+          order_id?: string
+          price_at_time?: number
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          device_id: string | null
+          id: string
+          last_accessed: string | null
+          notes: string | null
+          payment_method: string | null
+          payment_status: string
+          status: string
+          total_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          last_accessed?: string | null
+          notes?: string | null
+          payment_method?: string | null
+          payment_status?: string
+          status?: string
+          total_amount?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          last_accessed?: string | null
+          notes?: string | null
+          payment_method?: string | null
+          payment_status?: string
+          status?: string
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pages: {
         Row: {
