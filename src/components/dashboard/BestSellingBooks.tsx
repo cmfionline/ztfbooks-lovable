@@ -39,7 +39,7 @@ const BestSellingBooks = () => {
 
       if (error) throw error;
 
-      return orderItems || [];
+      return orderItems as OrderItem[];
     },
   });
 
