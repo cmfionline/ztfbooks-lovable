@@ -124,7 +124,7 @@ const PagesListing = () => {
 const Pages = () => {
   return (
     <Routes>
-      <Route path="/" element={<PagesListing />} />
+      <Route path="/*" element={<PagesListing />} />
       <Route path="/add" element={<AddPage />} />
       <Route path="/:id/edit" element={<EditPage />} />
     </Routes>
