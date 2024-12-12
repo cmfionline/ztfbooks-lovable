@@ -3,8 +3,21 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { BookOpen } from "lucide-react";
 
+interface OrderItem {
+  quantity: number;
+  book_id: string;
+  books: {
+    title: string;
+    cover_image: string | null;
+    price: number;
+    authors: {
+      name: string;
+    };
+  } | null;
+}
+
 const BestSellingBooks = () => {
-  const { data: books } = useQuery({
+  const { data: books } = useQuery<OrderItem[]>({
     queryKey: ["best-selling-books"],
     queryFn: async () => {
       const { data: orderItems, error } = await supabase
