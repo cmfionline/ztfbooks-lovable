@@ -24,26 +24,26 @@ const MobileMoneySettings = () => {
           .from('payment_gateways')
           .select('*')
           .eq('type', 'mobile_money')
-          .single();
+          .limit(1)
+          .maybeSingle();
         
-        if (error) {
-          if (error.code === 'PGRST116') {
-            console.log('No gateway found, creating new one...');
-            const { data: newGateway, error: createError } = await supabase
-              .from('payment_gateways')
-              .insert({
-                name: 'Mobile Money',
-                type: 'mobile_money',
-                is_active: false,
-                config: {}
-              })
-              .select()
-              .single();
+        if (error) throw error;
+        
+        if (!data) {
+          console.log('No gateway found, creating new one...');
+          const { data: newGateway, error: createError } = await supabase
+            .from('payment_gateways')
+            .insert({
+              name: 'Mobile Money',
+              type: 'mobile_money',
+              is_active: false,
+              config: {}
+            })
+            .select()
+            .single();
 
-            if (createError) throw createError;
-            return newGateway;
-          }
-          throw error;
+          if (createError) throw createError;
+          return newGateway;
         }
 
         return data;
