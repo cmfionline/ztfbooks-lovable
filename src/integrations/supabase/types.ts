@@ -550,6 +550,48 @@ export type Database = {
           },
         ]
       }
+      customer_activities: {
+        Row: {
+          activity_type: string
+          book_id: string | null
+          created_at: string
+          id: string
+          metadata: Json | null
+          user_id: string | null
+        }
+        Insert: {
+          activity_type: string
+          book_id?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          user_id?: string | null
+        }
+        Update: {
+          activity_type?: string
+          book_id?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_activities_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_activities_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       discount_analytics: {
         Row: {
           created_at: string
@@ -1332,6 +1374,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      sales_analytics: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          total_orders: number
+          total_revenue: number
+          total_sales: number
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          total_orders?: number
+          total_revenue?: number
+          total_sales?: number
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          total_orders?: number
+          total_revenue?: number
+          total_sales?: number
+        }
+        Relationships: []
       }
       series: {
         Row: {
