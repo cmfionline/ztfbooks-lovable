@@ -8,6 +8,8 @@ import OrderDetailsPage from "./pages/orders/[id]";
 import DevicesPage from "./pages/orders/devices";
 import OrderAnalytics from "./pages/orders/analytics";
 import SupportPage from "./pages/support";
+import NewTicketPage from "./pages/support/new";
+import TicketDetailsPage from "./pages/support/[id]";
 
 const App = () => {
   return (
@@ -22,7 +24,9 @@ const App = () => {
           <Route path="/orders/:id" element={<OrderDetailsPage />} />
           <Route path="/orders/devices" element={<DevicesPage />} />
           <Route path="/orders/analytics" element={<OrderAnalytics />} />
-          <Route path="/support/*" element={<SupportPage />} />
+          <Route path="/support" element={<SupportPage />} />
+          <Route path="/support/new" element={<NewTicketPage />} />
+          <Route path="/support/:id" element={<TicketDetailsPage />} />
         </Routes>
       </div>
     </Router>
