@@ -16,6 +16,7 @@ import {
 import { format } from "date-fns";
 import { useToast } from "@/components/ui/use-toast";
 import AddBook from "./books/AddBook";
+import EditBook from "./books/EditBook";
 import AuthorsPage from "./books/authors/AuthorsPage";
 import AddAuthor from "./books/authors/AddAuthor";
 import EditAuthor from "./books/authors/EditAuthor";
@@ -170,6 +171,7 @@ const Books = () => {
       <Route path="/" element={<BooksListing />} />
       <Route path="/ebooks" element={<EbooksPage />} />
       <Route path="/add" element={<AddBook />} />
+      <Route path="/:id/edit" element={<EditBook />} />
       <Route path="/authors" element={<AuthorsPage />} />
       <Route path="/authors/add" element={<AddAuthor />} />
       <Route path="/authors/:id" element={<EditAuthor />} />

@@ -29,29 +29,30 @@ export type BookFormValues = z.infer<typeof formSchema>;
 interface BookFormProps {
   onSubmit: (values: BookFormValues) => Promise<void>;
   onCancel: () => void;
+  initialValues?: Partial<BookFormValues>;
 }
 
-export const BookForm = ({ onSubmit, onCancel }: BookFormProps) => {
+export const BookForm = ({ onSubmit, onCancel, initialValues }: BookFormProps) => {
   const { series, authors, publishers, tags, languages, isLoading } = useBookFormData();
 
   const form = useForm<BookFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      is_free: false,
-      price: 0,
-      series_id: undefined,
-      author_id: "",
-      publisher_id: "",
-      tags: [],
-      language_id: "",
+      title: initialValues?.title || "",
+      description: initialValues?.description || "",
+      is_free: initialValues?.is_free || false,
+      price: initialValues?.price || 0,
+      series_id: initialValues?.series_id,
+      author_id: initialValues?.author_id || "",
+      publisher_id: initialValues?.publisher_id || "",
+      tags: initialValues?.tags || [],
+      language_id: initialValues?.language_id || "",
     },
   });
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center p-4">
         <Loader2 className="w-8 h-8 animate-spin" />
       </div>
     );
@@ -59,56 +60,57 @@ export const BookForm = ({ onSubmit, onCancel }: BookFormProps) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <BookBasicInfo
-          control={form.control}
-          series={series}
-          languages={languages}
-        />
-
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FileUploadField
-            control={form.control}
-            name="cover_image"
-            label="Cover Image"
-            accept="image/*"
-            helperText="Recommended size: 300x450 pixels"
-          />
-
-          <FileUploadField
-            control={form.control}
-            name="epub_file"
-            label="EPUB File"
-            accept=".epub"
-          />
+          <div className="space-y-4">
+            <BookBasicInfo
+              control={form.control}
+              series={series}
+              languages={languages}
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <FileUploadField
+                control={form.control}
+                name="cover_image"
+                label="Cover Image"
+                accept="image/*"
+                helperText="300x450px"
+              />
+              <FileUploadField
+                control={form.control}
+                name="epub_file"
+                label="EPUB File"
+                accept=".epub"
+              />
+            </div>
+          </div>
+          <div className="space-y-4">
+            <PricingFields control={form.control} />
+            <BookMetadata
+              control={form.control}
+              authors={authors}
+              publishers={publishers}
+            />
+          </div>
         </div>
 
-        <PricingFields control={form.control} />
-
-        <BookMetadata
-          control={form.control}
-          authors={authors}
-          publishers={publishers}
-        />
-
-        <div className="flex gap-4">
+        <div className="flex gap-4 justify-end mt-6">
           <Button
             type="button"
             variant="outline"
-            className="flex-1"
             onClick={onCancel}
           >
             Cancel
           </Button>
           <Button
             type="submit"
-            className="flex-1 bg-purple hover:bg-purple/90 text-white"
+            className="bg-purple hover:bg-purple/90 text-white"
             disabled={form.formState.isSubmitting}
           >
             {form.formState.isSubmitting ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              "Add Book"
+              "Save Book"
             )}
           </Button>
         </div>
