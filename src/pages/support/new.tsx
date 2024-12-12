@@ -5,64 +5,44 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
-
-type TicketFormData = {
-  subject: string;
-  description: string;
-  category: string;
-  priority: string;
-};
-
-// Define categories as a constant to make them more maintainable
-const TICKET_CATEGORIES = [
-  { value: "technical", label: "Technical Issue" },
-  { value: "billing", label: "Billing" },
-  { value: "account", label: "Account" },
-  { value: "book_access", label: "Book Access" },
-  { value: "payment", label: "Payment" },
-  { value: "other", label: "Other" },
-] as const;
-
-const TICKET_PRIORITIES = [
-  { value: "low", label: "Low Priority" },
-  { value: "medium", label: "Medium Priority" },
-  { value: "high", label: "High Priority" },
-] as const;
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { CategorySelect } from "@/components/support/CategorySelect";
+import { PrioritySelect } from "@/components/support/PrioritySelect";
+import { NewTicketFormData } from "@/components/support/types";
+import { useAuth } from "@supabase/auth-helpers-react";
 
 const NewTicketPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const auth = useAuth();
 
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<TicketFormData>({
+  const form = useForm<NewTicketFormData>({
     defaultValues: {
+      subject: "",
+      description: "",
       category: "technical",
       priority: "medium",
     }
   });
 
-  const onSubmit = async (data: TicketFormData) => {
+  const onSubmit = async (data: NewTicketFormData) => {
     try {
       setIsSubmitting(true);
       
-      const { data: userData, error: userError } = await supabase.auth.getUser();
-      if (userError) throw userError;
+      const user = auth?.user();
+      if (!user) {
+        throw new Error("You must be logged in to create a ticket");
+      }
 
       const { error } = await supabase
         .from("support_tickets")
         .insert([
           {
-            user_id: userData.user.id,
+            user_id: user.id,
             subject: data.subject,
             description: data.description,
             category: data.category,
@@ -95,7 +75,7 @@ const NewTicketPage = () => {
       <div className="max-w-3xl mx-auto space-y-8">
         <Button
           variant="ghost"
-          className="mb-4 hover:bg-purple/10"
+          className="mb-4 hover:bg-purple/10 text-foreground"
           onClick={() => navigate("/support")}
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -112,109 +92,80 @@ const NewTicketPage = () => {
         </div>
 
         <Card className="p-6 shadow-lg border-purple/20">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Subject</label>
-              <Input
-                {...register("subject", { 
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="subject"
+                rules={{ 
                   required: "Please enter a subject for your ticket",
                   minLength: {
                     value: 5,
                     message: "Subject must be at least 5 characters long"
                   }
-                })}
-                placeholder="Brief description of your issue"
-                className="w-full border-purple/20 focus:border-purple"
+                }}
+                render={({ field }) => (
+                  <FormItem className="space-y-2">
+                    <FormLabel className="text-foreground">Subject</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Brief description of your issue"
+                        className="w-full border-purple/20 focus:border-purple bg-white text-foreground"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              {errors.subject && (
-                <p className="text-sm text-red-500">{errors.subject.message}</p>
-              )}
-            </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Category</label>
-              <Select
-                onValueChange={(value) => setValue("category", value)}
-                defaultValue="technical"
-              >
-                <SelectTrigger className="w-full border-purple/20 focus:border-purple">
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {TICKET_CATEGORIES.map((category) => (
-                    <SelectItem 
-                      key={category.value} 
-                      value={category.value}
-                      className="cursor-pointer hover:bg-purple/10"
-                    >
-                      {category.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+              <CategorySelect form={form} />
+              <PrioritySelect form={form} />
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Priority</label>
-              <Select
-                onValueChange={(value) => setValue("priority", value)}
-                defaultValue="medium"
-              >
-                <SelectTrigger className="w-full border-purple/20 focus:border-purple">
-                  <SelectValue placeholder="Select priority" />
-                </SelectTrigger>
-                <SelectContent>
-                  {TICKET_PRIORITIES.map((priority) => (
-                    <SelectItem 
-                      key={priority.value} 
-                      value={priority.value}
-                      className="cursor-pointer hover:bg-purple/10"
-                    >
-                      {priority.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Description</label>
-              <Textarea
-                {...register("description", {
+              <FormField
+                control={form.control}
+                name="description"
+                rules={{
                   required: "Please describe your issue",
                   minLength: {
                     value: 20,
                     message: "Description must be at least 20 characters long"
                   }
-                })}
-                placeholder="Please provide as much detail as possible about your issue"
-                className="min-h-[150px] border-purple/20 focus:border-purple"
+                }}
+                render={({ field }) => (
+                  <FormItem className="space-y-2">
+                    <FormLabel className="text-foreground">Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder="Please provide as much detail as possible about your issue"
+                        className="min-h-[150px] border-purple/20 focus:border-purple bg-white text-foreground"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              {errors.description && (
-                <p className="text-sm text-red-500">
-                  {errors.description.message}
-                </p>
-              )}
-            </div>
 
-            <div className="flex justify-end space-x-4 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => navigate("/support")}
-                className="border-purple hover:bg-purple/10"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="bg-purple hover:bg-purple-600 text-white min-w-[120px] transition-all duration-200"
-              >
-                {isSubmitting ? "Submitting..." : "Submit Ticket"}
-              </Button>
-            </div>
-          </form>
+              <div className="flex justify-end space-x-4 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => navigate("/support")}
+                  className="border-purple hover:bg-purple/10 text-foreground"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="bg-purple hover:bg-purple/90 text-white min-w-[120px] transition-all duration-200"
+                >
+                  {isSubmitting ? "Submitting..." : "Submit Ticket"}
+                </Button>
+              </div>
+            </form>
+          </Form>
         </Card>
       </div>
     </div>
