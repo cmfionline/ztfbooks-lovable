@@ -240,6 +240,50 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_actions: {
+        Row: {
+          action_type: string
+          admin_id: string
+          created_at: string
+          details: Json | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip_address: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action_type: string
+          admin_id: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action_type?: string
+          admin_id?: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_actions_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ads: {
         Row: {
           ab_test_group: string | null
@@ -861,6 +905,47 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      login_history: {
+        Row: {
+          failure_reason: string | null
+          id: string
+          ip_address: string | null
+          location: string | null
+          login_timestamp: string
+          success: boolean
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          failure_reason?: string | null
+          id?: string
+          ip_address?: string | null
+          location?: string | null
+          login_timestamp?: string
+          success: boolean
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          failure_reason?: string | null
+          id?: string
+          ip_address?: string | null
+          location?: string | null
+          login_timestamp?: string
+          success?: boolean
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "login_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mobile_money_providers: {
         Row: {

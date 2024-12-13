@@ -9,38 +9,85 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { NotificationSettings } from "@/components/notifications/NotificationSettings";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { format } from "date-fns";
 
 const Settings = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(true);
   const [marketingEmails, setMarketingEmails] = useState(false);
+  const [loginHistory, setLoginHistory] = useState([]);
+  const [adminActions, setAdminActions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
     const fetchSettings = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
 
-      const { data, error } = await supabase
-        .from('user_settings')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
+        const { data: settings, error } = await supabase
+          .from('user_settings')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching settings:', error);
-        return;
-      }
+        if (error && error.code !== 'PGRST116') {
+          console.error('Error fetching settings:', error);
+          return;
+        }
 
-      if (data) {
-        setEmailNotifications(data.email_notifications);
-        setPushNotifications(data.push_notifications);
-        setMarketingEmails(data.marketing_emails);
+        if (settings) {
+          setEmailNotifications(settings.email_notifications);
+          setPushNotifications(settings.push_notifications);
+          setMarketingEmails(settings.marketing_emails);
+        }
+
+        // Fetch login history
+        const { data: loginData, error: loginError } = await supabase
+          .from('login_history')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('login_timestamp', { ascending: false })
+          .limit(10);
+
+        if (loginError) throw loginError;
+        setLoginHistory(loginData || []);
+
+        // Fetch admin actions if user is admin
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+
+        if (profile && ['admin', 'super_admin'].includes(profile.role)) {
+          const { data: actions, error: actionsError } = await supabase
+            .from('admin_actions')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(10);
+
+          if (actionsError) throw actionsError;
+          setAdminActions(actions || []);
+        }
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load settings. Please try again.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
       }
     };
 
     fetchSettings();
-  }, []);
+  }, [toast]);
 
   const handleSaveNotificationSettings = async () => {
     try {
@@ -80,6 +127,7 @@ const Settings = () => {
           <TabsList className="mb-4">
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="account">Account</TabsTrigger>
+            <TabsTrigger value="security">Security</TabsTrigger>
             <TabsTrigger value="system">System</TabsTrigger>
           </TabsList>
 
@@ -150,6 +198,82 @@ const Settings = () => {
                 </Button>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="security" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Login History</CardTitle>
+                <CardDescription>Recent login attempts to your account</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-[300px] w-full">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Location</TableHead>
+                        <TableHead>IP Address</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {loginHistory.map((login) => (
+                        <TableRow key={login.id}>
+                          <TableCell>
+                            {format(new Date(login.login_timestamp), 'PPpp')}
+                          </TableCell>
+                          <TableCell>
+                            <span className={`px-2 py-1 rounded-full text-xs ${
+                              login.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                            }`}>
+                              {login.success ? 'Success' : 'Failed'}
+                            </span>
+                          </TableCell>
+                          <TableCell>{login.location || 'Unknown'}</TableCell>
+                          <TableCell>{login.ip_address}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+              </CardContent>
+            </Card>
+
+            {adminActions.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Admin Action Audit Trail</CardTitle>
+                  <CardDescription>Recent administrative actions</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea className="h-[300px] w-full">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Action</TableHead>
+                          <TableHead>Entity Type</TableHead>
+                          <TableHead>Admin</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {adminActions.map((action) => (
+                          <TableRow key={action.id}>
+                            <TableCell>
+                              {format(new Date(action.created_at), 'PPpp')}
+                            </TableCell>
+                            <TableCell>{action.action_type}</TableCell>
+                            <TableCell>{action.entity_type}</TableCell>
+                            <TableCell>{action.admin_id}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="system">
