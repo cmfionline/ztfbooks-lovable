@@ -41,7 +41,10 @@ const Faqs = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">FAQs Management</h1>
-          <Button onClick={() => setIsCreateGroupOpen(true)}>
+          <Button 
+            onClick={() => setIsCreateGroupOpen(true)}
+            className="bg-primary hover:bg-primary/90 text-white"
+          >
             <Plus className="mr-2 h-4 w-4" />
             Add FAQ Group
           </Button>
