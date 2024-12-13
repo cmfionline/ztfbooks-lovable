@@ -8,8 +8,9 @@ import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
+import { NotificationSettings } from "@/components/notifications/NotificationSettings";
 
-export const Settings = () => {
+const Settings = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(true);
   const [marketingEmails, setMarketingEmails] = useState(false);
@@ -58,7 +59,7 @@ export const Settings = () => {
       if (error) throw error;
 
       toast({
-        title: "Settings saved",
+        title: "Success",
         description: "Your notification preferences have been updated.",
       });
     } catch (error) {
@@ -72,26 +73,27 @@ export const Settings = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-8">
+      <h1 className="text-3xl font-bold mb-8">Settings</h1>
       <div className="grid gap-6">
         <Tabs defaultValue="notifications" className="w-full">
-          <TabsList>
+          <TabsList className="mb-4">
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="account">Account</TabsTrigger>
             <TabsTrigger value="system">System</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="notifications">
+          <TabsContent value="notifications" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Notification Preferences</CardTitle>
+                <CardTitle>Email & Push Notifications</CardTitle>
                 <CardDescription>
                   Manage how you receive notifications
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="email-notifications">Email Notifications</Label>
+                  <Label htmlFor="email-notifications" className="flex-1">Email Notifications</Label>
                   <Switch
                     id="email-notifications"
                     checked={emailNotifications}
@@ -99,7 +101,7 @@ export const Settings = () => {
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="push-notifications">Push Notifications</Label>
+                  <Label htmlFor="push-notifications" className="flex-1">Push Notifications</Label>
                   <Switch
                     id="push-notifications"
                     checked={pushNotifications}
@@ -107,18 +109,23 @@ export const Settings = () => {
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="marketing-emails">Marketing Emails</Label>
+                  <Label htmlFor="marketing-emails" className="flex-1">Marketing Emails</Label>
                   <Switch
                     id="marketing-emails"
                     checked={marketingEmails}
                     onCheckedChange={setMarketingEmails}
                   />
                 </div>
-                <Button onClick={handleSaveNotificationSettings}>
+                <Button 
+                  onClick={handleSaveNotificationSettings}
+                  className="w-full bg-purple hover:bg-purple/90"
+                >
                   Save Preferences
                 </Button>
               </CardContent>
             </Card>
+
+            <NotificationSettings />
           </TabsContent>
 
           <TabsContent value="account">
@@ -138,7 +145,9 @@ export const Settings = () => {
                   <Label htmlFor="email">Email</Label>
                   <Input id="email" type="email" placeholder="Your email" />
                 </div>
-                <Button>Update Account</Button>
+                <Button className="w-full bg-purple hover:bg-purple/90">
+                  Update Account
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>
@@ -147,7 +156,7 @@ export const Settings = () => {
             <Card>
               <CardHeader>
                 <CardTitle>System Updates</CardTitle>
-                <CardDescription>Notify users about new features and improvements</CardDescription>
+                <CardDescription>Recent system updates and improvements</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">

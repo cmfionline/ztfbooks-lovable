@@ -20,6 +20,7 @@ import EditPage from "./components/pages/EditPage";
 import Reviews from "./pages/Reviews";
 import Faqs from "./pages/Faqs";
 import Notifications from "./pages/Notifications";
+import Settings from "./pages/Settings";
 
 const App = () => {
   return (
@@ -48,6 +49,7 @@ const App = () => {
             <Route path="/reviews" element={<Reviews />} />
             <Route path="/faqs" element={<Faqs />} />
             <Route path="/notifications" element={<Notifications />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>
       </div>
