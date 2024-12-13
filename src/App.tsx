@@ -17,6 +17,7 @@ import DiscountStrategies from "./pages/ads/DiscountStrategies";
 import Pages from "./pages/Pages";
 import AddPage from "./components/pages/AddPage";
 import EditPage from "./components/pages/EditPage";
+import Reviews from "./pages/Reviews";
 
 const App = () => {
   return (
@@ -42,6 +43,7 @@ const App = () => {
             <Route path="/pages" element={<Pages />} />
             <Route path="/pages/add" element={<AddPage />} />
             <Route path="/pages/:id/edit" element={<EditPage />} />
+            <Route path="/reviews" element={<Reviews />} />
           </Routes>
         </div>
       </div>
