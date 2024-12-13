@@ -18,6 +18,7 @@ import Pages from "./pages/Pages";
 import AddPage from "./components/pages/AddPage";
 import EditPage from "./components/pages/EditPage";
 import Reviews from "./pages/Reviews";
+import Faqs from "./pages/Faqs";
 
 const App = () => {
   return (
@@ -44,6 +45,7 @@ const App = () => {
             <Route path="/pages/add" element={<AddPage />} />
             <Route path="/pages/:id/edit" element={<EditPage />} />
             <Route path="/reviews" element={<Reviews />} />
+            <Route path="/faqs" element={<Faqs />} />
           </Routes>
         </div>
       </div>

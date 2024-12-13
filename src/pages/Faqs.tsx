@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import CreateFaqGroupDialog from "@/components/faqs/CreateFaqGroupDialog";
 import FaqGroupsList from "@/components/faqs/FaqGroupsList";
