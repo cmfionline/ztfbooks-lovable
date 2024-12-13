@@ -5,11 +5,9 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import CreateFaqGroupDialog from "@/components/faqs/CreateFaqGroupDialog";
 import FaqGroupsList from "@/components/faqs/FaqGroupsList";
-import { useToast } from "@/components/ui/use-toast";
 
 const Faqs = () => {
   const [isCreateGroupOpen, setIsCreateGroupOpen] = useState(false);
-  const { toast } = useToast();
 
   const { data: faqGroups, isLoading } = useQuery({
     queryKey: ["faq-groups"],
