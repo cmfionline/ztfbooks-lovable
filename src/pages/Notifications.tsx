@@ -1,32 +1,16 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NotificationForm } from "@/components/notifications/NotificationForm";
 import { NotificationHistory } from "@/components/notifications/NotificationHistory";
-import { NotificationSettings } from "@/components/notifications/NotificationSettings";
 
-export const NotificationsPage = () => {
+const Notifications = () => {
   return (
-    <div className="container mx-auto py-6">
-      <Tabs defaultValue="send">
-        <TabsList>
-          <TabsTrigger value="send">Send Notification</TabsTrigger>
-          <TabsTrigger value="history">Notification History</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="send">
-          <NotificationForm />
-        </TabsContent>
-
-        <TabsContent value="history">
-          <NotificationHistory />
-        </TabsContent>
-
-        <TabsContent value="settings">
-          <NotificationSettings />
-        </TabsContent>
-      </Tabs>
+    <div className="p-8 space-y-8">
+      <h1 className="text-3xl font-bold">Notifications</h1>
+      <div className="grid gap-8">
+        <NotificationForm />
+        <NotificationHistory />
+      </div>
     </div>
   );
 };
 
-export default NotificationsPage;
+export default Notifications;
