@@ -30,7 +30,7 @@ export const GlobalSettings = () => {
         contact_email: "",
         support_phone: ""
       };
-      return (data?.settings as Json as GlobalSettings) || defaultSettings;
+      return data ? (data.settings as unknown as GlobalSettings) : defaultSettings;
     },
   });
 

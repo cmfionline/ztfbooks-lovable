@@ -34,7 +34,7 @@ export const CurrencySettings = () => {
         default: "USD",
         supported: ["USD"]
       };
-      return (data?.settings as Json as CurrencySettings) || defaultSettings;
+      return data ? (data.settings as unknown as CurrencySettings) : defaultSettings;
     },
   });
 

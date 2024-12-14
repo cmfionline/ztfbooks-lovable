@@ -34,7 +34,7 @@ export const LanguageSettings = () => {
         default: "en",
         supported: ["en"]
       };
-      return (data?.settings as Json as LanguageSettings) || defaultSettings;
+      return data ? (data.settings as unknown as LanguageSettings) : defaultSettings;
     },
   });
 
