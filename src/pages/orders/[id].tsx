@@ -100,6 +100,7 @@ const OrderDetailsPage = () => {
       const validatedData = orderSchema.parse({
         status: newStatus,
         payment_status: order?.payment_status || "pending",
+        notes: order?.notes,
       });
 
       await updateOrderMutation.mutateAsync(validatedData);
@@ -121,19 +122,6 @@ const OrderDetailsPage = () => {
       </div>
     );
   }
-
-  const getStatusBadgeVariant = (status: string) => {
-    switch (status) {
-      case "completed":
-        return "default";
-      case "processing":
-        return "secondary";
-      case "cancelled":
-        return "destructive";
-      default:
-        return "outline";
-    }
-  };
 
   return (
     <ErrorBoundary>
