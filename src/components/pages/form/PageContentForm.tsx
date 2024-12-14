@@ -17,15 +17,16 @@ export const PageContentForm = ({ control }: PageContentFormProps) => {
         name="title"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Title</FormLabel>
+            <FormLabel className="text-gray-700 font-medium">Title</FormLabel>
             <FormControl>
               <Input 
                 {...field} 
                 placeholder="Enter page title"
-                className="border-purple-light focus:border-purple"
+                className="border-gray-200 focus:border-purple focus:ring-2 focus:ring-purple/20"
+                aria-describedby="title-error"
               />
             </FormControl>
-            <FormMessage />
+            <FormMessage className="text-xs" />
           </FormItem>
         )}
       />
@@ -35,15 +36,17 @@ export const PageContentForm = ({ control }: PageContentFormProps) => {
         name="content"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Content</FormLabel>
+            <FormLabel className="text-gray-700 font-medium">Content</FormLabel>
             <FormControl>
               <Editor 
-                value={field.value || ''} 
+                value={field.value} 
                 onChange={field.onChange}
                 placeholder="Enter page content"
+                className="min-h-[200px]"
+                aria-describedby="content-error"
               />
             </FormControl>
-            <FormMessage />
+            <FormMessage className="text-xs" />
           </FormItem>
         )}
       />
@@ -53,10 +56,10 @@ export const PageContentForm = ({ control }: PageContentFormProps) => {
         name="status"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Status</FormLabel>
+            <FormLabel className="text-gray-700 font-medium">Status</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger className="border-purple-light focus:border-purple">
+                <SelectTrigger className="border-gray-200 focus:border-purple">
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
               </FormControl>
@@ -66,7 +69,7 @@ export const PageContentForm = ({ control }: PageContentFormProps) => {
                 <SelectItem value="archived">Archived</SelectItem>
               </SelectContent>
             </Select>
-            <FormMessage />
+            <FormMessage className="text-xs" />
           </FormItem>
         )}
       />
@@ -76,17 +79,18 @@ export const PageContentForm = ({ control }: PageContentFormProps) => {
         name="order_index"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Order</FormLabel>
+            <FormLabel className="text-gray-700 font-medium">Order</FormLabel>
             <FormControl>
               <Input 
                 type="number"
                 {...field}
                 onChange={(e) => field.onChange(Number(e.target.value))}
                 min={0}
-                className="border-purple-light focus:border-purple"
+                className="border-gray-200 focus:border-purple focus:ring-2 focus:ring-purple/20"
+                aria-describedby="order-error"
               />
             </FormControl>
-            <FormMessage />
+            <FormMessage className="text-xs" />
           </FormItem>
         )}
       />
