@@ -40,6 +40,21 @@ export const ReportTemplateForm = () => {
     }
 
     try {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      if (!profile || !["admin", "super_admin"].includes(profile.role)) {
+        toast({
+          title: "Error",
+          description: "You don't have permission to create report templates",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { error } = await supabase.from('report_templates').insert({
         name: values.templateName,
         type: values.reportType,
@@ -69,6 +84,14 @@ export const ReportTemplateForm = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleExport = () => {
+    toast({
+      title: "Export",
+      description: "Export functionality will be implemented soon",
+      className: "bg-yellow-50 border-yellow-200",
+    });
   };
 
   return (
@@ -141,7 +164,7 @@ export const ReportTemplateForm = () => {
           <Button 
             type="submit" 
             className="flex-1 bg-purple hover:bg-purple/90"
-            disabled={!user}
+            disabled={!user || form.formState.isSubmitting}
           >
             Create Template
           </Button>
@@ -149,7 +172,7 @@ export const ReportTemplateForm = () => {
             type="button" 
             variant="outline" 
             className="flex-1 bg-white hover:bg-purple-50 border-purple-light"
-            onClick={() => form.reset()}
+            onClick={handleExport}
           >
             <FileDown className="mr-2 h-4 w-4" />
             Export
