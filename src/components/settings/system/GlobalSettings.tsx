@@ -4,17 +4,32 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
-import { Json } from "@/integrations/supabase/types";
 import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
 
-interface GlobalSettings {
-  site_name: string;
-  contact_email: string;
-  support_phone: string;
-}
+const formSchema = z.object({
+  site_name: z.string().min(2, "Site name must be at least 2 characters"),
+  contact_email: z.string().email("Please enter a valid email"),
+  support_phone: z.string().min(6, "Please enter a valid phone number"),
+});
+
+type GlobalSettings = z.infer<typeof formSchema>;
 
 export const GlobalSettings = () => {
   const { toast } = useToast();
+  const form = useForm<GlobalSettings>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      site_name: "",
+      contact_email: "",
+      support_phone: "",
+    },
+  });
+
   const { data: settings, isLoading, refetch } = useQuery({
     queryKey: ["globalSettings"],
     queryFn: async () => {
@@ -30,19 +45,16 @@ export const GlobalSettings = () => {
         contact_email: "",
         support_phone: ""
       };
-      return data ? (data.settings as unknown as GlobalSettings) : defaultSettings;
+      if (data) {
+        const settings = data.settings as unknown as GlobalSettings;
+        form.reset(settings);
+        return settings;
+      }
+      return defaultSettings;
     },
   });
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const updatedSettings = {
-      site_name: formData.get("siteName"),
-      contact_email: formData.get("supportEmail"),
-      support_phone: formData.get("supportPhone"),
-    };
-
+  const handleSubmit = async (values: GlobalSettings) => {
     try {
       const { data: user } = await supabase.auth.getUser();
       if (!user.user) {
@@ -73,7 +85,7 @@ export const GlobalSettings = () => {
         .from("system_settings")
         .upsert({
           category: "global",
-          settings: updatedSettings,
+          settings: values,
         }, {
           onConflict: "category"
         });
@@ -107,39 +119,59 @@ export const GlobalSettings = () => {
         <CardDescription>Manage your global system settings</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="siteName">Site Name</Label>
-            <Input
-              id="siteName"
-              name="siteName"
-              defaultValue={settings?.site_name}
-              className="max-w-md"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="site_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Site Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} className="max-w-md" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="supportEmail">Support Email</Label>
-            <Input
-              id="supportEmail"
-              name="supportEmail"
-              type="email"
-              defaultValue={settings?.contact_email}
-              className="max-w-md"
+            <FormField
+              control={form.control}
+              name="contact_email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Support Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" {...field} className="max-w-md" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="supportPhone">Support Phone</Label>
-            <Input
-              id="supportPhone"
-              name="supportPhone"
-              defaultValue={settings?.support_phone}
-              className="max-w-md"
+            <FormField
+              control={form.control}
+              name="support_phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Support Phone</FormLabel>
+                  <FormControl>
+                    <Input {...field} className="max-w-md" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <Button type="submit" className="bg-purple hover:bg-purple-dark text-white">
-            Save Changes
-          </Button>
-        </form>
+            <Button 
+              type="submit" 
+              className="bg-purple hover:bg-purple-dark text-white"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : null}
+              Save Changes
+            </Button>
+          </form>
+        </Form>
       </CardContent>
     </Card>
   );

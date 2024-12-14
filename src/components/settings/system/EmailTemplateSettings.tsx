@@ -2,13 +2,46 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { Plus, Loader2, Pencil } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+
+const templateFormSchema = z.object({
+  name: z.string().min(2, "Template name must be at least 2 characters"),
+  subject: z.string().min(2, "Subject must be at least 2 characters"),
+  body: z.string().min(10, "Body must be at least 10 characters"),
+});
+
+type EmailTemplateForm = z.infer<typeof templateFormSchema>;
 
 export const EmailTemplateSettings = () => {
   const [isCreating, setIsCreating] = useState(false);
+  const { toast } = useToast();
 
-  const { data: templates, isLoading } = useQuery({
+  const form = useForm<EmailTemplateForm>({
+    resolver: zodResolver(templateFormSchema),
+    defaultValues: {
+      name: "",
+      subject: "",
+      body: "",
+    },
+  });
+
+  const { data: templates, isLoading, refetch } = useQuery({
     queryKey: ["emailTemplates"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -21,6 +54,62 @@ export const EmailTemplateSettings = () => {
     },
   });
 
+  const handleSubmit = async (values: EmailTemplateForm) => {
+    try {
+      const { data: user } = await supabase.auth.getUser();
+      if (!user.user) {
+        toast({
+          title: "Error",
+          description: "You must be logged in to create templates",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.user.id)
+        .single();
+
+      if (!profile || !["admin", "super_admin"].includes(profile.role)) {
+        toast({
+          title: "Error",
+          description: "You don't have permission to create templates",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from("email_templates")
+        .insert({
+          name: values.name,
+          subject: values.subject,
+          body: values.body,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Email template created successfully",
+        className: "bg-green-50 border-green-200",
+      });
+      
+      form.reset();
+      setIsCreating(false);
+      refetch();
+    } catch (error) {
+      console.error("Error creating template:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create email template",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -32,13 +121,80 @@ export const EmailTemplateSettings = () => {
           <CardTitle>Email Templates</CardTitle>
           <CardDescription>Manage your email templates</CardDescription>
         </div>
-        <Button 
-          onClick={() => setIsCreating(true)}
-          className="bg-purple hover:bg-purple-dark text-white"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Create Template
-        </Button>
+        <Dialog open={isCreating} onOpenChange={setIsCreating}>
+          <DialogTrigger asChild>
+            <Button 
+              className="bg-purple hover:bg-purple-dark text-white"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Create Template
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Create Email Template</DialogTitle>
+              <DialogDescription>
+                Create a new email template for your communications
+              </DialogDescription>
+            </DialogHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Template Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="subject"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Subject</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="body"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Body</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          {...field} 
+                          className="min-h-[100px]"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button 
+                  type="submit" 
+                  className="w-full bg-purple hover:bg-purple-dark text-white"
+                  disabled={form.formState.isSubmitting}
+                >
+                  {form.formState.isSubmitting ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : null}
+                  Create Template
+                </Button>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
       </CardHeader>
       <CardContent className="space-y-4">
         {templates?.length === 0 ? (
@@ -57,7 +213,7 @@ export const EmailTemplateSettings = () => {
                   <p className="text-sm text-muted-foreground">{template.subject}</p>
                 </div>
                 <Button variant="ghost" className="text-purple hover:text-purple-dark">
-                  Edit
+                  <Pencil className="w-4 h-4" />
                 </Button>
               </div>
             ))}
