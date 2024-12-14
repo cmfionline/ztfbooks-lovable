@@ -1,52 +1,64 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Database } from "@/integrations/supabase/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Save, X, Loader2 } from "lucide-react";
-
-type Page = Database['public']['Tables']['pages']['Row'];
-type PageInsert = Database['public']['Tables']['pages']['Insert'];
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/lib/supabase";
+import { PageContentForm } from "./form/PageContentForm";
+import { PageFormValues, Page, pageFormSchema } from "./types";
+import { Loader2 } from "lucide-react";
 
 interface PageFormProps {
   initialData?: Page;
   isEditing?: boolean;
 }
 
-const PageForm = ({ initialData, isEditing = false }: PageFormProps) => {
-  const navigate = useNavigate();
+const PageForm = ({ initialData, isEditing }: PageFormProps) => {
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState<PageInsert>({
-    title: initialData?.title || "",
-    content: initialData?.content || "",
-    status: initialData?.status || "active",
+  const navigate = useNavigate();
+
+  const form = useForm<PageFormValues>({
+    resolver: zodResolver(pageFormSchema),
+    defaultValues: {
+      title: initialData?.title || "",
+      content: initialData?.content || "",
+      status: initialData?.status || "active",
+      order_index: initialData?.order_index || 0,
+    },
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
+  const onSubmit = async (values: PageFormValues) => {
     try {
+      const { data: user } = await supabase.auth.getUser();
+      if (!user.user) {
+        toast({
+          title: "Error",
+          description: "You must be logged in to perform this action",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.user.id)
+        .single();
+
+      if (!profile || !["admin", "super_admin"].includes(profile.role)) {
+        toast({
+          title: "Error",
+          description: "You don't have permission to perform this action",
+          variant: "destructive",
+        });
+        return;
+      }
+
       if (isEditing && initialData) {
         const { error } = await supabase
           .from("pages")
-          .update({
-            ...formData,
-            updated_at: new Date().toISOString(),
-          })
+          .update(values)
           .eq("id", initialData.id);
 
         if (error) throw error;
@@ -58,10 +70,7 @@ const PageForm = ({ initialData, isEditing = false }: PageFormProps) => {
       } else {
         const { error } = await supabase
           .from("pages")
-          .insert({
-            ...formData,
-            order_index: 0,
-          });
+          .insert([values]);
 
         if (error) throw error;
 
@@ -73,103 +82,32 @@ const PageForm = ({ initialData, isEditing = false }: PageFormProps) => {
 
       navigate("/pages");
     } catch (error: any) {
+      console.error("Error:", error);
       toast({
-        variant: "destructive",
         title: "Error",
-        description: error.message,
+        description: error.message || "Something went wrong",
+        variant: "destructive",
       });
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
-    <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-2xl">
-          <FileText className="w-6 h-6 text-purple" />
-          {isEditing ? "Edit Page" : "Create New Page"}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="title" className="text-primary">Title</Label>
-            <Input
-              id="title"
-              value={formData.title}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, title: e.target.value }))
-              }
-              className="border-purple-light focus:border-purple focus:ring-purple"
-              placeholder="Enter page title"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="content" className="text-primary">Content</Label>
-            <Textarea
-              id="content"
-              value={formData.content || ""}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, content: e.target.value }))
-              }
-              className="min-h-[200px] border-purple-light focus:border-purple focus:ring-purple"
-              placeholder="Enter page content"
-              rows={10}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="status" className="text-primary">Status</Label>
-            <Select
-              value={formData.status}
-              onValueChange={(value) =>
-                setFormData((prev) => ({ ...prev, status: value }))
-              }
-            >
-              <SelectTrigger className="border-purple-light focus:border-purple focus:ring-purple">
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="inactive">Inactive</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex justify-end space-x-4 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate("/pages")}
-              className="border-purple-light hover:bg-purple-light/10"
-            >
-              <X className="w-4 h-4 mr-2" />
-              Cancel
-            </Button>
-            <Button 
-              type="submit" 
-              disabled={loading}
-              className="bg-purple hover:bg-purple/90 text-white"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  {isEditing ? "Updating..." : "Creating..."}
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4 mr-2" />
-                  {isEditing ? "Update Page" : "Create Page"}
-                </>
-              )}
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <PageContentForm control={form.control} />
+        
+        <Button 
+          type="submit"
+          className="w-full bg-purple hover:bg-purple/90"
+          disabled={form.formState.isSubmitting}
+        >
+          {form.formState.isSubmitting && (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          )}
+          {isEditing ? "Update Page" : "Create Page"}
+        </Button>
+      </form>
+    </Form>
   );
 };
 

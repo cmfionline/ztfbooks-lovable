@@ -1,10 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import PageForm from "./PageForm";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { FileEdit, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Page } from "./types";
 
 const EditPage = () => {
   const { id } = useParams();
@@ -28,7 +29,7 @@ const EditPage = () => {
         return null;
       }
 
-      return data;
+      return data as Page;
     },
   });
 
