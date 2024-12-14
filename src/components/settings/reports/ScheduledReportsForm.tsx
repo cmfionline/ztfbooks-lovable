@@ -74,8 +74,8 @@ export const ScheduledReportsForm = () => {
               <FormLabel className="text-sm font-medium">Report Template</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className="border-purple-light focus:border-purple bg-white">
-                    <SelectValue placeholder="Select template" />
+                  <SelectTrigger className="border-purple-light focus:border-purple bg-white text-foreground">
+                    <SelectValue placeholder="Select template" className="text-foreground" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="bg-white shadow-lg">
@@ -83,7 +83,7 @@ export const ScheduledReportsForm = () => {
                     <SelectItem 
                       key={template.id} 
                       value={template.id}
-                      className="hover:bg-purple-50"
+                      className="hover:bg-purple-50 text-foreground"
                     >
                       {template.name}
                     </SelectItem>
@@ -103,14 +103,14 @@ export const ScheduledReportsForm = () => {
               <FormLabel className="text-sm font-medium">Schedule</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className="border-purple-light focus:border-purple bg-white">
-                    <SelectValue placeholder="Select frequency" />
+                  <SelectTrigger className="border-purple-light focus:border-purple bg-white text-foreground">
+                    <SelectValue placeholder="Select frequency" className="text-foreground" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="bg-white shadow-lg">
-                  <SelectItem value="daily" className="hover:bg-purple-50">Daily</SelectItem>
-                  <SelectItem value="weekly" className="hover:bg-purple-50">Weekly</SelectItem>
-                  <SelectItem value="monthly" className="hover:bg-purple-50">Monthly</SelectItem>
+                  <SelectItem value="daily" className="hover:bg-purple-50 text-foreground">Daily</SelectItem>
+                  <SelectItem value="weekly" className="hover:bg-purple-50 text-foreground">Weekly</SelectItem>
+                  <SelectItem value="monthly" className="hover:bg-purple-50 text-foreground">Monthly</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

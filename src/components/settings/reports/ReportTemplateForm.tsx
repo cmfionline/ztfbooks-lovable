@@ -84,14 +84,14 @@ export const ReportTemplateForm = () => {
               <FormLabel className="text-sm font-medium">Report Type</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className="border-purple-light focus:border-purple bg-white">
-                    <SelectValue placeholder="Select report type" />
+                  <SelectTrigger className="border-purple-light focus:border-purple bg-white text-foreground">
+                    <SelectValue placeholder="Select report type" className="text-foreground" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="bg-white shadow-lg">
-                  <SelectItem value="sales" className="hover:bg-purple-50">Sales Report</SelectItem>
-                  <SelectItem value="users" className="hover:bg-purple-50">User Activity Report</SelectItem>
-                  <SelectItem value="books" className="hover:bg-purple-50">Book Analytics Report</SelectItem>
+                  <SelectItem value="sales" className="hover:bg-purple-50 text-foreground">Sales Report</SelectItem>
+                  <SelectItem value="users" className="hover:bg-purple-50 text-foreground">User Activity Report</SelectItem>
+                  <SelectItem value="books" className="hover:bg-purple-50 text-foreground">Book Analytics Report</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -107,13 +107,13 @@ export const ReportTemplateForm = () => {
               <FormLabel className="text-sm font-medium">Export Format</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className="border-purple-light focus:border-purple bg-white">
-                    <SelectValue placeholder="Select format" />
+                  <SelectTrigger className="border-purple-light focus:border-purple bg-white text-foreground">
+                    <SelectValue placeholder="Select format" className="text-foreground" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="bg-white shadow-lg">
-                  <SelectItem value="pdf" className="hover:bg-purple-50">PDF</SelectItem>
-                  <SelectItem value="excel" className="hover:bg-purple-50">Excel</SelectItem>
+                  <SelectItem value="pdf" className="hover:bg-purple-50 text-foreground">PDF</SelectItem>
+                  <SelectItem value="excel" className="hover:bg-purple-50 text-foreground">Excel</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
