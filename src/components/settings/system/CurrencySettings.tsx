@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { Json } from "@/integrations/supabase/types";
 
 interface CurrencySettings {
   default: string;
@@ -27,10 +28,11 @@ export const CurrencySettings = () => {
         .maybeSingle();
       
       if (error) throw error;
-      return (data?.settings || {
+      const defaultSettings: CurrencySettings = {
         default: "USD",
         supported: ["USD"]
-      }) as CurrencySettings;
+      };
+      return (data?.settings as Json as CurrencySettings) || defaultSettings;
     },
   });
 

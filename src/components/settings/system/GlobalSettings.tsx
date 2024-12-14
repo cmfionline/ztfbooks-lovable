@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { Json } from "@/integrations/supabase/types";
 
 interface GlobalSettings {
   site_name: string;
@@ -22,11 +23,12 @@ export const GlobalSettings = () => {
         .maybeSingle();
       
       if (error) throw error;
-      return (data?.settings || {
+      const defaultSettings: GlobalSettings = {
         site_name: "",
         contact_email: "",
         support_phone: ""
-      }) as GlobalSettings;
+      };
+      return (data?.settings as Json as GlobalSettings) || defaultSettings;
     },
   });
 

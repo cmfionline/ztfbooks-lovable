@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { Json } from "@/integrations/supabase/types";
 
 interface LanguageSettings {
   default: string;
@@ -27,10 +28,11 @@ export const LanguageSettings = () => {
         .maybeSingle();
       
       if (error) throw error;
-      return (data?.settings || {
+      const defaultSettings: LanguageSettings = {
         default: "en",
         supported: ["en"]
-      }) as LanguageSettings;
+      };
+      return (data?.settings as Json as GlobalSettings) || defaultSettings;
     },
   });
 
