@@ -3,8 +3,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 
 export const SecuritySettings = () => {
   const [loginHistory, setLoginHistory] = useState([]);
@@ -16,8 +17,12 @@ export const SecuritySettings = () => {
     const fetchSecurityData = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        if (!user) {
+          setIsLoading(false);
+          return;
+        }
 
+        // Fetch login history
         const { data: loginData, error: loginError } = await supabase
           .from('login_history')
           .select('*')
@@ -28,12 +33,16 @@ export const SecuritySettings = () => {
         if (loginError) throw loginError;
         setLoginHistory(loginData || []);
 
-        const { data: profile } = await supabase
+        // Fetch user profile to check role
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('role')
           .eq('id', user.id)
           .single();
 
+        if (profileError) throw profileError;
+
+        // If admin or super_admin, fetch admin actions
         if (profile && ['admin', 'super_admin'].includes(profile.role)) {
           const { data: actions, error: actionsError } = await supabase
             .from('admin_actions')
@@ -61,7 +70,11 @@ export const SecuritySettings = () => {
   }, [toast]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-purple" />
+      </div>
+    );
   }
 
   return (
@@ -99,6 +112,13 @@ export const SecuritySettings = () => {
                     <TableCell>{login.ip_address}</TableCell>
                   </TableRow>
                 ))}
+                {loginHistory.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center text-muted-foreground">
+                      No login history available
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </ScrollArea>
