@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Clock, User, Book, Loader2 } from "lucide-react";
-import { orderSchema } from "@/components/orders/schema";
+import { orderSchema, type OrderFormValues } from "@/components/orders/schema";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 
 const OrderDetailsPage = () => {
@@ -59,10 +59,10 @@ const OrderDetailsPage = () => {
   });
 
   const updateOrderMutation = useMutation({
-    mutationFn: async ({ status, payment_status, notes }: { status: string; payment_status: string; notes?: string }) => {
+    mutationFn: async (values: OrderFormValues) => {
       const { error } = await supabase
         .from("orders")
-        .update({ status, payment_status, notes })
+        .update(values)
         .eq("id", id);
 
       if (error) throw error;
@@ -72,8 +72,8 @@ const OrderDetailsPage = () => {
         .from("order_history")
         .insert({
           order_id: id,
-          status,
-          notes,
+          status: values.status,
+          notes: values.notes,
           created_by: (await supabase.auth.getUser()).data.user?.id,
         });
 
@@ -95,7 +95,7 @@ const OrderDetailsPage = () => {
     },
   });
 
-  const handleStatusChange = async (newStatus: string) => {
+  const handleStatusChange = async (newStatus: OrderFormValues["status"]) => {
     try {
       const validatedData = orderSchema.parse({
         status: newStatus,
