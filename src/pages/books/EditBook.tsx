@@ -12,7 +12,7 @@ const EditBook = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const { data: book, isLoading } = useQuery({
+  const { data: book, isLoading, error } = useQuery({
     queryKey: ["book", id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -27,7 +27,12 @@ const EditBook = () => {
         .eq("id", id)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        if (error.code === 'PGRST116') {
+          throw new Error("Book not found");
+        }
+        throw error;
+      }
       return data;
     },
   });
@@ -59,16 +64,17 @@ const EditBook = () => {
         .from("books")
         .update({
           title: values.title,
-          description: values.description,
+          synopsis: values.synopsis,
           is_free: values.is_free,
           price: values.is_free ? 0 : values.price,
           series_id: values.series_id || null,
           author_id: values.author_id,
-          publisher_id: values.publisher_id,
-          tags: values.tags,
+          publisher_id: values.publisher_id || null,
           language_id: values.language_id,
           cover_image: coverImagePath,
           epub_file: epubFilePath,
+          publication_date: values.publication_date,
+          page_count: values.page_count,
         })
         .eq("id", id);
 
@@ -90,8 +96,40 @@ const EditBook = () => {
     }
   };
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
+        <div className="max-w-5xl mx-auto">
+          <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-destructive">
+                Error
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>{error.message}</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
+        <div className="max-w-5xl mx-auto">
+          <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
+                <Book className="w-6 h-6" />
+                Loading...
+              </CardTitle>
+            </CardHeader>
+          </Card>
+        </div>
+      </div>
+    );
   }
 
   return (
