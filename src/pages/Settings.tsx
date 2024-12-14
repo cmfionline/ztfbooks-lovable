@@ -2,6 +2,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NotificationSettings } from "@/components/settings/NotificationSettings";
 import { SecuritySettings } from "@/components/settings/SecuritySettings";
 import { ReportSettings } from "@/components/settings/ReportSettings";
+import { EmailTemplateSettings } from "@/components/settings/system/EmailTemplateSettings";
+import { GlobalSettings } from "@/components/settings/system/GlobalSettings";
+import { CurrencySettings } from "@/components/settings/system/CurrencySettings";
+import { LanguageSettings } from "@/components/settings/system/LanguageSettings";
 
 const Settings = () => {
   return (
@@ -13,6 +17,7 @@ const Settings = () => {
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="security">Security</TabsTrigger>
             <TabsTrigger value="reports">Reports</TabsTrigger>
+            <TabsTrigger value="system">System</TabsTrigger>
           </TabsList>
 
           <TabsContent value="notifications">
@@ -25,6 +30,13 @@ const Settings = () => {
 
           <TabsContent value="reports">
             <ReportSettings />
+          </TabsContent>
+
+          <TabsContent value="system" className="space-y-6">
+            <GlobalSettings />
+            <EmailTemplateSettings />
+            <CurrencySettings />
+            <LanguageSettings />
           </TabsContent>
         </Tabs>
       </div>
