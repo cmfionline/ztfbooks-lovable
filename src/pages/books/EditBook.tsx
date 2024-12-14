@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Book } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { BookForm, type BookFormValues } from "./components/BookForm";
+import { BookForm } from "@/components/books/BookForm";
+import type { BookFormValues } from "./schema";
 import { useQuery } from "@tanstack/react-query";
 
 const EditBook = () => {
@@ -144,9 +144,9 @@ const EditBook = () => {
           </CardHeader>
           <CardContent>
             <BookForm 
-              onSubmit={handleSubmit} 
-              onCancel={() => navigate("/books")} 
+              onSubmit={handleSubmit}
               initialValues={book}
+              submitLabel="Update Book"
             />
           </CardContent>
         </Card>
