@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { PageContentForm } from "./form/PageContentForm";
 import { PageFormValues, Page, pageFormSchema } from "./types";
 import { Loader2 } from "lucide-react";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
 
 interface PageFormProps {
   initialData?: Page;
@@ -33,7 +34,7 @@ const PageForm = ({ initialData, isEditing }: PageFormProps) => {
       const { data: user } = await supabase.auth.getUser();
       if (!user.user) {
         toast({
-          title: "Error",
+          title: "Authentication Error",
           description: "You must be logged in to perform this action",
           variant: "destructive",
         });
@@ -48,7 +49,7 @@ const PageForm = ({ initialData, isEditing }: PageFormProps) => {
 
       if (!profile || !["admin", "super_admin"].includes(profile.role)) {
         toast({
-          title: "Error",
+          title: "Permission Denied",
           description: "You don't have permission to perform this action",
           variant: "destructive",
         });
@@ -92,22 +93,24 @@ const PageForm = ({ initialData, isEditing }: PageFormProps) => {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <PageContentForm control={form.control} />
-        
-        <Button 
-          type="submit"
-          className="w-full bg-purple hover:bg-purple/90"
-          disabled={form.formState.isSubmitting}
-        >
-          {form.formState.isSubmitting && (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          )}
-          {isEditing ? "Update Page" : "Create Page"}
-        </Button>
-      </form>
-    </Form>
+    <ErrorBoundary>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <PageContentForm control={form.control} />
+          
+          <Button 
+            type="submit"
+            className="w-full bg-purple hover:bg-purple/90"
+            disabled={form.formState.isSubmitting || !form.formState.isValid}
+          >
+            {form.formState.isSubmitting && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            {isEditing ? "Update Page" : "Create Page"}
+          </Button>
+        </form>
+      </Form>
+    </ErrorBoundary>
   );
 };
 
