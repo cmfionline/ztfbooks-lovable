@@ -30,17 +30,29 @@ export const ReportTemplateForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to create report templates",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase.from('report_templates').insert({
         name: values.templateName,
         type: values.reportType,
-        created_by: user?.id,
+        created_by: user.id,
         config: {
           format: values.format,
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase Error:', error);
+        throw new Error(error.message);
+      }
 
       toast({
         title: "Success",
@@ -129,6 +141,7 @@ export const ReportTemplateForm = () => {
           <Button 
             type="submit" 
             className="flex-1 bg-purple hover:bg-purple/90"
+            disabled={!user}
           >
             Create Template
           </Button>
