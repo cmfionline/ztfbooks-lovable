@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { FileDown } from "lucide-react";
+import { useUser } from "@supabase/auth-helpers-react";
 
 const formSchema = z.object({
   templateName: z.string().min(2, "Template name must be at least 2 characters"),
@@ -17,6 +18,8 @@ const formSchema = z.object({
 
 export const ReportTemplateForm = () => {
   const { toast } = useToast();
+  const user = useUser();
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -27,10 +30,20 @@ export const ReportTemplateForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to create report templates",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase.from('report_templates').insert({
         name: values.templateName,
         type: values.reportType,
+        created_by: user.id,
         config: {
           format: values.format,
         },
@@ -125,6 +138,7 @@ export const ReportTemplateForm = () => {
           <Button 
             type="submit" 
             className="flex-1 bg-purple hover:bg-purple/90"
+            disabled={!user}
           >
             Create Template
           </Button>
