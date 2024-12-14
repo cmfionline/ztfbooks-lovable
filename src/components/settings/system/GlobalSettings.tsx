@@ -5,6 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
+interface GlobalSettings {
+  site_name: string;
+  contact_email: string;
+  support_phone: string;
+}
+
 export const GlobalSettings = () => {
   const { data: settings, isLoading } = useQuery({
     queryKey: ["globalSettings"],
@@ -13,10 +19,14 @@ export const GlobalSettings = () => {
         .from("system_settings")
         .select("*")
         .eq("category", "global")
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
-      return data?.settings;
+      return (data?.settings || {
+        site_name: "",
+        contact_email: "",
+        support_phone: ""
+      }) as GlobalSettings;
     },
   });
 

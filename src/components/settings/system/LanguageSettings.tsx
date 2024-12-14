@@ -11,6 +11,11 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 
+interface LanguageSettings {
+  default: string;
+  supported: string[];
+}
+
 export const LanguageSettings = () => {
   const { data: settings, isLoading } = useQuery({
     queryKey: ["languageSettings"],
@@ -19,10 +24,13 @@ export const LanguageSettings = () => {
         .from("system_settings")
         .select("*")
         .eq("category", "language")
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
-      return data?.settings;
+      return (data?.settings || {
+        default: "en",
+        supported: ["en"]
+      }) as LanguageSettings;
     },
   });
 

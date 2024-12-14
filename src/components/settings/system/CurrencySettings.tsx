@@ -11,6 +11,11 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 
+interface CurrencySettings {
+  default: string;
+  supported: string[];
+}
+
 export const CurrencySettings = () => {
   const { data: settings, isLoading } = useQuery({
     queryKey: ["currencySettings"],
@@ -19,10 +24,13 @@ export const CurrencySettings = () => {
         .from("system_settings")
         .select("*")
         .eq("category", "currency")
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
-      return data?.settings;
+      return (data?.settings || {
+        default: "USD",
+        supported: ["USD"]
+      }) as CurrencySettings;
     },
   });
 
