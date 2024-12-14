@@ -40,6 +40,31 @@ export const CurrencySettings = () => {
 
   const handleSave = async (value: string) => {
     try {
+      const { data: user } = await supabase.auth.getUser();
+      if (!user.user) {
+        toast({
+          title: "Error",
+          description: "You must be logged in to update settings",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.user.id)
+        .single();
+
+      if (!profile || !["admin", "super_admin"].includes(profile.role)) {
+        toast({
+          title: "Error",
+          description: "You don't have permission to update settings",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { error } = await supabase
         .from("system_settings")
         .upsert({
