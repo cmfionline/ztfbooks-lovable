@@ -8,7 +8,7 @@ import { BookBasicInfo } from "./components/BookBasicInfo";
 import { BookMetadata } from "./components/BookMetadata";
 import { BookFiles } from "./components/BookFiles";
 import { BookTags } from "./components/BookTags";
-import { bookSchema, type BookFormValues } from "../schema";
+import { bookSchema, type BookFormValues } from "@/pages/books/schema";
 import { useBookFormData } from "@/hooks/useBookFormData";
 import { BookErrorBoundary } from "./BookErrorBoundary";
 import { BookLoadingState } from "./BookLoadingState";
