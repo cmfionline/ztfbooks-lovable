@@ -9,8 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import { Json } from "@/integrations/supabase/types";
+import { useToast } from "@/hooks/use-toast";
 
 interface CurrencySettings {
   default: string;
@@ -18,7 +19,8 @@ interface CurrencySettings {
 }
 
 export const CurrencySettings = () => {
-  const { data: settings, isLoading } = useQuery({
+  const { toast } = useToast();
+  const { data: settings, isLoading, refetch } = useQuery({
     queryKey: ["currencySettings"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -36,6 +38,38 @@ export const CurrencySettings = () => {
     },
   });
 
+  const handleSave = async (value: string) => {
+    try {
+      const { error } = await supabase
+        .from("system_settings")
+        .upsert({
+          category: "currency",
+          settings: {
+            ...settings,
+            default: value
+          }
+        }, {
+          onConflict: "category"
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Currency settings updated successfully",
+        className: "bg-green-50 border-green-200",
+      });
+      refetch();
+    } catch (error) {
+      console.error("Error updating settings:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update currency settings",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -49,7 +83,10 @@ export const CurrencySettings = () => {
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="defaultCurrency">Default Currency</Label>
-          <Select defaultValue={settings?.default}>
+          <Select 
+            defaultValue={settings?.default}
+            onValueChange={handleSave}
+          >
             <SelectTrigger className="w-full max-w-xs">
               <SelectValue placeholder="Select currency" />
             </SelectTrigger>
@@ -62,9 +99,6 @@ export const CurrencySettings = () => {
             </SelectContent>
           </Select>
         </div>
-        <Button className="bg-purple hover:bg-purple-dark text-white">
-          Save Changes
-        </Button>
       </CardContent>
     </Card>
   );

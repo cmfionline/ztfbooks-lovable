@@ -3,8 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import { Json } from "@/integrations/supabase/types";
+import { useToast } from "@/hooks/use-toast";
 
 interface GlobalSettings {
   site_name: string;
@@ -13,7 +14,8 @@ interface GlobalSettings {
 }
 
 export const GlobalSettings = () => {
-  const { data: settings, isLoading } = useQuery({
+  const { toast } = useToast();
+  const { data: settings, isLoading, refetch } = useQuery({
     queryKey: ["globalSettings"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -32,6 +34,43 @@ export const GlobalSettings = () => {
     },
   });
 
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const updatedSettings = {
+      site_name: formData.get("siteName"),
+      contact_email: formData.get("supportEmail"),
+      support_phone: formData.get("supportPhone"),
+    };
+
+    try {
+      const { error } = await supabase
+        .from("system_settings")
+        .upsert({
+          category: "global",
+          settings: updatedSettings,
+        }, {
+          onConflict: "category"
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Global settings updated successfully",
+        className: "bg-green-50 border-green-200",
+      });
+      refetch();
+    } catch (error) {
+      console.error("Error updating settings:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update global settings",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -43,34 +82,39 @@ export const GlobalSettings = () => {
         <CardDescription>Manage your global system settings</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="siteName">Site Name</Label>
-          <Input
-            id="siteName"
-            defaultValue={settings?.site_name}
-            className="max-w-md"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="supportEmail">Support Email</Label>
-          <Input
-            id="supportEmail"
-            type="email"
-            defaultValue={settings?.contact_email}
-            className="max-w-md"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="supportPhone">Support Phone</Label>
-          <Input
-            id="supportPhone"
-            defaultValue={settings?.support_phone}
-            className="max-w-md"
-          />
-        </div>
-        <Button className="bg-purple hover:bg-purple-dark text-white">
-          Save Changes
-        </Button>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="siteName">Site Name</Label>
+            <Input
+              id="siteName"
+              name="siteName"
+              defaultValue={settings?.site_name}
+              className="max-w-md"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="supportEmail">Support Email</Label>
+            <Input
+              id="supportEmail"
+              name="supportEmail"
+              type="email"
+              defaultValue={settings?.contact_email}
+              className="max-w-md"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="supportPhone">Support Phone</Label>
+            <Input
+              id="supportPhone"
+              name="supportPhone"
+              defaultValue={settings?.support_phone}
+              className="max-w-md"
+            />
+          </div>
+          <Button type="submit" className="bg-purple hover:bg-purple-dark text-white">
+            Save Changes
+          </Button>
+        </form>
       </CardContent>
     </Card>
   );
