@@ -33,6 +33,12 @@ const EditBook = () => {
         }
         throw error;
       }
+
+      // Convert the date string to a Date object
+      if (data.publication_date) {
+        data.publication_date = new Date(data.publication_date);
+      }
+
       return data;
     },
   });
@@ -145,7 +151,7 @@ const EditBook = () => {
           <CardContent>
             <BookForm 
               onSubmit={handleSubmit}
-              initialValues={book}
+              initialData={book}
               submitLabel="Update Book"
             />
           </CardContent>

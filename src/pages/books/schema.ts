@@ -11,7 +11,7 @@ export const bookSchema = z.object({
   author_id: z.string().uuid("Author is required"),
   publisher_id: z.string().uuid().optional(),
   epub_file: z.any().optional(),
-  publication_date: z.date().optional(),
+  publication_date: z.coerce.date().optional(),
   page_count: z.number().int().positive().optional(),
   is_free: z.boolean().default(false),
   price: z.number().min(0).optional(),
