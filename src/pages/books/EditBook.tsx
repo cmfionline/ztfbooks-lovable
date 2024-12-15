@@ -34,12 +34,24 @@ const EditBook = () => {
         throw error;
       }
 
-      // Convert the date string to a Date object
-      if (data.publication_date) {
-        data.publication_date = new Date(data.publication_date);
-      }
+      // Transform the data to match our form values type
+      const formData: Partial<BookFormValues> = {
+        title: data.title,
+        series_id: data.series_id,
+        language_id: data.language_id,
+        cover_image: data.cover_image,
+        synopsis: data.synopsis,
+        author_id: data.author_id,
+        publisher_id: data.publisher_id,
+        epub_file: data.epub_file,
+        publication_date: data.publication_date ? new Date(data.publication_date) : undefined,
+        page_count: data.page_count,
+        is_free: data.is_free,
+        price: data.price,
+        tags: data.tags,
+      };
 
-      return data;
+      return formData;
     },
   });
 
@@ -79,7 +91,7 @@ const EditBook = () => {
           language_id: values.language_id,
           cover_image: coverImagePath,
           epub_file: epubFilePath,
-          publication_date: values.publication_date,
+          publication_date: values.publication_date?.toISOString().split('T')[0],
           page_count: values.page_count,
         })
         .eq("id", id);
