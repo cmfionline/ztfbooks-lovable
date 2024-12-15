@@ -5,6 +5,7 @@ import { NotificationSettingsForm } from "./notifications/NotificationSettingsFo
 import { useNotificationSettings } from "./notifications/useNotificationSettings";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button"; // Added missing import
 
 const ErrorFallback = ({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) => {
   const { toast } = useToast();
