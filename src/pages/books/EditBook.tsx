@@ -22,7 +22,8 @@ const EditBook = () => {
           authors (name),
           languages (name),
           series (name),
-          publishers (name)
+          publishers (name),
+          books_tags (tag_id)
         `)
         .eq("id", id)
         .single();
@@ -48,7 +49,7 @@ const EditBook = () => {
         page_count: data.page_count,
         is_free: data.is_free,
         price: data.price,
-        tags: data.tags,
+        tags: data.books_tags?.map(tag => tag.tag_id) || [],
       };
 
       return formData;
@@ -97,6 +98,29 @@ const EditBook = () => {
         .eq("id", id);
 
       if (error) throw error;
+
+      // Update book tags
+      if (values.tags) {
+        // First, remove all existing tags
+        await supabase
+          .from("books_tags")
+          .delete()
+          .eq("book_id", id);
+
+        // Then insert new tags
+        if (values.tags.length > 0) {
+          const tagRows = values.tags.map(tagId => ({
+            book_id: id,
+            tag_id: tagId
+          }));
+
+          const { error: tagsError } = await supabase
+            .from("books_tags")
+            .insert(tagRows);
+
+          if (tagsError) throw tagsError;
+        }
+      }
 
       toast({
         title: "Success",
