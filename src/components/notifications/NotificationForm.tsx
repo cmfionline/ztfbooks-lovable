@@ -7,12 +7,19 @@ import { NotificationScheduling } from "./NotificationScheduling";
 import { NotificationTargeting } from "./NotificationTargeting";
 import { supabase } from "@/integrations/supabase/client";
 import { Bell, Send } from "lucide-react";
+import { 
+  notificationSchema, 
+  type NotificationFormData,
+  type NotificationResponse,
+  isNotificationResponse,
+  isErrorResponse 
+} from "./types";
 
 export const NotificationForm = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<NotificationFormData>({
     title: "",
     message: "",
     imageUrl: "",
@@ -23,23 +30,19 @@ export const NotificationForm = () => {
   });
 
   const validateForm = () => {
-    if (!formData.title.trim()) {
-      toast({
-        title: "Validation Error",
-        description: "Title is required",
-        variant: "destructive",
-      });
+    try {
+      notificationSchema.parse(formData);
+      return true;
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: "Validation Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
       return false;
     }
-    if (!formData.message.trim()) {
-      toast({
-        title: "Validation Error",
-        description: "Message is required",
-        variant: "destructive",
-      });
-      return false;
-    }
-    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -48,39 +51,40 @@ export const NotificationForm = () => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.from("notifications").insert({
-        title: formData.title,
-        message: formData.message,
-        image_url: formData.imageUrl || null,
-        schedule_type: formData.scheduleType,
-        scheduled_for: formData.scheduledFor || null,
-        recurring_schedule: formData.recurringSchedule,
-        target_audience: formData.targetAudience,
-        status: "pending",
-      });
+      const { data, error } = await supabase
+        .from("notifications")
+        .insert([formData])
+        .select()
+        .single();
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Notification created successfully",
-        className: "bg-green-50 border-green-200",
-      });
+      if (isNotificationResponse(data)) {
+        toast({
+          title: "Success",
+          description: "Notification created successfully",
+          className: "bg-green-50 border-green-200",
+        });
 
-      setFormData({
-        title: "",
-        message: "",
-        imageUrl: "",
-        scheduleType: "immediate",
-        scheduledFor: "",
-        recurringSchedule: null,
-        targetAudience: { type: "all" },
-      });
+        setFormData({
+          title: "",
+          message: "",
+          imageUrl: "",
+          scheduleType: "immediate",
+          scheduledFor: "",
+          recurringSchedule: null,
+          targetAudience: { type: "all" },
+        });
+      }
     } catch (error) {
       console.error("Error creating notification:", error);
+      const errorMessage = isErrorResponse(error) 
+        ? error.message 
+        : "Failed to create notification";
+      
       toast({
         title: "Error",
-        description: "Failed to create notification",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -113,9 +117,13 @@ export const NotificationForm = () => {
       });
     } catch (error) {
       console.error("Error sending test notification:", error);
+      const errorMessage = isErrorResponse(error) 
+        ? error.message 
+        : "Failed to send test notification";
+
       toast({
         title: "Error",
-        description: "Failed to send test notification",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
