@@ -33,7 +33,7 @@ const RecentActivities = () => {
           .abortSignal(signal);
 
         if (error) throw error;
-        return data;
+        return data as Activity[];
       } catch (error: any) {
         console.error('Error fetching recent activities:', error);
         throw new Error(error.message);

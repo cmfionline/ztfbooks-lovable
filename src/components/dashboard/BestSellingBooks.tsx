@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { BookLoadingState } from "@/components/books/BookLoadingState";
 
@@ -34,7 +33,7 @@ const BestSellingBooks = () => {
           .abortSignal(signal);
 
         if (error) throw error;
-        return data;
+        return data as Book[];
       } catch (error: any) {
         console.error('Error fetching best selling books:', error);
         throw new Error(error.message);

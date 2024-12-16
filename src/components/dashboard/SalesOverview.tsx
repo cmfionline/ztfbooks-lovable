@@ -29,8 +29,8 @@ const SalesOverview = () => {
             month: 'short', 
             day: 'numeric' 
           }),
-          sales: item.total_sales
-        }));
+          total_sales: item.total_sales
+        })) as SalesData[];
       } catch (error: any) {
         console.error('Error fetching sales overview:', error);
         throw new Error(error.message);
@@ -83,7 +83,7 @@ const SalesOverview = () => {
                 }}
               />
               <Bar 
-                dataKey="sales" 
+                dataKey="total_sales" 
                 fill="#8B5CF6"
                 radius={[4, 4, 0, 0]}
               />
