@@ -4,7 +4,7 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatPrice } from "@/lib/utils";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 
 interface EbookTableRowProps {
   book: Book;
@@ -22,7 +22,7 @@ export const EbookTableRow = ({
   onDelete,
 }: EbookTableRowProps) => {
   const coverImageUrl = book.cover_image 
-    ? `${supabase.storage.from('books').getPublicUrl(book.cover_image).data.publicUrl}`
+    ? supabase.storage.from('books').getPublicUrl(book.cover_image).data.publicUrl
     : null;
 
   return (
