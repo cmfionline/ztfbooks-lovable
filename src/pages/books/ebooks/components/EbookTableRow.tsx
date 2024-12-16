@@ -1,6 +1,5 @@
 import { Book } from "@/types/book";
 import { Button } from "@/components/ui/button";
-import { TableCell, TableRow } from "@/components/ui/table";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatPrice } from "@/lib/utils";
@@ -48,11 +47,11 @@ export const EbookTableRow = ({
         <Button
           variant="ghost"
           size="icon"
-          asChild
+          onClick={() => {
+            window.open(`/portal/library`, '_blank');
+          }}
         >
-          <Link to={`/books/${book.id}`}>
-            <Eye className="h-4 w-4" />
-          </Link>
+          <Eye className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
