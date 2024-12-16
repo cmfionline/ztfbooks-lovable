@@ -5,8 +5,13 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGri
 import { Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
+interface SalesData {
+  date: string;
+  total_sales: number;
+}
+
 const SalesOverview = () => {
-  const { data: salesData, isLoading, error } = useQuery({
+  const { data: salesData, isLoading, error } = useQuery<SalesData[]>({
     queryKey: ['sales-overview'],
     queryFn: async ({ signal }) => {
       try {
@@ -34,6 +39,7 @@ const SalesOverview = () => {
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 
   if (error) {
@@ -54,9 +60,13 @@ const SalesOverview = () => {
           <div className="flex items-center justify-center h-[300px]">
             <Loader2 className="h-8 w-8 animate-spin text-purple" />
           </div>
+        ) : !salesData?.length ? (
+          <div className="flex items-center justify-center h-[300px] text-muted-foreground">
+            No sales data available
+          </div>
         ) : (
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={salesData || []}>
+            <BarChart data={salesData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
                 dataKey="date"

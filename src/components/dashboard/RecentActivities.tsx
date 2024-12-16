@@ -4,8 +4,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
+interface Activity {
+  id: string;
+  activity_type: string;
+  created_at: string;
+  books: {
+    title: string;
+  };
+}
+
 const RecentActivities = () => {
-  const { data: activities, isLoading, error } = useQuery({
+  const { data: activities, isLoading, error } = useQuery<Activity[]>({
     queryKey: ['recent-activities'],
     queryFn: async ({ signal }) => {
       try {
@@ -32,7 +41,8 @@ const RecentActivities = () => {
     },
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 1 * 60 * 1000, // 1 minute
+    gcTime: 5 * 60 * 1000, // 5 minutes
   });
 
   if (error) {

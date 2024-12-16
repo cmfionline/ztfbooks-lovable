@@ -3,9 +3,19 @@ import { supabase } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { BookLoadingState } from "@/components/books/BookLoadingState";
+
+interface Book {
+  id: string;
+  title: string;
+  price: number;
+  authors: {
+    name: string;
+  };
+}
 
 const BestSellingBooks = () => {
-  const { data: books, isLoading, error } = useQuery({
+  const { data: books, isLoading, error } = useQuery<Book[]>({
     queryKey: ['best-selling-books'],
     queryFn: async ({ signal }) => {
       try {
@@ -33,6 +43,7 @@ const BestSellingBooks = () => {
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 
   if (error) {
@@ -50,9 +61,7 @@ const BestSellingBooks = () => {
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="flex items-center justify-center h-[200px]">
-            <Loader2 className="h-8 w-8 animate-spin text-purple" />
-          </div>
+          <BookLoadingState />
         ) : books?.length === 0 ? (
           <p className="text-sm text-muted-foreground">No best selling books found.</p>
         ) : (
