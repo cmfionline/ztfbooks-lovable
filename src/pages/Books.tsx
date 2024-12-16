@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { PlusCircle, Eye, Pencil, Trash2 } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import {
@@ -14,7 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { format } from "date-fns";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import AddBook from "./books/AddBook";
 import EditBook from "./books/EditBook";
 import AuthorsPage from "./books/authors/AuthorsPage";
