@@ -19,4 +19,7 @@ export interface Book {
   authors: {
     name: string;
   };
+  series?: {
+    name: string;
+  };
 }
