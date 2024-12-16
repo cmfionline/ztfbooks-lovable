@@ -24,7 +24,7 @@ export interface Book {
   };
   languages: {
     name: string;
-    code: string;
+    code?: string; // Made code optional to match the actual data
   };
   publishers?: {
     name: string;
