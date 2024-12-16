@@ -2,6 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import PortalLayout from "@/components/portal/PortalLayout";
 import PortalHome from "@/pages/portal/Home";
+import PortalLibrary from "@/pages/portal/Library";
+import PortalProfile from "@/pages/portal/Profile";
+import PortalSupport from "@/pages/portal/Support";
 import Analytics from "@/pages/Analytics";
 import Payments from "@/pages/Payments";
 import Statistics from "@/pages/Statistics";
@@ -31,7 +34,9 @@ const App = () => {
         {/* Portal Routes */}
         <Route path="/portal" element={<PortalLayout />}>
           <Route index element={<PortalHome />} />
-          {/* Add more portal routes here */}
+          <Route path="library" element={<PortalLibrary />} />
+          <Route path="profile" element={<PortalProfile />} />
+          <Route path="support" element={<PortalSupport />} />
         </Route>
 
         {/* Admin Routes */}
