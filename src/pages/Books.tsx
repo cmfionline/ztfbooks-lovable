@@ -1,5 +1,4 @@
-import { Routes, Route } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PlusCircle, Eye, Pencil, Trash2 } from "lucide-react";

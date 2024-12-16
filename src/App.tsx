@@ -50,20 +50,32 @@ const App = () => {
                   <Route path="/" element={<Analytics />} />
                   <Route path="/payments/*" element={<Payments />} />
                   <Route path="/statistics" element={<Statistics />} />
+                  
+                  {/* Orders Routes */}
                   <Route path="/orders" element={<OrdersPage />} />
                   <Route path="/orders/:id" element={<OrderDetailsPage />} />
                   <Route path="/orders/devices" element={<DevicesPage />} />
                   <Route path="/orders/analytics" element={<OrderAnalytics />} />
+                  
+                  {/* Support Routes */}
                   <Route path="/support" element={<SupportPage />} />
                   <Route path="/support/new" element={<NewTicketPage />} />
                   <Route path="/support/:id" element={<TicketDetailsPage />} />
+                  
+                  {/* Books Routes - Using the wildcard to handle nested routes */}
                   <Route path="/books/*" element={<Books />} />
+                  
+                  {/* Ads Routes */}
                   <Route path="/ads" element={<Ads />} />
                   <Route path="/ads/analytics" element={<AdsAnalytics />} />
                   <Route path="/ads/discount-strategies" element={<DiscountStrategies />} />
+                  
+                  {/* Pages Routes */}
                   <Route path="/pages" element={<Pages />} />
                   <Route path="/pages/add" element={<AddPage />} />
                   <Route path="/pages/:id/edit" element={<EditPage />} />
+                  
+                  {/* Other Routes */}
                   <Route path="/reviews" element={<Reviews />} />
                   <Route path="/faqs" element={<Faqs />} />
                   <Route path="/notifications" element={<Notifications />} />
