@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 
 interface PriceManagementProps {
   adId: string;
@@ -40,12 +40,12 @@ export const PriceManagement = ({ adId }: PriceManagementProps) => {
               <div key={price.book_id} className="flex justify-between items-center text-sm">
                 <div>
                   <span className="text-muted-foreground">Original:</span>{' '}
-                  {formatCurrency(price.original_price)}
+                  {formatPrice(price.original_price)}
                 </div>
                 <div>
                   <span className="text-muted-foreground">Discounted:</span>{' '}
                   <span className="text-green-600 font-medium">
-                    {formatCurrency(price.discounted_price)}
+                    {formatPrice(price.discounted_price)}
                   </span>
                 </div>
                 <div>
