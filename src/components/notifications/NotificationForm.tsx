@@ -12,7 +12,8 @@ import {
   type NotificationFormData,
   type NotificationResponse,
   isNotificationResponse,
-  isErrorResponse 
+  isErrorResponse,
+  transformFormDataToDb
 } from "./types";
 
 export const NotificationForm = () => {
@@ -53,7 +54,7 @@ export const NotificationForm = () => {
     try {
       const { data, error } = await supabase
         .from("notifications")
-        .insert([formData])
+        .insert([transformFormDataToDb(formData)])
         .select()
         .single();
 

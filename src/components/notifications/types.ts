@@ -78,3 +78,16 @@ export interface NotificationError {
   code?: string;
   details?: string;
 }
+
+// Helper function to transform form data to database format
+export const transformFormDataToDb = (formData: NotificationFormData) => {
+  return {
+    title: formData.title,
+    message: formData.message,
+    image_url: formData.imageUrl,
+    schedule_type: formData.scheduleType,
+    scheduled_for: formData.scheduledFor,
+    recurring_schedule: formData.recurringSchedule,
+    target_audience: formData.targetAudience,
+  };
+};
