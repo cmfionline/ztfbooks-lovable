@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
+import PortalLayout from "@/components/portal/PortalLayout";
+import PortalHome from "@/pages/portal/Home";
 import Analytics from "@/pages/Analytics";
 import Payments from "@/pages/Payments";
 import Statistics from "@/pages/Statistics";
@@ -25,9 +27,15 @@ import Settings from "./pages/Settings";
 const App = () => {
   return (
     <Router>
-      <div className="flex min-h-screen bg-background">
-        <Sidebar />
-        <div className="flex-1 ml-64">
+      <Routes>
+        {/* Portal Routes */}
+        <Route path="/portal" element={<PortalLayout />}>
+          <Route index element={<PortalHome />} />
+          {/* Add more portal routes here */}
+        </Route>
+
+        {/* Admin Routes */}
+        <Route path="/" element={<div className="flex min-h-screen bg-background"><Sidebar /><div className="flex-1 ml-64">}>
           <Routes>
             <Route path="/" element={<Analytics />} />
             <Route path="/payments/*" element={<Payments />} />
@@ -51,8 +59,8 @@ const App = () => {
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
-        </div>
-      </div>
+        </div></div>} />
+      </Routes>
     </Router>
   );
 };

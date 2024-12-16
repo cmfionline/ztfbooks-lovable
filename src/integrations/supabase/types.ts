@@ -475,6 +475,96 @@ export type Database = {
         }
         Relationships: []
       }
+      book_reviews: {
+        Row: {
+          book_id: string | null
+          created_at: string | null
+          id: string
+          is_verified_purchase: boolean | null
+          rating: number | null
+          review_text: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          book_id?: string | null
+          created_at?: string | null
+          id?: string
+          is_verified_purchase?: boolean | null
+          rating?: number | null
+          review_text?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          book_id?: string | null
+          created_at?: string | null
+          id?: string
+          is_verified_purchase?: boolean | null
+          rating?: number | null
+          review_text?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_reviews_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "book_reviews_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bookmarks: {
+        Row: {
+          book_id: string | null
+          created_at: string | null
+          id: string
+          note: string | null
+          page_number: number
+          user_id: string | null
+        }
+        Insert: {
+          book_id?: string | null
+          created_at?: string | null
+          id?: string
+          note?: string | null
+          page_number: number
+          user_id?: string | null
+        }
+        Update: {
+          book_id?: string | null
+          created_at?: string | null
+          id?: string
+          note?: string | null
+          page_number?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookmarks_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookmarks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       books: {
         Row: {
           author_id: string
@@ -1455,6 +1545,128 @@ export type Database = {
         }
         Relationships: []
       }
+      reading_list_books: {
+        Row: {
+          added_at: string | null
+          book_id: string
+          reading_list_id: string
+        }
+        Insert: {
+          added_at?: string | null
+          book_id: string
+          reading_list_id: string
+        }
+        Update: {
+          added_at?: string | null
+          book_id?: string
+          reading_list_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reading_list_books_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reading_list_books_reading_list_id_fkey"
+            columns: ["reading_list_id"]
+            isOneToOne: false
+            referencedRelation: "reading_lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reading_lists: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_public: boolean | null
+          name: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          name: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          name?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reading_lists_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reading_progress: {
+        Row: {
+          book_id: string | null
+          completion_percentage: number | null
+          created_at: string | null
+          current_page: number | null
+          id: string
+          last_read_at: string | null
+          total_pages: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          book_id?: string | null
+          completion_percentage?: number | null
+          created_at?: string | null
+          current_page?: number | null
+          id?: string
+          last_read_at?: string | null
+          total_pages?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          book_id?: string | null
+          completion_percentage?: number | null
+          created_at?: string | null
+          current_page?: number | null
+          id?: string
+          last_read_at?: string | null
+          total_pages?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reading_progress_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reading_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       report_templates: {
         Row: {
           config: Json
@@ -1822,6 +2034,44 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      user_notification_preferences: {
+        Row: {
+          created_at: string | null
+          new_book_alerts: boolean | null
+          order_updates: boolean | null
+          price_drop_alerts: boolean | null
+          reading_reminders: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          new_book_alerts?: boolean | null
+          order_updates?: boolean | null
+          price_drop_alerts?: boolean | null
+          reading_reminders?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          new_book_alerts?: boolean | null
+          order_updates?: boolean | null
+          price_drop_alerts?: boolean | null
+          reading_reminders?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_notification_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_settings: {
         Row: {
