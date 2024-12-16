@@ -19,13 +19,19 @@ export const notificationTargetSchema = z.object({
 export const notificationSchema = z.object({
   title: z.string()
     .min(1, "Title is required")
-    .max(100, "Title must not exceed 100 characters"),
+    .max(100, "Title must not exceed 100 characters")
+    .transform(str => str.trim())
+    .refine(str => str.length > 0, "Title cannot be only whitespace"),
   message: z.string()
     .min(1, "Message is required")
-    .max(500, "Message must not exceed 500 characters"),
-  imageUrl: z.string().url().optional(),
+    .max(500, "Message must not exceed 500 characters")
+    .transform(str => str.trim())
+    .refine(str => str.length > 0, "Message cannot be only whitespace"),
+  imageUrl: z.string().url("Invalid image URL").optional()
+    .transform(str => str ? str.trim() : str),
   scheduleType: z.enum(["immediate", "scheduled", "recurring"]),
-  scheduledFor: z.string().optional(),
+  scheduledFor: z.string().optional()
+    .refine(date => !date || new Date(date) > new Date(), "Scheduled date must be in the future"),
   recurringSchedule: z.object({
     frequency: z.enum(["daily", "weekly", "monthly"]),
     time: z.string()
@@ -81,13 +87,28 @@ export interface NotificationError {
 
 // Helper function to transform form data to database format
 export const transformFormDataToDb = (formData: NotificationFormData) => {
-  return {
-    title: formData.title,
-    message: formData.message,
-    image_url: formData.imageUrl,
+  // Sanitize and transform the data
+  const sanitizedData = {
+    title: formData.title.trim(),
+    message: formData.message.trim(),
+    image_url: formData.imageUrl?.trim(),
     schedule_type: formData.scheduleType,
     scheduled_for: formData.scheduledFor,
     recurring_schedule: formData.recurringSchedule,
     target_audience: formData.targetAudience,
+  };
+
+  // Additional sanitization for HTML content
+  const sanitizeHtml = (str: string) => {
+    return str.replace(/[<>]/g, char => ({
+      '<': '&lt;',
+      '>': '&gt;'
+    }[char] || char));
+  };
+
+  return {
+    ...sanitizedData,
+    title: sanitizeHtml(sanitizedData.title),
+    message: sanitizeHtml(sanitizedData.message),
   };
 };
