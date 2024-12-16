@@ -6,10 +6,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { format } from "date-fns";
 
 interface NotificationSchedulingProps {
-  scheduleType: string;
+  scheduleType: "immediate" | "scheduled" | "recurring";
   scheduledFor: string;
   recurringSchedule: any;
-  onScheduleTypeChange: (value: string) => void;
+  onScheduleTypeChange: (value: "immediate" | "scheduled" | "recurring") => void;
   onScheduledForChange: (value: string) => void;
   onRecurringScheduleChange: (value: any) => void;
 }
