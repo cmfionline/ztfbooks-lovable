@@ -16,8 +16,8 @@ interface TimeFilterProps {
 export const TimeFilter = ({ value, onValueChange }: TimeFilterProps) => {
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-[180px] bg-white border-purple-light/50 focus:ring-purple">
-        <SelectValue placeholder="Select time period" className="text-gray-600" />
+      <SelectTrigger className="w-[180px] bg-white/95 border-purple-light/50 focus:ring-purple text-gray-700">
+        <SelectValue placeholder="Select time period" />
       </SelectTrigger>
       <SelectContent className="bg-white/95 backdrop-blur-sm border-purple-light/50 shadow-lg z-50">
         <SelectItem value="this_week" className="hover:bg-purple-light/10 focus:bg-purple-light/10 text-gray-700">This Week</SelectItem>
