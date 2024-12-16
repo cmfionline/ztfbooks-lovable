@@ -4,10 +4,34 @@ import { EbooksHeader } from "./components/EbooksHeader";
 import { EbooksSearch } from "./components/EbooksSearch";
 import { EbooksTable } from "./components/EbooksTable";
 import { useEbooksData } from "./hooks/useEbooksData";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
 
 const EbooksPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: books, isLoading } = useEbooksData();
+  const { data: books, isLoading, refetch } = useEbooksData();
+  const { toast } = useToast();
+
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase
+      .from('books')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error deleting book",
+        description: error.message,
+      });
+      return;
+    }
+
+    toast({
+      title: "Book deleted successfully",
+    });
+    refetch();
+  };
 
   const filteredBooks = books?.filter(book => 
     book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -29,17 +53,12 @@ const EbooksPage = () => {
             <EbooksTable
               books={filteredBooks || []}
               onToggleTopSelling={(id, status) => {
-                // Implementation will be added later
                 console.log('Toggle top selling', id, status);
               }}
               onToggleFeatured={(id, status) => {
-                // Implementation will be added later
                 console.log('Toggle featured', id, status);
               }}
-              onDelete={(id) => {
-                // Implementation will be added later
-                console.log('Delete book', id);
-              }}
+              onDelete={handleDelete}
             />
           )}
         </Card>

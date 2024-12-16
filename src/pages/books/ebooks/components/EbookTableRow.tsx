@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { formatPrice } from "@/lib/utils";
 
 interface EbookTableRowProps {
   book: Book;
@@ -26,7 +27,7 @@ export const EbookTableRow = ({
       <TableCell>{book.languages?.name || "N/A"}</TableCell>
       <TableCell>{book.publishers?.name || "N/A"}</TableCell>
       <TableCell>{book.series?.name || "N/A"}</TableCell>
-      <TableCell>{book.is_free ? "Free" : `$${book.price}`}</TableCell>
+      <TableCell>{book.is_free ? "Free" : formatPrice(book.price)}</TableCell>
       <TableCell className="text-right space-x-2">
         <Button
           variant="ghost"
