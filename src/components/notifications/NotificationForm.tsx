@@ -24,7 +24,7 @@ export const NotificationForm = () => {
     title: "",
     message: "",
     imageUrl: "",
-    scheduleType: "immediate",
+    scheduleType: "immediate" as const,
     scheduledFor: "",
     recurringSchedule: null,
     targetAudience: { type: "all" },
@@ -71,7 +71,7 @@ export const NotificationForm = () => {
           title: "",
           message: "",
           imageUrl: "",
-          scheduleType: "immediate",
+          scheduleType: "immediate" as const,
           scheduledFor: "",
           recurringSchedule: null,
           targetAudience: { type: "all" },
@@ -156,7 +156,7 @@ export const NotificationForm = () => {
               scheduleType={formData.scheduleType}
               scheduledFor={formData.scheduledFor}
               recurringSchedule={formData.recurringSchedule}
-              onScheduleTypeChange={(value) => setFormData({ ...formData, scheduleType: value })}
+              onScheduleTypeChange={(value) => setFormData({ ...formData, scheduleType: value as "immediate" | "scheduled" | "recurring" })}
               onScheduledForChange={(value) => setFormData({ ...formData, scheduledFor: value })}
               onRecurringScheduleChange={(value) => setFormData({ ...formData, recurringSchedule: value })}
             />
