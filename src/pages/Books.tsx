@@ -170,7 +170,7 @@ const Books = () => {
       <Route index element={<BooksListing />} />
       <Route path="add" element={<AddBook />} />
       <Route path=":id/edit" element={<EditBook />} />
-      <Route path="ebooks/*" element={<EbooksPage />} />
+      <Route path="ebooks" element={<EbooksPage />} />
       <Route path="authors" element={<AuthorsPage />} />
       <Route path="authors/add" element={<AddAuthor />} />
       <Route path="authors/:id/edit" element={<EditAuthor />} />
