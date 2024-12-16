@@ -26,7 +26,6 @@ import Reviews from "./pages/Reviews";
 import Faqs from "./pages/Faqs";
 import Notifications from "./pages/Notifications";
 import Settings from "./pages/Settings";
-import EbooksPage from "./pages/books/ebooks/EbooksPage";
 
 const App = () => {
   return (
@@ -59,7 +58,6 @@ const App = () => {
                   <Route path="/support/new" element={<NewTicketPage />} />
                   <Route path="/support/:id" element={<TicketDetailsPage />} />
                   <Route path="/books/*" element={<Books />} />
-                  <Route path="/books/ebooks" element={<EbooksPage />} />
                   <Route path="/ads" element={<Ads />} />
                   <Route path="/ads/analytics" element={<AdsAnalytics />} />
                   <Route path="/ads/discount-strategies" element={<DiscountStrategies />} />
