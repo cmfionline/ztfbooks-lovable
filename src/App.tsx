@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import Navigation from "@/components/Navigation";
 import PortalLayout from "@/components/portal/PortalLayout";
@@ -28,14 +28,14 @@ import Faqs from "./pages/Faqs";
 import Notifications from "./pages/Notifications";
 import Settings from "./pages/Settings";
 
-const AdminLayout = ({ children }: { children: React.ReactNode }) => {
+const AdminLayout = () => {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar />
       <div className="flex-1 ml-64">
         <Navigation />
         <main className="p-8 pt-20">
-          {children}
+          <Outlet />
         </main>
       </div>
     </div>
