@@ -1,5 +1,6 @@
 import { Book } from "@/types/book";
 import { Button } from "@/components/ui/button";
+import { TableCell, TableRow } from "@/components/ui/table";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatPrice } from "@/lib/utils";
