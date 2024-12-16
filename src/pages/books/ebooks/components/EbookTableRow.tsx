@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Eye, Link as LinkIcon, Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { TableCell, TableRow } from "@/components/ui/table";
 
 interface EbookTableRowProps {
   book: Book;
@@ -20,37 +21,14 @@ export const EbookTableRow = ({
   onDelete,
 }: EbookTableRowProps) => {
   return (
-    <tr key={book.id}>
-      <td className="p-4">{index + 1}</td>
-      <td className="p-4">
-        {book.cover_image ? (
-          <img 
-            src={book.cover_image} 
-            alt={book.title}
-            className="w-16 h-20 object-cover rounded"
-          />
-        ) : (
-          <div className="w-16 h-20 bg-gray-200 rounded flex items-center justify-center">
-            No Image
-          </div>
-        )}
-      </td>
-      <td className="p-4 font-medium">{book.title}</td>
-      <td className="p-4">{book.authors?.name || "N/A"}</td>
-      <td className="p-4">{book.series?.name || "N/A"}</td>
-      <td className="p-4">
-        <Switch
-          checked={book.is_top_selling || false}
-          onCheckedChange={() => onToggleTopSelling(book.id, book.is_top_selling || false)}
-        />
-      </td>
-      <td className="p-4">
-        <Switch
-          checked={book.is_featured || false}
-          onCheckedChange={() => onToggleFeatured(book.id, book.is_featured || false)}
-        />
-      </td>
-      <td className="p-4 text-right space-x-2">
+    <TableRow key={book.id}>
+      <TableCell>{book.title}</TableCell>
+      <TableCell>{book.authors?.name || "N/A"}</TableCell>
+      <TableCell>{book.languages?.name || "N/A"}</TableCell>
+      <TableCell>{book.publishers?.name || "N/A"}</TableCell>
+      <TableCell>{book.series?.name || "N/A"}</TableCell>
+      <TableCell>{book.is_free ? "Free" : `$${book.price}`}</TableCell>
+      <TableCell className="text-right space-x-2">
         <Button
           variant="ghost"
           size="icon"
@@ -77,7 +55,7 @@ export const EbookTableRow = ({
         >
           <Trash2 className="h-4 w-4" />
         </Button>
-      </td>
-    </tr>
+      </TableCell>
+    </TableRow>
   );
 };
