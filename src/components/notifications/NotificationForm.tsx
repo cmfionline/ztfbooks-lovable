@@ -1,30 +1,21 @@
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { NotificationBasicInfo } from "./NotificationBasicInfo";
 import { NotificationScheduling } from "./NotificationScheduling";
 import { NotificationTargeting } from "./NotificationTargeting";
 import { NotificationErrorBoundary } from "./NotificationErrorBoundary";
-import { supabase } from "@/integrations/supabase/client";
 import { Bell, Send } from "lucide-react";
-import { 
-  notificationSchema, 
-  type NotificationFormData,
-  type NotificationResponse,
-  isNotificationResponse,
-  isErrorResponse,
-  transformFormDataToDb
-} from "./types";
-
-const MAX_RETRIES = 3;
-const RETRY_DELAY = 1000; // 1 second
+import { notificationSchema, type NotificationFormData } from "./types";
+import { useNotificationSubmit } from "./hooks/useNotificationSubmit";
+import { useNotificationTest } from "./hooks/useNotificationTest";
+import { useToast } from "@/hooks/use-toast";
 
 export const NotificationForm = () => {
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isTesting, setIsTesting] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
+  const { isSubmitting, retryCount: submitRetryCount, submitNotification } = useNotificationSubmit();
+  const { isTesting, retryCount: testRetryCount, testNotification } = useNotificationTest();
+  
   const [formData, setFormData] = useState<NotificationFormData>({
     title: "",
     message: "",
@@ -52,118 +43,15 @@ export const NotificationForm = () => {
     }
   };
 
-  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-    setIsSubmitting(true);
-    setRetryCount(0);
-
-    const submitWithRetry = async (attempt: number = 0): Promise<void> => {
-      try {
-        const { data, error: supabaseError } = await supabase
-          .from("notifications")
-          .insert([transformFormDataToDb(formData)])
-          .select()
-          .single();
-
-        if (supabaseError) throw supabaseError;
-
-        if (isNotificationResponse(data)) {
-          console.log("Notification created successfully:", data);
-          toast({
-            title: "Success",
-            description: "Notification created successfully",
-            className: "bg-green-50 border-green-200",
-          });
-
-          setFormData({
-            title: "",
-            message: "",
-            imageUrl: "",
-            scheduleType: "immediate" as const,
-            scheduledFor: "",
-            recurringSchedule: null,
-            targetAudience: { type: "all" },
-          });
-        }
-      } catch (error) {
-        console.error(`Attempt ${attempt + 1} failed:`, error);
-        
-        if (attempt < MAX_RETRIES) {
-          await delay(RETRY_DELAY * Math.pow(2, attempt));
-          setRetryCount(attempt + 1);
-          return submitWithRetry(attempt + 1);
-        }
-
-        const errorMessage = isErrorResponse(error) 
-          ? error.message 
-          : "Failed to create notification after multiple attempts";
-        
-        console.error("Final error:", errorMessage);
-        toast({
-          title: "Error",
-          description: errorMessage,
-          variant: "destructive",
-        });
-        setIsSubmitting(false);
-      }
-    };
-
-    await submitWithRetry();
+    await submitNotification(formData);
   };
 
   const handleTestNotification = async () => {
     if (!validateForm()) return;
-    setIsTesting(true);
-    setRetryCount(0);
-
-    const testWithRetry = async (attempt: number = 0): Promise<void> => {
-      try {
-        const { error: functionError } = await supabase.functions.invoke('send-system-notification', {
-          body: {
-            type: 'test',
-            variables: {
-              title: formData.title,
-              message: formData.message,
-              image_url: formData.imageUrl,
-            },
-          },
-        });
-
-        if (functionError) throw functionError;
-
-        console.log("Test notification sent successfully");
-        toast({
-          title: "Test Sent",
-          description: "Test notification sent successfully",
-          className: "bg-purple-50 border-purple-200",
-        });
-      } catch (error) {
-        console.error(`Test attempt ${attempt + 1} failed:`, error);
-
-        if (attempt < MAX_RETRIES) {
-          await delay(RETRY_DELAY * Math.pow(2, attempt));
-          setRetryCount(attempt + 1);
-          return testWithRetry(attempt + 1);
-        }
-
-        const errorMessage = isErrorResponse(error) 
-          ? error.message 
-          : "Failed to send test notification after multiple attempts";
-
-        console.error("Final test error:", errorMessage);
-        toast({
-          title: "Error",
-          description: errorMessage,
-          variant: "destructive",
-        });
-        setIsTesting(false);
-      }
-    };
-
-    await testWithRetry();
+    await testNotification(formData);
   };
 
   return (
@@ -174,9 +62,9 @@ export const NotificationForm = () => {
             <CardTitle className="text-xl flex items-center gap-2 text-primary">
               <Bell className="h-5 w-5 text-purple" />
               Create Notification
-              {retryCount > 0 && (
+              {(submitRetryCount > 0 || testRetryCount > 0) && (
                 <span className="text-sm text-muted-foreground">
-                  (Retry attempt {retryCount}/{MAX_RETRIES})
+                  (Retry attempt {Math.max(submitRetryCount, testRetryCount)}/3)
                 </span>
               )}
             </CardTitle>
@@ -213,7 +101,7 @@ export const NotificationForm = () => {
                 disabled={isSubmitting} 
                 className="flex-1 bg-purple hover:bg-purple/90"
               >
-                {isSubmitting ? `${retryCount > 0 ? 'Retrying...' : 'Creating...'}` : "Create Notification"}
+                {isSubmitting ? `${submitRetryCount > 0 ? 'Retrying...' : 'Creating...'}` : "Create Notification"}
               </Button>
               <Button
                 type="button"
@@ -223,7 +111,7 @@ export const NotificationForm = () => {
                 className="flex items-center gap-2 border-purple text-purple hover:bg-purple/10"
               >
                 <Send className="h-4 w-4" />
-                {isTesting ? `${retryCount > 0 ? 'Retrying...' : 'Sending...'}` : "Test Send"}
+                {isTesting ? `${testRetryCount > 0 ? 'Retrying...' : 'Sending...'}` : "Test Send"}
               </Button>
             </div>
           </CardContent>
