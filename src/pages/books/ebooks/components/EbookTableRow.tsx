@@ -1,9 +1,8 @@
 import { Book } from "@/types/book";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Eye, Link as LinkIcon, Pencil, Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface EbookTableRowProps {
   book: Book;
