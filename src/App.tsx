@@ -21,6 +21,8 @@ import Ads from "./pages/Ads";
 import AdsAnalytics from "./pages/ads/Analytics";
 import DiscountStrategies from "./pages/ads/DiscountStrategies";
 import Pages from "./pages/Pages";
+import AddPage from "./components/pages/AddPage";
+import EditPage from "./components/pages/EditPage";
 import Reviews from "./pages/Reviews";
 import Faqs from "./pages/Faqs";
 import Notifications from "./pages/Notifications";
@@ -48,31 +50,36 @@ const App = () => {
                 <Navigation />
                 <main className="p-8 pt-20">
                   <Routes>
+                    {/* Dashboard */}
                     <Route path="/" element={<Analytics />} />
-                    <Route path="/payments/*" element={<Payments />} />
                     <Route path="/statistics" element={<Statistics />} />
                     
-                    {/* Orders Routes */}
-                    <Route path="/orders" element={<OrdersPage />} />
-                    <Route path="/orders/:id" element={<OrderDetailsPage />} />
+                    {/* Orders Routes - Specific routes first */}
                     <Route path="/orders/devices" element={<DevicesPage />} />
                     <Route path="/orders/analytics" element={<OrderAnalytics />} />
+                    <Route path="/orders/:id" element={<OrderDetailsPage />} />
+                    <Route path="/orders" element={<OrdersPage />} />
                     
-                    {/* Support Routes */}
-                    <Route path="/support" element={<SupportPage />} />
+                    {/* Support Routes - Specific routes first */}
                     <Route path="/support/new" element={<NewTicketPage />} />
                     <Route path="/support/:id" element={<TicketDetailsPage />} />
+                    <Route path="/support" element={<SupportPage />} />
                     
                     {/* Books Routes */}
                     <Route path="/books/*" element={<Books />} />
                     
                     {/* Ads Routes */}
-                    <Route path="/ads" element={<Ads />} />
                     <Route path="/ads/analytics" element={<AdsAnalytics />} />
                     <Route path="/ads/discount-strategies" element={<DiscountStrategies />} />
+                    <Route path="/ads" element={<Ads />} />
                     
-                    {/* Pages Routes */}
+                    {/* Pages Routes - Specific routes first */}
+                    <Route path="/pages/add" element={<AddPage />} />
+                    <Route path="/pages/:id/edit" element={<EditPage />} />
                     <Route path="/pages" element={<Pages />} />
+                    
+                    {/* Payment Routes */}
+                    <Route path="/payments/*" element={<Payments />} />
                     
                     {/* Other Routes */}
                     <Route path="/reviews" element={<Reviews />} />
