@@ -1,101 +1,80 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { DollarSign, TrendingUp, ShoppingCart, Users } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const RevenueMetrics = () => {
-  const { data: metrics } = useQuery({
-    queryKey: ["revenue-metrics"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("sales_analytics")
-        .select("total_revenue, total_sales, total_orders")
-        .order("date", { ascending: false })
-        .limit(30);
+  const { data: metrics, isLoading, error } = useQuery({
+    queryKey: ['revenue-metrics'],
+    queryFn: async ({ signal }) => {
+      try {
+        const { data, error } = await supabase
+          .from('sales_analytics')
+          .select('total_revenue, total_sales, total_orders')
+          .order('date', { ascending: false })
+          .limit(1)
+          .abortSignal(signal)
+          .single();
 
-      if (error) throw error;
-
-      const totalRevenue = data?.reduce((sum, item) => sum + item.total_revenue, 0) || 0;
-      const totalSales = data?.reduce((sum, item) => sum + item.total_sales, 0) || 0;
-      const totalOrders = data?.reduce((sum, item) => sum + item.total_orders, 0) || 0;
-      const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
-
-      return {
-        totalRevenue,
-        totalSales,
-        totalOrders,
-        avgOrderValue,
-      };
+        if (error) throw error;
+        return data;
+      } catch (error: any) {
+        console.error('Error fetching revenue metrics:', error);
+        throw new Error(error.message);
+      }
     },
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
+  if (error) {
+    toast({
+      title: "Error loading metrics",
+      description: "Failed to load revenue metrics. Please try again later.",
+      variant: "destructive",
+    });
+  }
+
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 md:grid-cols-3">
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            Total Revenue
-          </CardTitle>
-          <DollarSign className="h-4 w-4 text-purple" />
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-purple">
-            ${metrics?.totalRevenue.toFixed(2)}
-          </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            Last 30 days
-          </p>
+          {isLoading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <div className="text-2xl font-bold">
+              ${metrics?.total_revenue?.toFixed(2) || '0.00'}
+            </div>
+          )}
         </CardContent>
       </Card>
-
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            Total Sales
-          </CardTitle>
-          <TrendingUp className="h-4 w-4 text-purple" />
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-purple">
-            {metrics?.totalSales}
-          </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            Books sold
-          </p>
+          {isLoading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <div className="text-2xl font-bold">{metrics?.total_sales || 0}</div>
+          )}
         </CardContent>
       </Card>
-
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            Total Orders
-          </CardTitle>
-          <ShoppingCart className="h-4 w-4 text-purple" />
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-purple">
-            {metrics?.totalOrders}
-          </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            Completed orders
-          </p>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            Avg. Order Value
-          </CardTitle>
-          <Users className="h-4 w-4 text-purple" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-purple">
-            ${metrics?.avgOrderValue.toFixed(2)}
-          </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            Per order
-          </p>
+          {isLoading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <div className="text-2xl font-bold">{metrics?.total_orders || 0}</div>
+          )}
         </CardContent>
       </Card>
     </div>

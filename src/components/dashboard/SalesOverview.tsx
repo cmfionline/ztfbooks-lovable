@@ -1,77 +1,85 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { subDays, format } from "date-fns";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { Loader2 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const SalesOverview = () => {
-  const { data: salesData } = useQuery({
-    queryKey: ["sales-overview"],
-    queryFn: async () => {
-      const endDate = new Date();
-      const startDate = subDays(endDate, 30);
+  const { data: salesData, isLoading, error } = useQuery({
+    queryKey: ['sales-overview'],
+    queryFn: async ({ signal }) => {
+      try {
+        const { data, error } = await supabase
+          .from('sales_analytics')
+          .select('date, total_sales')
+          .order('date', { ascending: true })
+          .limit(7)
+          .abortSignal(signal);
 
-      const { data, error } = await supabase
-        .from("sales_analytics")
-        .select("*")
-        .gte("date", startDate.toISOString())
-        .lte("date", endDate.toISOString())
-        .order("date", { ascending: true });
+        if (error) throw error;
 
-      if (error) throw error;
-
-      return data?.map(item => ({
-        ...item,
-        date: format(new Date(item.date), "MMM dd"),
-      })) || [];
+        return data.map(item => ({
+          date: new Date(item.date).toLocaleDateString('en-US', { 
+            month: 'short', 
+            day: 'numeric' 
+          }),
+          sales: item.total_sales
+        }));
+      } catch (error: any) {
+        console.error('Error fetching sales overview:', error);
+        throw new Error(error.message);
+      }
     },
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
+  if (error) {
+    toast({
+      title: "Error loading sales overview",
+      description: "Failed to load sales data. Please try again later.",
+      variant: "destructive",
+    });
+  }
+
   return (
-    <Card className="col-span-2">
+    <Card className="col-span-4">
       <CardHeader>
         <CardTitle>Sales Overview</CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={salesData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5DEFF" />
+      <CardContent className="pl-2">
+        {isLoading ? (
+          <div className="flex items-center justify-center h-[300px]">
+            <Loader2 className="h-8 w-8 animate-spin text-purple" />
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={salesData || []}>
+              <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
-                dataKey="date" 
-                stroke="#8B5CF6"
-                tick={{ fill: '#6B7280', fontSize: 12 }}
+                dataKey="date"
+                tick={{ fill: '#666', fontSize: 12 }}
               />
-              <YAxis 
-                stroke="#8B5CF6"
-                tick={{ fill: '#6B7280', fontSize: 12 }}
+              <YAxis
+                tick={{ fill: '#666', fontSize: 12 }}
               />
-              <Tooltip 
+              <Tooltip
                 contentStyle={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                  border: '1px solid #E5DEFF',
-                  borderRadius: '8px'
+                  backgroundColor: 'white',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
                 }}
               />
-              <Line
-                type="monotone"
-                dataKey="total_revenue"
-                stroke="#8B5CF6"
-                strokeWidth={2}
-                dot={{ fill: '#8B5CF6', strokeWidth: 2 }}
-                name="Revenue"
+              <Bar 
+                dataKey="sales" 
+                fill="#8B5CF6"
+                radius={[4, 4, 0, 0]}
               />
-              <Line
-                type="monotone"
-                dataKey="total_sales"
-                stroke="#22C55E"
-                strokeWidth={2}
-                dot={{ fill: '#22C55E', strokeWidth: 2 }}
-                name="Sales"
-              />
-            </LineChart>
+            </BarChart>
           </ResponsiveContainer>
-        </div>
+        )}
       </CardContent>
     </Card>
   );
