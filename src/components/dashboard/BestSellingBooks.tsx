@@ -3,15 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
 import { BookLoadingState } from "@/components/books/BookLoadingState";
-
-interface Book {
-  id: string;
-  title: string;
-  price: number;
-  authors: {
-    name: string;
-  };
-}
+import { Book } from "@/types/book";
 
 const BestSellingBooks = () => {
   const { data: books, isLoading, error } = useQuery<Book[]>({
@@ -33,7 +25,12 @@ const BestSellingBooks = () => {
           .abortSignal(signal);
 
         if (error) throw error;
-        return data as Book[];
+        
+        // Transform the data to match our Book interface
+        return (data || []).map(book => ({
+          ...book,
+          authors: book.authors?.[0] || { name: 'Unknown Author' }
+        })) as Book[];
       } catch (error: any) {
         console.error('Error fetching best selling books:', error);
         throw new Error(error.message);

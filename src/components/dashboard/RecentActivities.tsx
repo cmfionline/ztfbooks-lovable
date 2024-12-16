@@ -3,15 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-
-interface Activity {
-  id: string;
-  activity_type: string;
-  created_at: string;
-  books: {
-    title: string;
-  };
-}
+import { Activity } from "@/types/activity";
 
 const RecentActivities = () => {
   const { data: activities, isLoading, error } = useQuery<Activity[]>({
@@ -33,7 +25,12 @@ const RecentActivities = () => {
           .abortSignal(signal);
 
         if (error) throw error;
-        return data as Activity[];
+        
+        // Transform the data to match our Activity interface
+        return (data || []).map(activity => ({
+          ...activity,
+          books: activity.books?.[0] || { title: 'Unknown Book' }
+        })) as Activity[];
       } catch (error: any) {
         console.error('Error fetching recent activities:', error);
         throw new Error(error.message);

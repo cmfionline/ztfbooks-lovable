@@ -16,10 +16,7 @@ export interface Book {
   updated_at: string;
   is_featured?: boolean;
   is_top_selling?: boolean;
-  authors?: {
-    name: string;
-  };
-  series?: {
+  authors: {
     name: string;
   };
 }
