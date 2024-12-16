@@ -25,7 +25,11 @@ export const BookForm = ({
   submitLabel = "Save Book",
 }: BookFormProps) => {
   const { toast } = useToast();
-  const { series, authors, publishers, tags, languages, isLoading } = useBookFormData();
+  const { series, authors, publishers, tags, languages, isLoading } = useBookFormData({
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
   const form = useForm<BookFormValues>({
     resolver: zodResolver(bookSchema),
@@ -78,7 +82,12 @@ export const BookForm = ({
             authors={authors}
             publishers={publishers}
           />
-          <BookFiles control={form.control} />
+          <BookFiles 
+            control={form.control}
+            maxFileSize={5 * 1024 * 1024} // 5MB limit
+            acceptedImageTypes={['image/jpeg', 'image/png']}
+            acceptedEpubTypes={['application/epub+zip']}
+          />
           <BookTags
             selectedTags={form.watch("tags") || []}
             setSelectedTags={(tags) => form.setValue("tags", tags)}

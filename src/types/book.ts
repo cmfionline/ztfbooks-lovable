@@ -22,4 +22,28 @@ export interface Book {
   series?: {
     name: string;
   };
+  languages?: {
+    name: string;
+    code: string;
+  };
+  publishers?: {
+    name: string;
+  };
+}
+
+export interface Activity {
+  id: string;
+  activity_type: 'purchase' | 'review' | 'download' | 'read';
+  created_at: string;
+  books: {
+    title: string;
+  }[];
+  metadata?: Record<string, any>;
+}
+
+export interface SalesData {
+  date: string;
+  total_sales: number;
+  total_revenue: number;
+  total_orders: number;
 }

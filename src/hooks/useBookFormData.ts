@@ -1,85 +1,133 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
-export const useBookFormData = () => {
+export const useBookFormData = (options = {}) => {
+  const { toast } = useToast();
+
   const { data: seriesData, isLoading: isLoadingSeries } = useQuery({
     queryKey: ["series"],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       const { data, error } = await supabase
         .from("series")
         .select("*")
-        .order("name");
+        .order("name")
+        .abortSignal(signal);
       
       if (error) {
-        console.error("Error fetching series:", error);
-        return [];
+        toast({
+          title: "Error fetching series",
+          description: error.message,
+          variant: "destructive",
+        });
+        throw error;
       }
       return data || [];
     },
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    ...options,
   });
 
   const { data: authorsData, isLoading: isLoadingAuthors } = useQuery({
     queryKey: ["authors"],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       const { data, error } = await supabase
         .from("authors")
         .select("*")
-        .order("name");
+        .order("name")
+        .abortSignal(signal);
       
       if (error) {
-        console.error("Error fetching authors:", error);
-        return [];
+        toast({
+          title: "Error fetching authors",
+          description: error.message,
+          variant: "destructive",
+        });
+        throw error;
       }
       return data || [];
     },
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    staleTime: 5 * 60 * 1000,
+    ...options,
   });
 
   const { data: publishersData, isLoading: isLoadingPublishers } = useQuery({
     queryKey: ["publishers"],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       const { data, error } = await supabase
         .from("publishers")
         .select("*")
-        .order("name");
+        .order("name")
+        .abortSignal(signal);
       
       if (error) {
-        console.error("Error fetching publishers:", error);
-        return [];
+        toast({
+          title: "Error fetching publishers",
+          description: error.message,
+          variant: "destructive",
+        });
+        throw error;
       }
       return data || [];
     },
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    staleTime: 5 * 60 * 1000,
+    ...options,
   });
 
   const { data: tagsData, isLoading: isLoadingTags } = useQuery({
     queryKey: ["tags"],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       const { data, error } = await supabase
         .from("tags")
         .select("*")
-        .order("name");
+        .order("name")
+        .abortSignal(signal);
       
       if (error) {
-        console.error("Error fetching tags:", error);
-        return [];
+        toast({
+          title: "Error fetching tags",
+          description: error.message,
+          variant: "destructive",
+        });
+        throw error;
       }
       return data || [];
     },
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    staleTime: 5 * 60 * 1000,
+    ...options,
   });
 
   const { data: languagesData, isLoading: isLoadingLanguages } = useQuery({
     queryKey: ["languages"],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       const { data, error } = await supabase
         .from("languages")
         .select("*")
-        .order("name");
+        .order("name")
+        .abortSignal(signal);
       
       if (error) {
-        console.error("Error fetching languages:", error);
-        return [];
+        toast({
+          title: "Error fetching languages",
+          description: error.message,
+          variant: "destructive",
+        });
+        throw error;
       }
       return data || [];
     },
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    staleTime: 5 * 60 * 1000,
+    ...options,
   });
 
   const isLoading = 
