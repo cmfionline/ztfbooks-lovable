@@ -20,7 +20,7 @@ const EditBook = () => {
         .select(`
           *,
           authors (name),
-          languages (name),
+          languages (name, code),
           series (name),
           publishers (name),
           books_tags (tag_id)
@@ -35,19 +35,19 @@ const EditBook = () => {
         throw error;
       }
 
-      // Transform the data to match our form values type
+      // Transform snake_case to camelCase for form values
       const formData: Partial<BookFormValues> = {
         title: data.title,
-        series_id: data.series_id,
-        language_id: data.language_id,
-        cover_image: data.cover_image,
+        seriesId: data.series_id,
+        languageId: data.language_id,
+        coverImage: data.cover_image,
         synopsis: data.synopsis,
-        author_id: data.author_id,
-        publisher_id: data.publisher_id,
-        epub_file: data.epub_file,
-        publication_date: data.publication_date ? new Date(data.publication_date) : undefined,
-        page_count: data.page_count,
-        is_free: data.is_free,
+        authorId: data.author_id,
+        publisherId: data.publisher_id,
+        epubFile: data.epub_file,
+        publicationDate: data.publication_date ? new Date(data.publication_date) : undefined,
+        pageCount: data.page_count,
+        isFree: data.is_free,
         price: data.price,
         tags: data.books_tags?.map(tag => tag.tag_id) || [],
       };
@@ -58,42 +58,43 @@ const EditBook = () => {
 
   const handleSubmit = async (values: BookFormValues) => {
     try {
-      let coverImagePath = book?.cover_image;
-      let epubFilePath = book?.epub_file;
+      let coverImagePath = book?.coverImage;
+      let epubFilePath = book?.epubFile;
 
-      if (values.cover_image && values.cover_image !== book?.cover_image) {
+      if (values.coverImage && values.coverImage !== book?.coverImage) {
         const { data: coverData, error: coverError } = await supabase.storage
           .from("books")
-          .upload(`covers/${Date.now()}-${values.cover_image.name}`, values.cover_image);
+          .upload(`covers/${Date.now()}-${values.coverImage.name}`, values.coverImage);
 
         if (coverError) throw coverError;
         coverImagePath = coverData.path;
       }
 
-      if (values.epub_file && values.epub_file !== book?.epub_file) {
+      if (values.epubFile && values.epubFile !== book?.epubFile) {
         const { data: epubData, error: epubError } = await supabase.storage
           .from("books")
-          .upload(`epubs/${Date.now()}-${values.epub_file.name}`, values.epub_file);
+          .upload(`epubs/${Date.now()}-${values.epubFile.name}`, values.epubFile);
 
         if (epubError) throw epubError;
         epubFilePath = epubData.path;
       }
 
+      // Transform camelCase back to snake_case for database
       const { error } = await supabase
         .from("books")
         .update({
           title: values.title,
           synopsis: values.synopsis,
-          is_free: values.is_free,
-          price: values.is_free ? 0 : values.price,
-          series_id: values.series_id || null,
-          author_id: values.author_id,
-          publisher_id: values.publisher_id || null,
-          language_id: values.language_id,
+          is_free: values.isFree,
+          price: values.isFree ? 0 : values.price,
+          series_id: values.seriesId || null,
+          author_id: values.authorId,
+          publisher_id: values.publisherId || null,
+          language_id: values.languageId,
           cover_image: coverImagePath,
           epub_file: epubFilePath,
-          publication_date: values.publication_date?.toISOString().split('T')[0],
-          page_count: values.page_count,
+          publication_date: values.publicationDate?.toISOString().split('T')[0],
+          page_count: values.pageCount,
         })
         .eq("id", id);
 

@@ -35,12 +35,12 @@ export const BookForm = ({
     resolver: zodResolver(bookSchema),
     defaultValues: {
       title: "",
-      series_id: undefined,
-      language_id: undefined,
-      author_id: undefined,
-      publisher_id: undefined,
+      seriesId: undefined,
+      languageId: undefined,
+      authorId: undefined,
+      publisherId: undefined,
       synopsis: "",
-      is_free: false,
+      isFree: false,
       price: undefined,
       tags: [],
       ...initialData,
@@ -84,9 +84,6 @@ export const BookForm = ({
           />
           <BookFiles 
             control={form.control}
-            maxFileSize={5 * 1024 * 1024} // 5MB limit
-            acceptedImageTypes={['image/jpeg', 'image/png']}
-            acceptedEpubTypes={['application/epub+zip']}
           />
           <BookTags
             selectedTags={form.watch("tags") || []}

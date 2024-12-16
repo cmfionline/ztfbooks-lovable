@@ -22,7 +22,7 @@ export interface Book {
   series?: {
     name: string;
   };
-  languages?: {
+  languages: {
     name: string;
     code: string;
   };
