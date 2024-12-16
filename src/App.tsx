@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
+import Navigation from "@/components/Navigation";
 import PortalLayout from "@/components/portal/PortalLayout";
 import PortalHome from "@/pages/portal/Home";
 import PortalLibrary from "@/pages/portal/Library";
@@ -20,8 +21,6 @@ import Ads from "./pages/Ads";
 import AdsAnalytics from "./pages/ads/Analytics";
 import DiscountStrategies from "./pages/ads/DiscountStrategies";
 import Pages from "./pages/Pages";
-import AddPage from "./components/pages/AddPage";
-import EditPage from "./components/pages/EditPage";
 import Reviews from "./pages/Reviews";
 import Faqs from "./pages/Faqs";
 import Notifications from "./pages/Notifications";
@@ -46,41 +45,42 @@ const App = () => {
             <div className="flex min-h-screen bg-background">
               <Sidebar />
               <div className="flex-1 ml-64">
-                <Routes>
-                  <Route path="/" element={<Analytics />} />
-                  <Route path="/payments/*" element={<Payments />} />
-                  <Route path="/statistics" element={<Statistics />} />
-                  
-                  {/* Orders Routes */}
-                  <Route path="/orders" element={<OrdersPage />} />
-                  <Route path="/orders/:id" element={<OrderDetailsPage />} />
-                  <Route path="/orders/devices" element={<DevicesPage />} />
-                  <Route path="/orders/analytics" element={<OrderAnalytics />} />
-                  
-                  {/* Support Routes */}
-                  <Route path="/support" element={<SupportPage />} />
-                  <Route path="/support/new" element={<NewTicketPage />} />
-                  <Route path="/support/:id" element={<TicketDetailsPage />} />
-                  
-                  {/* Books Routes - Using the wildcard to handle nested routes */}
-                  <Route path="/books/*" element={<Books />} />
-                  
-                  {/* Ads Routes */}
-                  <Route path="/ads" element={<Ads />} />
-                  <Route path="/ads/analytics" element={<AdsAnalytics />} />
-                  <Route path="/ads/discount-strategies" element={<DiscountStrategies />} />
-                  
-                  {/* Pages Routes */}
-                  <Route path="/pages" element={<Pages />} />
-                  <Route path="/pages/add" element={<AddPage />} />
-                  <Route path="/pages/:id/edit" element={<EditPage />} />
-                  
-                  {/* Other Routes */}
-                  <Route path="/reviews" element={<Reviews />} />
-                  <Route path="/faqs" element={<Faqs />} />
-                  <Route path="/notifications" element={<Notifications />} />
-                  <Route path="/settings" element={<Settings />} />
-                </Routes>
+                <Navigation />
+                <main className="p-8 pt-20">
+                  <Routes>
+                    <Route path="/" element={<Analytics />} />
+                    <Route path="/payments/*" element={<Payments />} />
+                    <Route path="/statistics" element={<Statistics />} />
+                    
+                    {/* Orders Routes */}
+                    <Route path="/orders" element={<OrdersPage />} />
+                    <Route path="/orders/:id" element={<OrderDetailsPage />} />
+                    <Route path="/orders/devices" element={<DevicesPage />} />
+                    <Route path="/orders/analytics" element={<OrderAnalytics />} />
+                    
+                    {/* Support Routes */}
+                    <Route path="/support" element={<SupportPage />} />
+                    <Route path="/support/new" element={<NewTicketPage />} />
+                    <Route path="/support/:id" element={<TicketDetailsPage />} />
+                    
+                    {/* Books Routes */}
+                    <Route path="/books/*" element={<Books />} />
+                    
+                    {/* Ads Routes */}
+                    <Route path="/ads" element={<Ads />} />
+                    <Route path="/ads/analytics" element={<AdsAnalytics />} />
+                    <Route path="/ads/discount-strategies" element={<DiscountStrategies />} />
+                    
+                    {/* Pages Routes */}
+                    <Route path="/pages" element={<Pages />} />
+                    
+                    {/* Other Routes */}
+                    <Route path="/reviews" element={<Reviews />} />
+                    <Route path="/faqs" element={<Faqs />} />
+                    <Route path="/notifications" element={<Notifications />} />
+                    <Route path="/settings" element={<Settings />} />
+                  </Routes>
+                </main>
               </div>
             </div>
           }
