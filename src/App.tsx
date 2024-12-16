@@ -35,31 +35,39 @@ const App = () => {
         </Route>
 
         {/* Admin Routes */}
-        <Route path="/" element={<div className="flex min-h-screen bg-background"><Sidebar /><div className="flex-1 ml-64">}>
-          <Routes>
-            <Route path="/" element={<Analytics />} />
-            <Route path="/payments/*" element={<Payments />} />
-            <Route path="/statistics" element={<Statistics />} />
-            <Route path="/orders" element={<OrdersPage />} />
-            <Route path="/orders/:id" element={<OrderDetailsPage />} />
-            <Route path="/orders/devices" element={<DevicesPage />} />
-            <Route path="/orders/analytics" element={<OrderAnalytics />} />
-            <Route path="/support" element={<SupportPage />} />
-            <Route path="/support/new" element={<NewTicketPage />} />
-            <Route path="/support/:id" element={<TicketDetailsPage />} />
-            <Route path="/books/*" element={<Books />} />
-            <Route path="/ads" element={<Ads />} />
-            <Route path="/ads/analytics" element={<AdsAnalytics />} />
-            <Route path="/ads/discount-strategies" element={<DiscountStrategies />} />
-            <Route path="/pages" element={<Pages />} />
-            <Route path="/pages/add" element={<AddPage />} />
-            <Route path="/pages/:id/edit" element={<EditPage />} />
-            <Route path="/reviews" element={<Reviews />} />
-            <Route path="/faqs" element={<Faqs />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/settings" element={<Settings />} />
-          </Routes>
-        </div></div>} />
+        <Route 
+          path="/" 
+          element={
+            <div className="flex min-h-screen bg-background">
+              <Sidebar />
+              <div className="flex-1 ml-64">
+                <Routes>
+                  <Route path="/" element={<Analytics />} />
+                  <Route path="/payments/*" element={<Payments />} />
+                  <Route path="/statistics" element={<Statistics />} />
+                  <Route path="/orders" element={<OrdersPage />} />
+                  <Route path="/orders/:id" element={<OrderDetailsPage />} />
+                  <Route path="/orders/devices" element={<DevicesPage />} />
+                  <Route path="/orders/analytics" element={<OrderAnalytics />} />
+                  <Route path="/support" element={<SupportPage />} />
+                  <Route path="/support/new" element={<NewTicketPage />} />
+                  <Route path="/support/:id" element={<TicketDetailsPage />} />
+                  <Route path="/books/*" element={<Books />} />
+                  <Route path="/ads" element={<Ads />} />
+                  <Route path="/ads/analytics" element={<AdsAnalytics />} />
+                  <Route path="/ads/discount-strategies" element={<DiscountStrategies />} />
+                  <Route path="/pages" element={<Pages />} />
+                  <Route path="/pages/add" element={<AddPage />} />
+                  <Route path="/pages/:id/edit" element={<EditPage />} />
+                  <Route path="/reviews" element={<Reviews />} />
+                  <Route path="/faqs" element={<Faqs />} />
+                  <Route path="/notifications" element={<Notifications />} />
+                  <Route path="/settings" element={<Settings />} />
+                </Routes>
+              </div>
+            </div>
+          }
+        />
       </Routes>
     </Router>
   );
