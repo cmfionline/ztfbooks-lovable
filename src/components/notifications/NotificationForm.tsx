@@ -62,13 +62,13 @@ export const NotificationForm = () => {
 
     const submitWithRetry = async (attempt: number = 0): Promise<void> => {
       try {
-        const { data, error } = await supabase
+        const { data, error: supabaseError } = await supabase
           .from("notifications")
           .insert([transformFormDataToDb(formData)])
           .select()
           .single();
 
-        if (error) throw error;
+        if (supabaseError) throw supabaseError;
 
         if (isNotificationResponse(data)) {
           console.log("Notification created successfully:", data);
@@ -92,7 +92,7 @@ export const NotificationForm = () => {
         console.error(`Attempt ${attempt + 1} failed:`, error);
         
         if (attempt < MAX_RETRIES) {
-          await delay(RETRY_DELAY * Math.pow(2, attempt)); // Exponential backoff
+          await delay(RETRY_DELAY * Math.pow(2, attempt));
           setRetryCount(attempt + 1);
           return submitWithRetry(attempt + 1);
         }
@@ -107,10 +107,7 @@ export const NotificationForm = () => {
           description: errorMessage,
           variant: "destructive",
         });
-      } finally {
-        if (attempt === MAX_RETRIES || !error) {
-          setIsSubmitting(false);
-        }
+        setIsSubmitting(false);
       }
     };
 
@@ -124,7 +121,7 @@ export const NotificationForm = () => {
 
     const testWithRetry = async (attempt: number = 0): Promise<void> => {
       try {
-        const response = await supabase.functions.invoke('send-system-notification', {
+        const { error: functionError } = await supabase.functions.invoke('send-system-notification', {
           body: {
             type: 'test',
             variables: {
@@ -135,7 +132,7 @@ export const NotificationForm = () => {
           },
         });
 
-        if (response.error) throw response.error;
+        if (functionError) throw functionError;
 
         console.log("Test notification sent successfully");
         toast({
@@ -162,10 +159,7 @@ export const NotificationForm = () => {
           description: errorMessage,
           variant: "destructive",
         });
-      } finally {
-        if (attempt === MAX_RETRIES || !error) {
-          setIsTesting(false);
-        }
+        setIsTesting(false);
       }
     };
 
