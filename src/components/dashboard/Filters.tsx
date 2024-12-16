@@ -26,14 +26,14 @@ export const Filters = () => {
         {/* Author Select */}
         <Select>
           <SelectTrigger className="w-[180px] bg-white border-purple-light/50 focus:ring-purple">
-            <SelectValue placeholder="Select author" />
+            <SelectValue placeholder="Select author" className="text-gray-600" />
           </SelectTrigger>
           <SelectContent className="bg-white/95 backdrop-blur-sm border-purple-light/50 shadow-lg z-50">
             {authors.map((author) => (
               <SelectItem 
                 key={author} 
                 value={author.toLowerCase()}
-                className="hover:bg-purple-light/10 focus:bg-purple-light/10"
+                className="hover:bg-purple-light/10 focus:bg-purple-light/10 text-gray-700"
               >
                 {author}
               </SelectItem>
@@ -44,14 +44,14 @@ export const Filters = () => {
         {/* Series Select */}
         <Select>
           <SelectTrigger className="w-[180px] bg-white border-purple-light/50 focus:ring-purple">
-            <SelectValue placeholder="Select series" />
+            <SelectValue placeholder="Select series" className="text-gray-600" />
           </SelectTrigger>
           <SelectContent className="bg-white/95 backdrop-blur-sm border-purple-light/50 shadow-lg z-50">
             {series.map((s) => (
               <SelectItem 
                 key={s} 
                 value={s.toLowerCase()}
-                className="hover:bg-purple-light/10 focus:bg-purple-light/10"
+                className="hover:bg-purple-light/10 focus:bg-purple-light/10 text-gray-700"
               >
                 {s}
               </SelectItem>
@@ -62,14 +62,14 @@ export const Filters = () => {
         {/* Tags Select */}
         <Select>
           <SelectTrigger className="w-[180px] bg-white border-purple-light/50 focus:ring-purple">
-            <SelectValue placeholder="Select tags" />
+            <SelectValue placeholder="Select tags" className="text-gray-600" />
           </SelectTrigger>
           <SelectContent className="bg-white/95 backdrop-blur-sm border-purple-light/50 shadow-lg z-50">
             {tags.map((tag) => (
               <SelectItem 
                 key={tag} 
                 value={tag.toLowerCase()}
-                className="hover:bg-purple-light/10 focus:bg-purple-light/10"
+                className="hover:bg-purple-light/10 focus:bg-purple-light/10 text-gray-700"
               >
                 {tag}
               </SelectItem>
