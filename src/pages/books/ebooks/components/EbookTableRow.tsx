@@ -22,7 +22,7 @@ export const EbookTableRow = ({
   onDelete,
 }: EbookTableRowProps) => {
   const coverImageUrl = book.cover_image 
-    ? `${supabase.storageUrl}/object/public/books/${book.cover_image}`
+    ? supabase.storage.from('books').getPublicUrl(book.cover_image).data.publicUrl
     : null;
 
   return (
