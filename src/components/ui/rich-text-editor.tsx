@@ -30,11 +30,11 @@ export function RichTextEditor({
   const [selectionEnd, setSelectionEnd] = useState(0);
 
   const handleFormat = useCallback((tag: string) => {
-    const textarea = document.querySelector('textarea');
+    const textarea = document.querySelector('.rich-text-area');
     if (!textarea) return;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
+    const start = (textarea as HTMLTextAreaElement).selectionStart;
+    const end = (textarea as HTMLTextAreaElement).selectionEnd;
     const selectedText = value.substring(start, end);
     
     let newText = value;
@@ -54,10 +54,10 @@ export function RichTextEditor({
   }, [value, onChange, linkUrl]);
 
   const handleSelection = useCallback(() => {
-    const textarea = document.querySelector('textarea');
+    const textarea = document.querySelector('.rich-text-area');
     if (!textarea) return;
-    setSelectionStart(textarea.selectionStart);
-    setSelectionEnd(textarea.selectionEnd);
+    setSelectionStart((textarea as HTMLTextAreaElement).selectionStart);
+    setSelectionEnd((textarea as HTMLTextAreaElement).selectionEnd);
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -145,17 +145,26 @@ export function RichTextEditor({
           </PopoverContent>
         </Popover>
       </div>
-      <textarea
-        value={value}
-        onChange={handleChange}
-        onSelect={handleSelection}
-        className={cn(
-          "flex min-h-[120px] w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 ring-offset-background placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-          className
-        )}
-        placeholder={placeholder}
-        {...props}
-      />
+      <div className="relative">
+        <textarea
+          value={value}
+          onChange={handleChange}
+          onSelect={handleSelection}
+          className={cn(
+            "rich-text-area flex min-h-[120px] w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 ring-offset-background placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+            className
+          )}
+          placeholder={placeholder}
+          {...props}
+        />
+        <div 
+          className="absolute inset-0 pointer-events-none px-3 py-2 text-sm text-gray-900 overflow-auto"
+          dangerouslySetInnerHTML={{ 
+            __html: value.replace(/\n/g, '<br/>') 
+          }}
+          style={{ visibility: value ? 'visible' : 'hidden' }}
+        />
+      </div>
     </div>
   );
 }
