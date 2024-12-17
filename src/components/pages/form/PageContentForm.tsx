@@ -11,7 +11,7 @@ interface PageContentFormProps {
 
 export const PageContentForm = ({ control }: PageContentFormProps) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <FormField
         control={control}
         name="title"
@@ -22,7 +22,7 @@ export const PageContentForm = ({ control }: PageContentFormProps) => {
               <Input 
                 {...field} 
                 placeholder="Enter page title"
-                className="border-gray-200 focus:border-purple focus:ring-2 focus:ring-purple/20"
+                className="border-gray-200 focus:border-purple focus:ring-2 focus:ring-purple/20 h-9"
                 aria-describedby="title-error"
               />
             </FormControl>
@@ -42,7 +42,7 @@ export const PageContentForm = ({ control }: PageContentFormProps) => {
                 value={field.value} 
                 onChange={field.onChange}
                 placeholder="Enter page content"
-                className="min-h-[200px]"
+                className="min-h-[120px]"
                 aria-describedby="content-error"
               />
             </FormControl>
@@ -59,7 +59,7 @@ export const PageContentForm = ({ control }: PageContentFormProps) => {
             <FormLabel className="text-gray-700 font-medium">Status</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger className="border-gray-200 focus:border-purple">
+                <SelectTrigger className="border-gray-200 focus:border-purple h-9">
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
               </FormControl>
@@ -86,7 +86,7 @@ export const PageContentForm = ({ control }: PageContentFormProps) => {
                 {...field}
                 onChange={(e) => field.onChange(Number(e.target.value))}
                 min={0}
-                className="border-gray-200 focus:border-purple focus:ring-2 focus:ring-purple/20"
+                className="border-gray-200 focus:border-purple focus:ring-2 focus:ring-purple/20 h-9"
                 aria-describedby="order-error"
               />
             </FormControl>
