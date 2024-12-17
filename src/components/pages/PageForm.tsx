@@ -27,6 +27,7 @@ const PageForm = ({ initialData, isEditing }: PageFormProps) => {
       status: initialData?.status || "active",
       order_index: initialData?.order_index || 0,
     },
+    mode: "onChange",
   });
 
   const onSubmit = async (values: PageFormValues) => {
@@ -59,7 +60,12 @@ const PageForm = ({ initialData, isEditing }: PageFormProps) => {
       if (isEditing && initialData) {
         const { error } = await supabase
           .from("pages")
-          .update(values)
+          .update({
+            title: values.title,
+            content: values.content,
+            status: values.status,
+            order_index: values.order_index,
+          })
           .eq("id", initialData.id);
 
         if (error) throw error;
@@ -71,7 +77,12 @@ const PageForm = ({ initialData, isEditing }: PageFormProps) => {
       } else {
         const { error } = await supabase
           .from("pages")
-          .insert([values]);
+          .insert([{
+            title: values.title,
+            content: values.content,
+            status: values.status,
+            order_index: values.order_index,
+          }]);
 
         if (error) throw error;
 
@@ -95,7 +106,7 @@ const PageForm = ({ initialData, isEditing }: PageFormProps) => {
   return (
     <ErrorBoundary>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <PageContentForm control={form.control} />
           
           <Button 

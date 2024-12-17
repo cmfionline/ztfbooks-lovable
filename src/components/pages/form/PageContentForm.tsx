@@ -42,7 +42,7 @@ export const PageContentForm = ({ control }: PageContentFormProps) => {
                 value={field.value} 
                 onChange={field.onChange}
                 placeholder="Enter page content"
-                className="min-h-[120px]"
+                className="min-h-[120px] border-gray-200"
                 aria-describedby="content-error"
               />
             </FormControl>
@@ -51,49 +51,51 @@ export const PageContentForm = ({ control }: PageContentFormProps) => {
         )}
       />
 
-      <FormField
-        control={control}
-        name="status"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="text-gray-700 font-medium">Status</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger className="border-gray-200 focus:border-purple h-9">
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="archived">Archived</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage className="text-xs" />
-          </FormItem>
-        )}
-      />
+      <div className="grid grid-cols-2 gap-3">
+        <FormField
+          control={control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-gray-700 font-medium">Status</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger className="border-gray-200 focus:border-purple h-9">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="archived">Archived</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
 
-      <FormField
-        control={control}
-        name="order_index"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="text-gray-700 font-medium">Order</FormLabel>
-            <FormControl>
-              <Input 
-                type="number"
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-                min={0}
-                className="border-gray-200 focus:border-purple focus:ring-2 focus:ring-purple/20 h-9"
-                aria-describedby="order-error"
-              />
-            </FormControl>
-            <FormMessage className="text-xs" />
-          </FormItem>
-        )}
-      />
+        <FormField
+          control={control}
+          name="order_index"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-gray-700 font-medium">Order</FormLabel>
+              <FormControl>
+                <Input 
+                  type="number"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                  min={0}
+                  className="border-gray-200 focus:border-purple focus:ring-2 focus:ring-purple/20 h-9"
+                  aria-describedby="order-error"
+                />
+              </FormControl>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
+      </div>
     </div>
   );
 };
