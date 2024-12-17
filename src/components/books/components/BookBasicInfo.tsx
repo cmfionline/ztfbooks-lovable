@@ -84,9 +84,9 @@ export const BookBasicInfo = ({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {languages.map((item) => (
-                  <SelectItem key={item.value} value={item.value}>
-                    {formatLanguageLabel(item.label.split(' (')[0], item.label.split('(')[1].replace(')', ''))}
+                {availableLanguages.map((lang) => (
+                  <SelectItem key={lang.code} value={lang.code}>
+                    {formatLanguageLabel(lang.name, lang.code)}
                   </SelectItem>
                 ))}
               </SelectContent>

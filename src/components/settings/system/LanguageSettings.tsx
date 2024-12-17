@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import {
@@ -11,6 +10,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { getAllLanguages, formatLanguageLabel } from "@/utils/languages";
+import { useQuery } from "@tanstack/react-query";
 
 export const LanguageSettings = () => {
   const { toast } = useToast();
