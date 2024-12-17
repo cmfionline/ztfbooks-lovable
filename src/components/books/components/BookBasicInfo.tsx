@@ -27,7 +27,7 @@ export const BookBasicInfo = ({
   languages,
 }: BookBasicInfoProps) => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <FormField
         control={control}
         name="title"
@@ -48,13 +48,14 @@ export const BookBasicInfo = ({
         render={({ field }) => (
           <FormItem>
             <FormLabel className="text-primary">Series</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value}>
+            <Select onValueChange={field.onChange} value={field.value || ""}>
               <FormControl>
-                <SelectTrigger className="border-purple-light focus:border-purple">
+                <SelectTrigger className="border-purple-light focus:border-purple bg-white text-gray-900">
                   <SelectValue placeholder="Select a series" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
+                <SelectItem value="">None</SelectItem>
                 {series.map((item) => (
                   <SelectItem key={item.value} value={item.value}>
                     {item.label}
@@ -73,9 +74,9 @@ export const BookBasicInfo = ({
         render={({ field }) => (
           <FormItem>
             <FormLabel className="text-primary">Language</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value}>
+            <Select onValueChange={field.onChange} value={field.value || ""}>
               <FormControl>
-                <SelectTrigger className="border-purple-light focus:border-purple">
+                <SelectTrigger className="border-purple-light focus:border-purple bg-white text-gray-900">
                   <SelectValue placeholder="Select a language" />
                 </SelectTrigger>
               </FormControl>

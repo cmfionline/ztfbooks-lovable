@@ -45,7 +45,7 @@ export const BookForm = ({
       tags: [],
       ...initialData,
     },
-    mode: "onChange", // Enable real-time validation
+    mode: "onChange",
   });
 
   const handleSubmit = async (values: BookFormValues) => {
@@ -72,25 +72,29 @@ export const BookForm = ({
   return (
     <BookErrorBoundary>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-          <BookBasicInfo
-            control={form.control}
-            series={series}
-            languages={languages}
-          />
-          <BookMetadata
-            control={form.control}
-            authors={authors}
-            publishers={publishers}
-          />
-          <BookFiles 
-            control={form.control}
-          />
-          <BookTags
-            selectedTags={form.watch("tags") || []}
-            setSelectedTags={(tags) => form.setValue("tags", tags)}
-            tags={tags}
-          />
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-4">
+              <BookBasicInfo
+                control={form.control}
+                series={series}
+                languages={languages}
+              />
+              <BookFiles control={form.control} />
+            </div>
+            <div className="space-y-4">
+              <BookMetadata
+                control={form.control}
+                authors={authors}
+                publishers={publishers}
+              />
+              <BookTags
+                selectedTags={form.watch("tags") || []}
+                setSelectedTags={(tags) => form.setValue("tags", tags)}
+                tags={tags}
+              />
+            </div>
+          </div>
           <Button
             type="submit"
             className="w-full bg-purple hover:bg-purple/90"
