@@ -1,13 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BookFiles } from '../BookFiles';
+import { createMockControl } from '@/test/form-helpers';
 
 describe('BookFiles', () => {
-  const mockControl = {
-    register: vi.fn(),
-    setValue: vi.fn(),
-    watch: vi.fn(),
-  };
+  const mockControl = createMockControl();
 
   it('renders file upload fields', () => {
     render(<BookFiles control={mockControl} />);
@@ -20,7 +17,7 @@ describe('BookFiles', () => {
     render(<BookFiles control={mockControl} />);
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
     
-    const input = screen.getByLabelText(/cover image/i);
+    const input = screen.getByLabelText(/cover image/i) as HTMLInputElement;
     fireEvent.change(input, { target: { files: [file] } });
     
     expect(input.files?.[0]).toBe(file);
@@ -30,7 +27,7 @@ describe('BookFiles', () => {
     render(<BookFiles control={mockControl} />);
     const file = new File(['test'], 'test.epub', { type: 'application/epub+zip' });
     
-    const input = screen.getByLabelText(/epub file/i);
+    const input = screen.getByLabelText(/epub file/i) as HTMLInputElement;
     fireEvent.change(input, { target: { files: [file] } });
     
     expect(input.files?.[0]).toBe(file);

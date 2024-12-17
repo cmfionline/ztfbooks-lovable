@@ -2,13 +2,10 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BookBasicInfo } from '../components/BookBasicInfo';
 import { BrowserRouter } from 'react-router-dom';
+import { createMockControl } from '@/test/form-helpers';
 
 describe('BookBasicInfo', () => {
-  const mockControl = {
-    register: vi.fn(),
-    setValue: vi.fn(),
-    watch: vi.fn(),
-  };
+  const mockControl = createMockControl();
 
   const mockData = {
     series: [{ label: 'Test Series', value: '1' }],

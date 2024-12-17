@@ -2,14 +2,10 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BookMetadata } from '../components/BookMetadata';
 import { BrowserRouter } from 'react-router-dom';
+import { createMockControl } from '@/test/form-helpers';
 
 describe('BookMetadata', () => {
-  const mockControl = {
-    register: vi.fn(),
-    setValue: vi.fn(),
-    watch: vi.fn(),
-    _formValues: { isFree: false },
-  };
+  const mockControl = createMockControl({ isFree: false });
 
   const mockData = {
     authors: [{ label: 'Test Author', value: '1' }],
@@ -69,10 +65,10 @@ describe('BookMetadata', () => {
   });
 
   it('shows price input when paid is selected', () => {
-    mockControl._formValues.isFree = false;
+    const mockControlWithPaid = createMockControl({ isFree: false });
     renderWithRouter(
       <BookMetadata 
-        control={mockControl} 
+        control={mockControlWithPaid} 
         authors={mockData.authors} 
         publishers={mockData.publishers} 
       />
