@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getAllLanguages, formatLanguageLabel } from "@/utils/languages";
 
 interface BookBasicInfoProps {
   control: Control<any>;
@@ -26,6 +27,8 @@ export const BookBasicInfo = ({
   series,
   languages,
 }: BookBasicInfoProps) => {
+  const availableLanguages = getAllLanguages();
+
   return (
     <div className="space-y-4">
       <FormField
@@ -83,7 +86,7 @@ export const BookBasicInfo = ({
               <SelectContent>
                 {languages.map((item) => (
                   <SelectItem key={item.value} value={item.value}>
-                    {item.label}
+                    {formatLanguageLabel(item.label.split(' (')[0], item.label.split('(')[1].replace(')', ''))}
                   </SelectItem>
                 ))}
               </SelectContent>

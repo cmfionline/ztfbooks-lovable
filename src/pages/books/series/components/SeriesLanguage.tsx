@@ -18,15 +18,10 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getAllLanguages, formatLanguageLabel } from "@/utils/languages";
 
 interface SeriesLanguageProps {
   control: Control<any>;
-}
-
-interface Language {
-  id: string;
-  name: string;
-  code: string;
 }
 
 export const SeriesLanguage = ({ control }: SeriesLanguageProps) => {
@@ -43,9 +38,10 @@ export const SeriesLanguage = ({ control }: SeriesLanguageProps) => {
         return [];
       }
 
-      return (data || []).map((language: Language) => ({
-        label: `${language.name} (${language.code})`,
-        value: language.id,
+      const availableLanguages = getAllLanguages();
+      return availableLanguages.map(lang => ({
+        label: formatLanguageLabel(lang.name, lang.code),
+        value: lang.code,
       }));
     },
   });
