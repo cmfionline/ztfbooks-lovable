@@ -1,26 +1,54 @@
+import { vi } from 'vitest';
 import { Control } from "react-hook-form";
 
 export const createMockControl = (formValues = {}): Control<any> => {
   return {
-    _subjects: { array: new Subject(), state: new Subject(), watch: new Subject() },
-    _removeUnmounted: jest.fn(),
-    _names: { mount: new Set(), array: new Set(), watch: new Set(), unMount: new Set(), focus: "", watchAll: false },
-    _state: { mount: new Set(), watch: new Set(), array: new Set(), unMount: new Set() },
-    _options: { mode: "onSubmit", reValidateMode: "onChange", shouldFocusError: true },
-    _formState: { isDirty: false, isValidating: false, isSubmitted: false, isSubmitting: false, isSubmitSuccessful: false, isValid: false, submitCount: 0, dirtyFields: {}, touchedFields: {}, errors: {}, defaultValues: {} },
+    _subjects: { 
+      array: { next: vi.fn(), subscribe: vi.fn(), unsubscribe: vi.fn() }, 
+      state: { next: vi.fn(), subscribe: vi.fn(), unsubscribe: vi.fn() }, 
+      watch: { next: vi.fn(), subscribe: vi.fn(), unsubscribe: vi.fn() } 
+    },
+    _removeUnmounted: vi.fn(),
+    _names: { 
+      mount: new Set(), 
+      array: new Set(), 
+      watch: new Set(), 
+      unMount: new Set(), 
+      focus: "", 
+      watchAll: false 
+    },
+    _state: { 
+      mount: new Set(), 
+      watch: new Set(), 
+      array: new Set(), 
+      unMount: new Set() 
+    },
+    _options: { 
+      mode: "onSubmit", 
+      reValidateMode: "onChange", 
+      shouldFocusError: true 
+    },
+    _formState: {
+      isDirty: false,
+      isValidating: false,
+      isSubmitted: false,
+      isSubmitting: false,
+      isSubmitSuccessful: false,
+      isValid: false,
+      submitCount: 0,
+      dirtyFields: {},
+      touchedFields: {},
+      errors: {},
+      defaultValues: {}
+    },
     _fields: {},
     _defaultValues: {},
     _formValues: formValues,
-    _getWatch: jest.fn(),
-    _getDirty: jest.fn(),
-    _updateValid: jest.fn(),
-    _updateFieldArray: jest.fn(),
-    _getFieldArray: jest.fn(),
-    _subjects: {
-      watch: { next: jest.fn() },
-      array: { next: jest.fn() },
-      state: { next: jest.fn() }
-    },
+    _getWatch: vi.fn(),
+    _getDirty: vi.fn(),
+    _updateValid: vi.fn(),
+    _updateFieldArray: vi.fn(),
+    _getFieldArray: vi.fn(),
     _proxyFormState: {
       isDirty: false,
       dirtyFields: {},
@@ -29,25 +57,25 @@ export const createMockControl = (formValues = {}): Control<any> => {
       isValid: false,
       errors: {}
     },
-    register: jest.fn(),
-    unregister: jest.fn(),
-    getFieldState: jest.fn(),
-    handleSubmit: jest.fn(),
-    trigger: jest.fn(),
-    setValue: jest.fn(),
-    getValues: jest.fn(),
-    reset: jest.fn(),
-    resetField: jest.fn(),
-    watch: jest.fn(),
-    setError: jest.fn(),
-    clearErrors: jest.fn(),
-    setFocus: jest.fn(),
-    getFieldNames: jest.fn()
+    register: vi.fn(),
+    unregister: vi.fn(),
+    getFieldState: vi.fn(),
+    handleSubmit: vi.fn(),
+    trigger: vi.fn(),
+    setValue: vi.fn(),
+    getValues: vi.fn(),
+    reset: vi.fn(),
+    resetField: vi.fn(),
+    watch: vi.fn(),
+    setError: vi.fn(),
+    clearErrors: vi.fn(),
+    setFocus: vi.fn(),
+    getFieldNames: vi.fn()
   } as unknown as Control<any>;
 };
 
 class Subject {
-  next = jest.fn();
-  subscribe = jest.fn();
-  unsubscribe = jest.fn();
+  next = vi.fn();
+  subscribe = vi.fn();
+  unsubscribe = vi.fn();
 }
