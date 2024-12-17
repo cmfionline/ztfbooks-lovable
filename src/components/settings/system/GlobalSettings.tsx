@@ -12,7 +12,7 @@ import { Loader2 } from "lucide-react";
 import { BasicInfoFields } from "./components/BasicInfoFields";
 import { LogoUploadSection } from "./LogoUploadSection";
 import { useLogoUpload } from "./hooks/useLogoUpload";
-import type { GlobalSettings } from "./types";
+import type { GlobalSettingsData } from "./types";
 
 const formSchema = z.object({
   site_name: z.string().min(2, "Site name must be at least 2 characters"),
@@ -26,7 +26,7 @@ const formSchema = z.object({
 
 export const GlobalSettings = () => {
   const { toast } = useToast();
-  const form = useForm<GlobalSettings>({
+  const form = useForm<GlobalSettingsData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       site_name: "",
@@ -49,7 +49,7 @@ export const GlobalSettings = () => {
         .maybeSingle();
       
       if (error) throw error;
-      const defaultSettings: GlobalSettings = {
+      const defaultSettings: GlobalSettingsData = {
         site_name: "",
         contact_email: "",
         support_phone: "",
@@ -59,7 +59,7 @@ export const GlobalSettings = () => {
         },
       };
       if (data) {
-        const settings = data.settings as GlobalSettings;
+        const settings = data.settings as GlobalSettingsData;
         form.reset(settings);
         return settings;
       }
@@ -67,7 +67,7 @@ export const GlobalSettings = () => {
     },
   });
 
-  const handleSubmit = async (values: GlobalSettings) => {
+  const handleSubmit = async (values: GlobalSettingsData) => {
     try {
       const { data: user } = await supabase.auth.getUser();
       if (!user.user) {

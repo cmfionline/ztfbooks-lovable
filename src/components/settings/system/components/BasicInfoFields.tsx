@@ -1,10 +1,10 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
-import { GlobalSettings } from "../types";
+import { GlobalSettingsData } from "../types";
 
 interface BasicInfoFieldsProps {
-  form: UseFormReturn<GlobalSettings>;
+  form: UseFormReturn<GlobalSettingsData>;
 }
 
 export const BasicInfoFields = ({ form }: BasicInfoFieldsProps) => {
