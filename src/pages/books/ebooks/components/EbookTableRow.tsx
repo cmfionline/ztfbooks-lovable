@@ -7,6 +7,7 @@ import { formatPrice } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 interface EbookTableRowProps {
   book: Book;
