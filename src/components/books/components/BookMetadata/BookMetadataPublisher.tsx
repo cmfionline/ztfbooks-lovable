@@ -48,9 +48,15 @@ export const BookMetadataPublisher = ({ control, publishers = [] }: BookMetadata
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              <SelectItem value="none">None</SelectItem>
+              <SelectItem value="none" className="hover:bg-purple-50 text-foreground">
+                None
+              </SelectItem>
               {publishers.map((item) => (
-                <SelectItem key={item.value} value={item.value}>
+                <SelectItem 
+                  key={item.value} 
+                  value={item.value}
+                  className="hover:bg-purple-50 text-foreground"
+                >
                   {item.label}
                 </SelectItem>
               ))}

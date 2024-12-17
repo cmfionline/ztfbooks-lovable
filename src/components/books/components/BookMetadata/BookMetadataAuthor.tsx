@@ -38,7 +38,10 @@ export const BookMetadataAuthor = ({ control, authors = [] }: BookMetadataAuthor
               Add Author
             </Link>
           </div>
-          <Select onValueChange={field.onChange} value={field.value}>
+          <Select 
+            onValueChange={field.onChange} 
+            value={field.value || undefined}
+          >
             <FormControl>
               <SelectTrigger className="border-purple-light focus:border-purple">
                 <SelectValue placeholder="Select an author" />
@@ -46,7 +49,11 @@ export const BookMetadataAuthor = ({ control, authors = [] }: BookMetadataAuthor
             </FormControl>
             <SelectContent>
               {authors.map((item) => (
-                <SelectItem key={item.value} value={item.value}>
+                <SelectItem 
+                  key={item.value} 
+                  value={item.value}
+                  className="hover:bg-purple-50 text-foreground"
+                >
                   {item.label}
                 </SelectItem>
               ))}
