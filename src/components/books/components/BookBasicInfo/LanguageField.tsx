@@ -40,7 +40,7 @@ export const LanguageField = ({ control, languages = [] }: LanguageFieldProps) =
           </div>
           <Select 
             onValueChange={field.onChange}
-            value={field.value || "placeholder"}
+            value={field.value || undefined}
           >
             <FormControl>
               <SelectTrigger className="border-purple-light focus:border-purple bg-white">
@@ -49,7 +49,11 @@ export const LanguageField = ({ control, languages = [] }: LanguageFieldProps) =
             </FormControl>
             <SelectContent className="bg-white">
               {languages.map((item) => (
-                <SelectItem key={item.value} value={item.value}>
+                <SelectItem 
+                  key={item.value} 
+                  value={item.value}
+                  className="hover:bg-purple-50 text-foreground"
+                >
                   {item.label}
                 </SelectItem>
               ))}
