@@ -183,9 +183,6 @@ const Books = () => {
       <Route path="tags/*" element={<TagsPage />} />
       <Route path="tags/add" element={<AddTag />} />
       <Route path="tags/:id/edit" element={<EditTag />} />
-      <Route path="languages/*" element={<LanguagesPage />} />
-      <Route path="languages/add" element={<AddLanguage />} />
-      <Route path="languages/:id/edit" element={<EditLanguage />} />
     </Routes>
   );
 };

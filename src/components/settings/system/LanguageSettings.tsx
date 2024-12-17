@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -10,13 +9,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
-import { Json } from "@/integrations/supabase/types";
 import { useToast } from "@/hooks/use-toast";
-
-interface LanguageSettings {
-  default: string;
-  supported: string[];
-}
+import { getAllLanguages, formatLanguageLabel } from "@/utils/languages";
 
 export const LanguageSettings = () => {
   const { toast } = useToast();
@@ -30,11 +24,11 @@ export const LanguageSettings = () => {
         .maybeSingle();
       
       if (error) throw error;
-      const defaultSettings: LanguageSettings = {
+      const defaultSettings = {
         default: "en",
         supported: ["en"]
       };
-      return data ? (data.settings as unknown as LanguageSettings) : defaultSettings;
+      return data ? data.settings : defaultSettings;
     },
   });
 
@@ -99,6 +93,8 @@ export const LanguageSettings = () => {
     return <div>Loading...</div>;
   }
 
+  const availableLanguages = getAllLanguages();
+
   return (
     <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
       <CardHeader>
@@ -116,9 +112,9 @@ export const LanguageSettings = () => {
               <SelectValue placeholder="Select language" />
             </SelectTrigger>
             <SelectContent>
-              {settings?.supported.map((lang: string) => (
-                <SelectItem key={lang} value={lang}>
-                  {lang.toUpperCase()}
+              {availableLanguages.map((lang) => (
+                <SelectItem key={lang.code} value={lang.code}>
+                  {formatLanguageLabel(lang.name, lang.code)}
                 </SelectItem>
               ))}
             </SelectContent>
