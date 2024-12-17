@@ -9,7 +9,7 @@ export const bookSchema = z.object({
   coverImage: z.any().optional(),
   synopsis: z.string().optional().nullable(),
   authorId: z.string().uuid("Author is required"),
-  publisherId: z.string().uuid().optional().nullable(),
+  publisherId: z.string().uuid().nullable().optional(),
   epubFile: z.any().optional(),
   publicationDate: z.date().optional().nullable(),
   pageCount: z.number().int().positive().optional().nullable(),
