@@ -64,8 +64,8 @@ export const BookBasicInfo = ({
               </Link>
             </div>
             <Select 
-              onValueChange={field.onChange} 
-              value={field.value || ""}
+              onValueChange={(value) => field.onChange(value === "none" ? null : value)}
+              value={field.value || "none"}
             >
               <FormControl>
                 <SelectTrigger className="border-purple-light focus:border-purple bg-white">
@@ -73,9 +73,15 @@ export const BookBasicInfo = ({
                 </SelectTrigger>
               </FormControl>
               <SelectContent className="bg-white">
-                <SelectItem value="">None</SelectItem>
+                <SelectItem value="none" className="hover:bg-purple-50 text-foreground">
+                  None
+                </SelectItem>
                 {series.map((item) => (
-                  <SelectItem key={item.value} value={item.value}>
+                  <SelectItem 
+                    key={item.value} 
+                    value={item.value}
+                    className="hover:bg-purple-50 text-foreground"
+                  >
                     {item.label}
                   </SelectItem>
                 ))}
@@ -102,8 +108,8 @@ export const BookBasicInfo = ({
               </Link>
             </div>
             <Select 
-              onValueChange={field.onChange} 
-              value={field.value || ""}
+              onValueChange={field.onChange}
+              value={field.value || undefined}
             >
               <FormControl>
                 <SelectTrigger className="border-purple-light focus:border-purple bg-white">
@@ -112,7 +118,11 @@ export const BookBasicInfo = ({
               </FormControl>
               <SelectContent className="bg-white">
                 {languages.map((item) => (
-                  <SelectItem key={item.value} value={item.value}>
+                  <SelectItem 
+                    key={item.value} 
+                    value={item.value}
+                    className="hover:bg-purple-50 text-foreground"
+                  >
                     {item.label}
                   </SelectItem>
                 ))}
