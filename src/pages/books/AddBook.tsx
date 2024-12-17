@@ -76,63 +76,78 @@ const AddBook = () => {
   const addFomumBooks = async () => {
     setIsAddingBooks(true);
     try {
+      // First, get the necessary IDs
+      const { data: authorData, error: authorError } = await supabase
+        .from("authors")
+        .select("id")
+        .eq("name", "Zacharias Tanee Fomum")
+        .single();
+
+      if (authorError) throw authorError;
+
+      const { data: languageData, error: languageError } = await supabase
+        .from("languages")
+        .select("id")
+        .eq("code", "en")
+        .single();
+
+      if (languageError) throw languageError;
+
+      const { data: publisherData, error: publisherError } = await supabase
+        .from("publishers")
+        .select("id")
+        .eq("name", "Christian Publishing House")
+        .single();
+
+      if (publisherError) throw publisherError;
+
       const fomumBooks = [
         {
           title: "From His Lips on Marriage",
           cover_image: "covers/fomum-marriage.png",
-          author_id: "your_author_id", // You'll need to replace this with the actual author ID
-          language_id: "your_language_id", // You'll need to replace this with the actual language ID
+          author_id: authorData.id,
+          language_id: languageData.id,
+          publisher_id: publisherData.id,
           is_free: false,
           price: 9.99
         },
         {
           title: "The Authority and Power of His Life",
           cover_image: "covers/fomum-authority.png",
-          author_id: "your_author_id",
-          language_id: "your_language_id",
+          author_id: authorData.id,
+          language_id: languageData.id,
+          publisher_id: publisherData.id,
           is_free: false,
           price: 9.99
         },
         {
           title: "The Battles He Fought",
           cover_image: "covers/fomum-battles.png",
-          author_id: "your_author_id",
-          language_id: "your_language_id",
+          author_id: authorData.id,
+          language_id: languageData.id,
+          publisher_id: publisherData.id,
           is_free: false,
           price: 9.99
         },
         {
           title: "The Work is the Worker Volume 2",
           cover_image: "covers/fomum-work.png",
-          author_id: "your_author_id",
-          language_id: "your_language_id",
+          author_id: authorData.id,
+          language_id: languageData.id,
+          publisher_id: publisherData.id,
           is_free: false,
           price: 9.99
         },
         {
           title: "The Fruit of His Life",
           cover_image: "covers/fomum-fruit.png",
-          author_id: "your_author_id",
-          language_id: "your_language_id",
+          author_id: authorData.id,
+          language_id: languageData.id,
+          publisher_id: publisherData.id,
           is_free: false,
           price: 9.99
         }
       ];
-
-      // Upload images to Supabase Storage
-      for (const book of fomumBooks) {
-        const imagePath = `public/lovable-uploads/${book.title.toLowerCase().replace(/\s+/g, '-')}.png`;
-        const { error: uploadError } = await supabase.storage
-          .from('books')
-          .upload(book.cover_image, imagePath, {
-            upsert: true
-          });
-
-        if (uploadError) {
-          console.error(`Error uploading image for ${book.title}:`, uploadError);
-          continue;
-        }
-      }
 
       // Insert books into the database
       const { error } = await supabase
