@@ -4,10 +4,12 @@ import { NotificationSettings } from '../NotificationSettings';
 import { useToast } from '@/hooks/use-toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-// Mock the useToast hook
+// Mock the useToast hook with all required properties
 vi.mock('@/hooks/use-toast', () => ({
   useToast: () => ({
     toast: vi.fn(),
+    dismiss: vi.fn(),
+    toasts: [],
   }),
 }));
 
@@ -97,6 +99,8 @@ describe('NotificationSettings', () => {
     // Mock error response
     vi.mocked(useToast).mockImplementationOnce(() => ({
       toast: vi.fn(),
+      dismiss: vi.fn(),
+      toasts: [],
     }));
 
     renderComponent();
