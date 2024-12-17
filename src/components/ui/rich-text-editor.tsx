@@ -9,24 +9,27 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
-interface RichTextEditorProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface RichTextEditorProps {
   value: string;
   onChange: (value: string) => void;
+  className?: string;
+  placeholder?: string;
 }
 
 export function RichTextEditor({
   value,
   onChange,
   className,
+  placeholder,
   ...props
 }: RichTextEditorProps) {
   const [linkUrl, setLinkUrl] = useState("");
   const [selectionStart, setSelectionStart] = useState(0);
   const [selectionEnd, setSelectionEnd] = useState(0);
 
-  const handleFormat = (tag: string) => {
+  const handleFormat = useCallback((tag: string) => {
     const textarea = document.querySelector('textarea');
     if (!textarea) return;
 
@@ -48,13 +51,17 @@ export function RichTextEditor({
     }
     
     onChange(newText);
-  };
+  }, [value, onChange, linkUrl]);
 
-  const handleSelection = () => {
+  const handleSelection = useCallback(() => {
     const textarea = document.querySelector('textarea');
     if (!textarea) return;
     setSelectionStart(textarea.selectionStart);
     setSelectionEnd(textarea.selectionEnd);
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onChange(e.target.value);
   };
 
   return (
@@ -105,12 +112,13 @@ export function RichTextEditor({
       </div>
       <textarea
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={handleChange}
         onSelect={handleSelection}
         className={cn(
           "flex min-h-[200px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
+        placeholder={placeholder}
         {...props}
       />
     </div>
