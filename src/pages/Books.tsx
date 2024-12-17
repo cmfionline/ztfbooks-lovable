@@ -28,9 +28,6 @@ import EditPublisher from "./books/publishers/EditPublisher";
 import TagsPage from "./books/tags/TagsPage";
 import AddTag from "./books/tags/AddTag";
 import EditTag from "./books/tags/EditTag";
-import LanguagesPage from "./books/languages/LanguagesPage";
-import AddLanguage from "./books/languages/AddLanguage";
-import EditLanguage from "./books/languages/EditLanguage";
 import EbooksPage from "./books/ebooks/EbooksPage";
 
 const BooksListing = () => {
