@@ -1,7 +1,7 @@
 import { Routes, Route, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { PlusCircle, Eye, Pencil, Trash2 } from "lucide-react";
+import { PlusCircle, Eye, Pencil, Trash2, BookOpen, Users, BookMarked, Building2, Tags } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import {
@@ -12,6 +12,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import AddBook from "./books/AddBook";
@@ -83,15 +90,115 @@ const BooksListing = () => {
   return (
     <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Books Management</h1>
-          <Link to="/books/add">
-            <Button className="bg-purple hover:bg-purple/90">
-              <PlusCircle className="w-4 h-4 mr-2" />
-              Add Book
-            </Button>
-          </Link>
+        <div className="flex flex-col space-y-4 mb-8">
+          <div className="flex justify-between items-center">
+            <h1 className="text-3xl font-bold">Books Management</h1>
+            <Link to="/books/add">
+              <Button className="bg-purple hover:bg-purple/90">
+                <PlusCircle className="w-4 h-4 mr-2" />
+                Add Book
+              </Button>
+            </Link>
+          </div>
+          
+          <Menubar className="border-none bg-transparent p-0">
+            <MenubarMenu>
+              <MenubarTrigger className="font-semibold data-[state=open]:bg-purple/10 data-[state=open]:text-purple">
+                <BookOpen className="w-4 h-4 mr-2" />
+                Books
+              </MenubarTrigger>
+              <MenubarContent>
+                <MenubarItem>
+                  <Link to="/books" className="flex items-center">
+                    All Books
+                  </Link>
+                </MenubarItem>
+                <MenubarItem>
+                  <Link to="/books/ebooks" className="flex items-center">
+                    eBooks
+                  </Link>
+                </MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+
+            <MenubarMenu>
+              <MenubarTrigger className="font-semibold data-[state=open]:bg-purple/10 data-[state=open]:text-purple">
+                <Users className="w-4 h-4 mr-2" />
+                Authors
+              </MenubarTrigger>
+              <MenubarContent>
+                <MenubarItem>
+                  <Link to="/books/authors" className="flex items-center">
+                    View All
+                  </Link>
+                </MenubarItem>
+                <MenubarItem>
+                  <Link to="/books/authors/add" className="flex items-center">
+                    Add New
+                  </Link>
+                </MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+
+            <MenubarMenu>
+              <MenubarTrigger className="font-semibold data-[state=open]:bg-purple/10 data-[state=open]:text-purple">
+                <BookMarked className="w-4 h-4 mr-2" />
+                Series
+              </MenubarTrigger>
+              <MenubarContent>
+                <MenubarItem>
+                  <Link to="/books/series" className="flex items-center">
+                    View All
+                  </Link>
+                </MenubarItem>
+                <MenubarItem>
+                  <Link to="/books/series/add" className="flex items-center">
+                    Add New
+                  </Link>
+                </MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+
+            <MenubarMenu>
+              <MenubarTrigger className="font-semibold data-[state=open]:bg-purple/10 data-[state=open]:text-purple">
+                <Building2 className="w-4 h-4 mr-2" />
+                Publishers
+              </MenubarTrigger>
+              <MenubarContent>
+                <MenubarItem>
+                  <Link to="/books/publishers" className="flex items-center">
+                    View All
+                  </Link>
+                </MenubarItem>
+                <MenubarItem>
+                  <Link to="/books/publishers/add" className="flex items-center">
+                    Add New
+                  </Link>
+                </MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+
+            <MenubarMenu>
+              <MenubarTrigger className="font-semibold data-[state=open]:bg-purple/10 data-[state=open]:text-purple">
+                <Tags className="w-4 h-4 mr-2" />
+                Tags
+              </MenubarTrigger>
+              <MenubarContent>
+                <MenubarItem>
+                  <Link to="/books/tags" className="flex items-center">
+                    View All
+                  </Link>
+                </MenubarItem>
+                <MenubarItem>
+                  <Link to="/books/tags/add" className="flex items-center">
+                    Add New
+                  </Link>
+                </MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+          </Menubar>
         </div>
+
         <Card className="p-6">
           {isLoading ? (
             <div className="text-center py-4">Loading...</div>
