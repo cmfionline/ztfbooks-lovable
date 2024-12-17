@@ -19,9 +19,9 @@ export default {
     },
     extend: {
       colors: {
-        primary: "#141413",
-        secondary: "#828179",
-        accent: "#C7FB76",
+        primary: "#FDB813", // ZTF Yellow
+        secondary: "#1A1F2C", // ZTF Dark Blue
+        accent: "#8B5CF6",
         success: "#4CAF50",
         info: "#2196F3",
         warning: "#FFC107",

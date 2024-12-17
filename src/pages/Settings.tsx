@@ -6,6 +6,7 @@ import { EmailTemplateSettings } from "@/components/settings/system/EmailTemplat
 import { GlobalSettings } from "@/components/settings/system/GlobalSettings";
 import { CurrencySettings } from "@/components/settings/system/CurrencySettings";
 import { LanguageSettings } from "@/components/settings/system/LanguageSettings";
+import { LogoSettings } from "@/components/settings/system/LogoSettings";
 
 const Settings = () => {
   return (
@@ -34,6 +35,7 @@ const Settings = () => {
 
           <TabsContent value="system" className="space-y-6">
             <GlobalSettings />
+            <LogoSettings />
             <EmailTemplateSettings />
             <CurrencySettings />
             <LanguageSettings />
