@@ -5,6 +5,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
@@ -28,7 +29,10 @@ export const BookFiles = ({
         name="coverImage"
         render={({ field: { onChange, value, ...field } }) => (
           <FormItem>
-            <FormLabel className="text-primary">Cover Image (300x450)</FormLabel>
+            <FormLabel className="text-primary">Cover Image</FormLabel>
+            <FormDescription className="text-sm text-gray-500">
+              Recommended size: 300x450 pixels. Maximum size: {(maxFileSize / (1024 * 1024)).toFixed(0)}MB
+            </FormDescription>
             <FormControl>
               <Input
                 type="file"
@@ -37,6 +41,9 @@ export const BookFiles = ({
                   const file = e.target.files?.[0];
                   if (file && file.size <= maxFileSize) {
                     onChange(file);
+                  } else if (file) {
+                    // Show error message if file is too large
+                    console.error(`File size exceeds ${(maxFileSize / (1024 * 1024)).toFixed(0)}MB limit`);
                   }
                 }}
                 {...field}
@@ -54,6 +61,9 @@ export const BookFiles = ({
         render={({ field: { onChange, value, ...field } }) => (
           <FormItem>
             <FormLabel className="text-primary">EPUB File</FormLabel>
+            <FormDescription className="text-sm text-gray-500">
+              Upload your EPUB file. Maximum size: {(maxFileSize / (1024 * 1024)).toFixed(0)}MB
+            </FormDescription>
             <FormControl>
               <Input
                 type="file"
@@ -62,6 +72,9 @@ export const BookFiles = ({
                   const file = e.target.files?.[0];
                   if (file && file.size <= maxFileSize) {
                     onChange(file);
+                  } else if (file) {
+                    // Show error message if file is too large
+                    console.error(`File size exceeds ${(maxFileSize / (1024 * 1024)).toFixed(0)}MB limit`);
                   }
                 }}
                 {...field}
