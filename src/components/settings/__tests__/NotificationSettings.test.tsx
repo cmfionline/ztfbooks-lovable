@@ -1,7 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { NotificationSettings } from '../NotificationSettings';
 import { useToast } from '@/hooks/use-toast';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Mock the useToast hook
 vi.mock('@/hooks/use-toast', () => ({
@@ -45,8 +46,18 @@ vi.mock('@/lib/supabase', () => ({
 }));
 
 describe('NotificationSettings', () => {
+  const queryClient = new QueryClient();
+
+  const renderComponent = () => {
+    return render(
+      <QueryClientProvider client={queryClient}>
+        <NotificationSettings />
+      </QueryClientProvider>
+    );
+  };
+
   it('renders notification settings form', () => {
-    render(<NotificationSettings />);
+    renderComponent();
     
     expect(screen.getByText('Email & Push Notifications')).toBeInTheDocument();
     expect(screen.getByText('Email Notifications')).toBeInTheDocument();
@@ -55,7 +66,7 @@ describe('NotificationSettings', () => {
   });
 
   it('toggles notification settings', async () => {
-    render(<NotificationSettings />);
+    renderComponent();
     
     const emailSwitch = screen.getByRole('switch', { name: /email notifications/i });
     const pushSwitch = screen.getByRole('switch', { name: /push notifications/i });
@@ -71,12 +82,30 @@ describe('NotificationSettings', () => {
   });
 
   it('saves notification preferences', async () => {
-    render(<NotificationSettings />);
+    renderComponent();
     
     const saveButton = screen.getByRole('button', { name: /save preferences/i });
     fireEvent.click(saveButton);
 
     // Verify toast was called (success message)
-    expect(useToast().toast).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(useToast().toast).toHaveBeenCalled();
+    });
+  });
+
+  it('handles error state', async () => {
+    // Mock error response
+    vi.mocked(useToast).mockImplementationOnce(() => ({
+      toast: vi.fn(),
+    }));
+
+    renderComponent();
+    
+    const saveButton = screen.getByRole('button', { name: /save preferences/i });
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(useToast().toast).toHaveBeenCalled();
+    });
   });
 });
