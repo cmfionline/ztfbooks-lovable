@@ -21,7 +21,7 @@ interface BookMetadataPublisherProps {
   publishers: { label: string; value: string }[];
 }
 
-export const BookMetadataPublisher = ({ control, publishers }: BookMetadataPublisherProps) => {
+export const BookMetadataPublisher = ({ control, publishers = [] }: BookMetadataPublisherProps) => {
   return (
     <FormField
       control={control}
