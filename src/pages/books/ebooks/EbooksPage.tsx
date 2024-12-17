@@ -33,6 +33,27 @@ const EbooksPage = () => {
     refetch();
   };
 
+  const handleFeaturedToggle = async (id: string, status: boolean) => {
+    const { error } = await supabase
+      .from('books')
+      .update({ is_featured: status })
+      .eq('id', id);
+
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error updating featured status",
+        description: error.message,
+      });
+      return;
+    }
+
+    toast({
+      title: status ? "Book marked as featured" : "Book removed from featured",
+    });
+    refetch();
+  };
+
   const filteredBooks = books?.filter(book => 
     book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     book.authors?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -55,9 +76,7 @@ const EbooksPage = () => {
               onToggleTopSelling={(id, status) => {
                 console.log('Toggle top selling', id, status);
               }}
-              onToggleFeatured={(id, status) => {
-                console.log('Toggle featured', id, status);
-              }}
+              onToggleFeatured={handleFeaturedToggle}
               onDelete={handleDelete}
             />
           )}
