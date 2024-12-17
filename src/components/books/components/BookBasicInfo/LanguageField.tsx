@@ -39,8 +39,8 @@ export const LanguageField = ({ control, languages = [] }: LanguageFieldProps) =
             </Link>
           </div>
           <Select 
-            onValueChange={field.onChange} 
-            value={field.value || "none"}
+            onValueChange={field.onChange}
+            value={field.value || "placeholder"}
           >
             <FormControl>
               <SelectTrigger className="border-purple-light focus:border-purple bg-white">
