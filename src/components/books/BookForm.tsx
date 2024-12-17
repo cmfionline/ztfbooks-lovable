@@ -35,10 +35,10 @@ export const BookForm = ({
     resolver: zodResolver(bookSchema),
     defaultValues: {
       title: "",
-      seriesId: undefined,
+      seriesId: null,
       languageId: undefined,
       authorId: undefined,
-      publisherId: undefined,
+      publisherId: null,
       synopsis: "",
       isFree: false,
       price: undefined,
@@ -77,21 +77,21 @@ export const BookForm = ({
             <div className="space-y-4">
               <BookBasicInfo
                 control={form.control}
-                series={series}
-                languages={languages}
+                series={series || []}
+                languages={languages || []}
               />
               <BookFiles control={form.control} />
             </div>
             <div className="space-y-4">
               <BookMetadata
                 control={form.control}
-                authors={authors}
-                publishers={publishers}
+                authors={authors || []}
+                publishers={publishers || []}
               />
               <BookTags
                 selectedTags={form.watch("tags") || []}
                 setSelectedTags={(tags) => form.setValue("tags", tags)}
-                tags={tags}
+                tags={tags || []}
               />
             </div>
           </div>

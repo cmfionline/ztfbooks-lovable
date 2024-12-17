@@ -39,9 +39,8 @@ export const SeriesField = ({ control, series = [] }: SeriesFieldProps) => {
             </Link>
           </div>
           <Select 
-            onValueChange={field.onChange} 
+            onValueChange={(value) => field.onChange(value || null)}
             value={field.value || ""}
-            defaultValue=""
           >
             <FormControl>
               <SelectTrigger className="border-purple-light focus:border-purple">
@@ -50,7 +49,7 @@ export const SeriesField = ({ control, series = [] }: SeriesFieldProps) => {
             </FormControl>
             <SelectContent>
               <SelectItem value="">None</SelectItem>
-              {series?.map((item) => (
+              {series.map((item) => (
                 <SelectItem key={item.value} value={item.value}>
                   {item.label}
                 </SelectItem>
