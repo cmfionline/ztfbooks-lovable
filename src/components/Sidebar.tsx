@@ -19,6 +19,7 @@ import {
   Languages,
   Tags,
   Building2,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -157,6 +158,21 @@ export const Sidebar = () => {
       </div>
       
       <nav className="flex-1 overflow-y-auto scrollbar-none p-2 space-y-1">
+        {/* Client Portal Link */}
+        <a
+          href="/portal"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(
+            "flex items-center px-4 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg transition-all duration-200",
+            "hover:bg-purple-light/10 hover:text-purple",
+            isCollapsed && "justify-center"
+          )}
+        >
+          <ExternalLink className="w-4 h-4" />
+          {!isCollapsed && <span className="ml-3">Client Portal</span>}
+        </a>
+
         {menuItems.map((item) => (
           item.submenu ? (
             <SidebarSubmenu
