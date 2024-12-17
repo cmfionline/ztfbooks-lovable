@@ -1,5 +1,5 @@
 import { Link, Outlet } from "react-router-dom";
-import { Book, Home, User, MessageSquare, Bell } from "lucide-react";
+import { Book, Home, User, MessageSquare, Bell, HelpCircle } from "lucide-react";
 
 const PortalLayout = () => {
   return (
@@ -22,6 +22,10 @@ const PortalLayout = () => {
             <Link to="/portal/support" className="transition-colors hover:text-foreground/80">
               <MessageSquare className="h-4 w-4" />
               <span className="sr-only">Support</span>
+            </Link>
+            <Link to="/portal/faqs" className="transition-colors hover:text-foreground/80">
+              <HelpCircle className="h-4 w-4" />
+              <span className="sr-only">FAQs</span>
             </Link>
           </nav>
           <div className="flex items-center space-x-4">
