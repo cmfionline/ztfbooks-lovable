@@ -25,7 +25,15 @@ export const BookForm = ({
   submitLabel = "Save Book",
 }: BookFormProps) => {
   const { toast } = useToast();
-  const { series = [], authors = [], publishers = [], tags = [], languages = [], isLoading } = useBookFormData({
+  const { 
+    series = [], 
+    authors = [], 
+    publishers = [], 
+    tags = [], 
+    languages = [], 
+    isLoading,
+    error 
+  } = useBookFormData({
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -35,10 +43,10 @@ export const BookForm = ({
     resolver: zodResolver(bookSchema),
     defaultValues: {
       title: "",
-      seriesId: null,
+      seriesId: undefined,
       languageId: undefined,
       authorId: undefined,
-      publisherId: null,
+      publisherId: undefined,
       synopsis: "",
       isFree: false,
       price: undefined,
@@ -55,7 +63,7 @@ export const BookForm = ({
         title: "Success",
         description: "Book has been saved successfully",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving book:", error);
       toast({
         title: "Error",
@@ -67,6 +75,15 @@ export const BookForm = ({
 
   if (isLoading) {
     return <BookLoadingState />;
+  }
+
+  if (error) {
+    toast({
+      title: "Error",
+      description: "Failed to load form data. Please try again.",
+      variant: "destructive",
+    });
+    return null;
   }
 
   return (
