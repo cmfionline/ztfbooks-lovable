@@ -48,14 +48,14 @@ export const BookBasicInfo = ({
         render={({ field }) => (
           <FormItem>
             <FormLabel className="text-primary">Series</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value || ""}>
+            <Select onValueChange={field.onChange} value={field.value || "null"}>
               <FormControl>
                 <SelectTrigger className="border-purple-light focus:border-purple bg-white text-gray-900">
                   <SelectValue placeholder="Select a series" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
+                <SelectItem value="null">None</SelectItem>
                 {series.map((item) => (
                   <SelectItem key={item.value} value={item.value}>
                     {item.label}

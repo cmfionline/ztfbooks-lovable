@@ -6,15 +6,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { BookMetadataAuthor } from "./BookMetadataAuthor";
+import { BookMetadataPublisher } from "./BookMetadataPublisher";
+import { BookMetadataDate } from "./BookMetadataDate";
 
 interface BookMetadataProps {
   control: Control<any>;
@@ -29,56 +25,9 @@ export const BookMetadata = ({
 }: BookMetadataProps) => {
   return (
     <div className="space-y-4">
-      <FormField
-        control={control}
-        name="authorId"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="text-primary">Author</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value || ""}>
-              <FormControl>
-                <SelectTrigger className="border-purple-light focus:border-purple bg-white text-gray-900">
-                  <SelectValue placeholder="Select an author" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {authors.map((item) => (
-                  <SelectItem key={item.value} value={item.value}>
-                    {item.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={control}
-        name="publisherId"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="text-primary">Publisher</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value || ""}>
-              <FormControl>
-                <SelectTrigger className="border-purple-light focus:border-purple bg-white text-gray-900">
-                  <SelectValue placeholder="Select a publisher" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="">None</SelectItem>
-                {publishers.map((item) => (
-                  <SelectItem key={item.value} value={item.value}>
-                    {item.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <BookMetadataAuthor control={control} authors={authors} />
+      <BookMetadataPublisher control={control} publishers={publishers} />
+      <BookMetadataDate control={control} />
 
       <FormField
         control={control}
