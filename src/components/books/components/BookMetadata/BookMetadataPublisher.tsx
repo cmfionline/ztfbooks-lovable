@@ -38,14 +38,17 @@ export const BookMetadataPublisher = ({ control, publishers = [] }: BookMetadata
               Add Publisher
             </Link>
           </div>
-          <Select onValueChange={field.onChange} value={field.value}>
+          <Select 
+            onValueChange={(value) => field.onChange(value === "none" ? null : value)}
+            value={field.value || "none"}
+          >
             <FormControl>
               <SelectTrigger className="border-purple-light focus:border-purple">
                 <SelectValue placeholder="Select a publisher" />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              <SelectItem value="null">None</SelectItem>
+              <SelectItem value="none">None</SelectItem>
               {publishers.map((item) => (
                 <SelectItem key={item.value} value={item.value}>
                   {item.label}

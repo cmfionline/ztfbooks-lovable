@@ -40,7 +40,7 @@ export const LanguageField = ({ control, languages = [] }: LanguageFieldProps) =
           </div>
           <Select 
             onValueChange={field.onChange} 
-            value={field.value || ""}
+            value={field.value || "none"}
           >
             <FormControl>
               <SelectTrigger className="border-purple-light focus:border-purple bg-white">
