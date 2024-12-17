@@ -11,17 +11,12 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface SeriesFieldProps {
   control: Control<any>;
@@ -45,48 +40,24 @@ export const SeriesField = ({ control, series = [] }: SeriesFieldProps) => {
               Add Series
             </Link>
           </div>
-          <Popover>
-            <PopoverTrigger asChild>
-              <FormControl>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  className={cn(
-                    "w-full justify-between border-purple-light focus:border-purple",
-                    !field.value && "text-muted-foreground"
-                  )}
-                >
-                  {field.value
-                    ? series.find((item) => item.value === field.value)?.label
-                    : "Select series"}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </FormControl>
-            </PopoverTrigger>
-            <PopoverContent className="w-full p-0">
-              <Command>
-                <CommandInput placeholder="Search series..." />
-                <CommandEmpty>No series found.</CommandEmpty>
-                <CommandGroup>
-                  {series.map((item) => (
-                    <CommandItem
-                      key={item.value}
-                      value={item.value}
-                      onSelect={() => field.onChange(item.value)}
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          field.value === item.value ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                      {item.label}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
+          <Select 
+            onValueChange={field.onChange} 
+            value={field.value || ""}
+          >
+            <FormControl>
+              <SelectTrigger className="border-purple-light focus:border-purple">
+                <SelectValue placeholder="Select series" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              <SelectItem value="">None</SelectItem>
+              {series.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <FormMessage />
         </FormItem>
       )}
