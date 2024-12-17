@@ -97,11 +97,90 @@ export const GlobalSettings = () => {
         className: "bg-green-50 border-green-200",
       });
       refetch();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating settings:", error);
       toast({
         title: "Error",
         description: "Failed to update global settings",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleLogoUpload = async (file: File, type: 'admin' | 'client') => {
+    try {
+      const { data: user } = await supabase.auth.getUser();
+      if (!user.user) {
+        toast({
+          title: "Error",
+          description: "You must be logged in to upload logos",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.user.id)
+        .single();
+
+      if (!profile || !["admin", "super_admin"].includes(profile.role)) {
+        toast({
+          title: "Error",
+          description: "You don't have permission to upload logos",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${type}-${Date.now()}.${fileExt}`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('logos')
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('logos')
+        .getPublicUrl(fileName);
+
+      const currentSettings = settings || {};
+      const updatedSettings = {
+        ...currentSettings,
+        logos: {
+          ...currentSettings.logos,
+          [type]: publicUrl
+        }
+      };
+
+      const { error: updateError } = await supabase
+        .from("system_settings")
+        .upsert({
+          category: "global",
+          settings: updatedSettings,
+        }, {
+          onConflict: "category"
+        });
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: "Success",
+        description: `${type} logo uploaded successfully`,
+        className: "bg-green-50 border-green-200",
+      });
+      refetch();
+    } catch (error: any) {
+      console.error("Error uploading logo:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to upload logo",
         variant: "destructive",
       });
     }
@@ -159,6 +238,46 @@ export const GlobalSettings = () => {
                 </FormItem>
               )}
             />
+            <div className="space-y-4">
+              <div>
+                <FormLabel>Admin Portal Logo</FormLabel>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleLogoUpload(file, 'admin');
+                  }}
+                  className="max-w-md border-purple-light focus:border-purple file:bg-purple file:text-white file:border-0 file:rounded-md file:px-4 file:py-2 hover:file:bg-purple/90"
+                />
+                {settings?.logos?.admin && (
+                  <img 
+                    src={settings.logos.admin} 
+                    alt="Admin Logo" 
+                    className="h-12 w-auto object-contain mt-2"
+                  />
+                )}
+              </div>
+              <div>
+                <FormLabel>Client Portal Logo</FormLabel>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleLogoUpload(file, 'client');
+                  }}
+                  className="max-w-md border-purple-light focus:border-purple file:bg-purple file:text-white file:border-0 file:rounded-md file:px-4 file:py-2 hover:file:bg-purple/90"
+                />
+                {settings?.logos?.client && (
+                  <img 
+                    src={settings.logos.client} 
+                    alt="Client Logo" 
+                    className="h-12 w-auto object-contain mt-2"
+                  />
+                )}
+              </div>
+            </div>
             <Button 
               type="submit" 
               className="bg-purple hover:bg-purple-dark text-white"
