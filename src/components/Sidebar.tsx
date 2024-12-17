@@ -16,7 +16,6 @@ import {
   BookText,
   Users,
   BookMarked,
-  Languages,
   Tags,
   Building2,
   ExternalLink,
@@ -70,7 +69,6 @@ export const Sidebar = () => {
         { title: "Series", icon: <BookMarked className="w-4 h-4" />, path: "/books/series" },
         { title: "Publishers", icon: <Building2 className="w-4 h-4" />, path: "/books/publishers" },
         { title: "Tags", icon: <Tags className="w-4 h-4" />, path: "/books/tags" },
-        { title: "Languages", icon: <Languages className="w-4 h-4" />, path: "/books/languages" },
       ],
     },
     {
