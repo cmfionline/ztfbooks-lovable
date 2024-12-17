@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react";
 import { BasicInfoFields } from "./components/BasicInfoFields";
 import { LogoUploadSection } from "./LogoUploadSection";
 import { useLogoUpload } from "./hooks/useLogoUpload";
-import { GlobalSettings } from "./types";
+import type { GlobalSettings } from "./types";
 
 const formSchema = z.object({
   site_name: z.string().min(2, "Site name must be at least 2 characters"),
