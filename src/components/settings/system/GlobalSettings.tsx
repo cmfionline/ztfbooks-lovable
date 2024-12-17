@@ -9,11 +9,16 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
+import { LogoUploadSection } from "./LogoUploadSection";
 
 const formSchema = z.object({
   site_name: z.string().min(2, "Site name must be at least 2 characters"),
   contact_email: z.string().email("Please enter a valid email"),
   support_phone: z.string().min(6, "Please enter a valid phone number"),
+  logos: z.object({
+    admin: z.string().nullable().optional(),
+    client: z.string().nullable().optional(),
+  }).optional(),
 });
 
 type GlobalSettings = z.infer<typeof formSchema>;
@@ -26,6 +31,10 @@ export const GlobalSettings = () => {
       site_name: "",
       contact_email: "",
       support_phone: "",
+      logos: {
+        admin: null,
+        client: null,
+      },
     },
   });
 
@@ -42,7 +51,11 @@ export const GlobalSettings = () => {
       const defaultSettings: GlobalSettings = {
         site_name: "",
         contact_email: "",
-        support_phone: ""
+        support_phone: "",
+        logos: {
+          admin: null,
+          client: null,
+        },
       };
       if (data) {
         const settings = data.settings as unknown as GlobalSettings;
@@ -239,44 +252,16 @@ export const GlobalSettings = () => {
               )}
             />
             <div className="space-y-4">
-              <div>
-                <FormLabel>Admin Portal Logo</FormLabel>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleLogoUpload(file, 'admin');
-                  }}
-                  className="max-w-md border-purple-light focus:border-purple file:bg-purple file:text-white file:border-0 file:rounded-md file:px-4 file:py-2 hover:file:bg-purple/90"
-                />
-                {settings?.logos?.admin && (
-                  <img 
-                    src={settings.logos.admin} 
-                    alt="Admin Logo" 
-                    className="h-12 w-auto object-contain mt-2"
-                  />
-                )}
-              </div>
-              <div>
-                <FormLabel>Client Portal Logo</FormLabel>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleLogoUpload(file, 'client');
-                  }}
-                  className="max-w-md border-purple-light focus:border-purple file:bg-purple file:text-white file:border-0 file:rounded-md file:px-4 file:py-2 hover:file:bg-purple/90"
-                />
-                {settings?.logos?.client && (
-                  <img 
-                    src={settings.logos.client} 
-                    alt="Client Logo" 
-                    className="h-12 w-auto object-contain mt-2"
-                  />
-                )}
-              </div>
+              <LogoUploadSection
+                type="admin"
+                logoUrl={settings?.logos?.admin}
+                onUpload={handleLogoUpload}
+              />
+              <LogoUploadSection
+                type="client"
+                logoUrl={settings?.logos?.client}
+                onUpload={handleLogoUpload}
+              />
             </div>
             <Button 
               type="submit" 
