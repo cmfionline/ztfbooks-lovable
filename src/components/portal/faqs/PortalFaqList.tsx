@@ -23,11 +23,15 @@ interface FAQGroup {
   faqs: FAQ[];
 }
 
-export const PortalFaqList = () => {
+interface PortalFaqListProps {
+  selectedGroupId: string | null;
+}
+
+export const PortalFaqList = ({ selectedGroupId }: PortalFaqListProps) => {
   const { data: faqGroups, isLoading } = useQuery({
-    queryKey: ["portal-faq-groups"],
+    queryKey: ["portal-faq-groups", selectedGroupId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const query = supabase
         .from("faq_groups")
         .select(`
           id,
@@ -42,6 +46,12 @@ export const PortalFaqList = () => {
         `)
         .order("created_at", { ascending: false });
 
+      if (selectedGroupId) {
+        query.eq("id", selectedGroupId);
+      }
+
+      const { data, error } = await query;
+
       if (error) throw error;
       return data as FAQGroup[];
     },
@@ -49,8 +59,19 @@ export const PortalFaqList = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[200px]">
-        <div className="animate-pulse text-muted-foreground">Loading FAQs...</div>
+      <div className="space-y-6">
+        <Card className="animate-pulse">
+          <CardHeader>
+            <div className="h-8 bg-muted rounded w-1/3" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="h-12 bg-muted rounded" />
+              <div className="h-12 bg-muted rounded" />
+              <div className="h-12 bg-muted rounded" />
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -58,9 +79,9 @@ export const PortalFaqList = () => {
   return (
     <div className="space-y-6">
       {faqGroups?.map((group) => (
-        <Card key={group.id} className="border border-border/40">
+        <Card key={group.id}>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
+            <CardTitle className="flex items-center gap-2">
               <HelpCircle className="h-5 w-5 text-purple" />
               {group.name}
             </CardTitle>
