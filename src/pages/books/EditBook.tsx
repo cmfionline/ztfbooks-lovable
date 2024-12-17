@@ -2,10 +2,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Book } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import { BookForm } from "@/components/books/BookForm";
 import type { BookFormValues } from "./schema";
 import { useQuery } from "@tanstack/react-query";
+import { BookLoadingState } from "@/components/books/BookLoadingState";
+import { BookErrorBoundary } from "@/components/books/BookErrorBoundary";
 
 const EditBook = () => {
   const { id } = useParams();
@@ -35,7 +37,6 @@ const EditBook = () => {
         throw error;
       }
 
-      // Transform snake_case to camelCase for form values
       const formData: Partial<BookFormValues> = {
         title: data.title,
         seriesId: data.series_id,
@@ -61,26 +62,32 @@ const EditBook = () => {
       let coverImagePath = book?.coverImage;
       let epubFilePath = book?.epubFile;
 
-      if (values.coverImage && values.coverImage !== book?.coverImage) {
+      // Handle cover image upload if a new file is selected
+      if (values.coverImage && values.coverImage instanceof File) {
         const { data: coverData, error: coverError } = await supabase.storage
           .from("books")
-          .upload(`covers/${Date.now()}-${values.coverImage.name}`, values.coverImage);
+          .upload(`covers/${Date.now()}-${values.coverImage.name}`, values.coverImage, {
+            upsert: true
+          });
 
         if (coverError) throw coverError;
         coverImagePath = coverData.path;
       }
 
-      if (values.epubFile && values.epubFile !== book?.epubFile) {
+      // Handle epub file upload if a new file is selected
+      if (values.epubFile && values.epubFile instanceof File) {
         const { data: epubData, error: epubError } = await supabase.storage
           .from("books")
-          .upload(`epubs/${Date.now()}-${values.epubFile.name}`, values.epubFile);
+          .upload(`epubs/${Date.now()}-${values.epubFile.name}`, values.epubFile, {
+            upsert: true
+          });
 
         if (epubError) throw epubError;
         epubFilePath = epubData.path;
       }
 
-      // Transform camelCase back to snake_case for database
-      const { error } = await supabase
+      // Update book data
+      const { error: updateError } = await supabase
         .from("books")
         .update({
           title: values.title,
@@ -95,10 +102,11 @@ const EditBook = () => {
           epub_file: epubFilePath,
           publication_date: values.publicationDate?.toISOString().split('T')[0],
           page_count: values.pageCount,
+          updated_at: new Date().toISOString(),
         })
         .eq("id", id);
 
-      if (error) throw error;
+      if (updateError) throw updateError;
 
       // Update book tags
       if (values.tags) {
@@ -159,42 +167,31 @@ const EditBook = () => {
   }
 
   if (isLoading) {
-    return (
+    return <BookLoadingState />;
+  }
+
+  return (
+    <BookErrorBoundary>
       <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
         <div className="max-w-5xl mx-auto">
           <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
             <CardHeader>
               <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
                 <Book className="w-6 h-6" />
-                Loading...
+                Edit Book
               </CardTitle>
             </CardHeader>
+            <CardContent>
+              <BookForm 
+                onSubmit={handleSubmit}
+                initialData={book}
+                submitLabel="Update Book"
+              />
+            </CardContent>
           </Card>
         </div>
       </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
-      <div className="max-w-5xl mx-auto">
-        <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
-              <Book className="w-6 h-6" />
-              Edit Book
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <BookForm 
-              onSubmit={handleSubmit}
-              initialData={book}
-              submitLabel="Update Book"
-            />
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+    </BookErrorBoundary>
   );
 };
 
