@@ -1,7 +1,6 @@
 import { Control } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { PlusCircle, Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { PlusCircle } from "lucide-react";
 import {
   FormControl,
   FormField,
@@ -9,7 +8,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -43,6 +41,7 @@ export const SeriesField = ({ control, series = [] }: SeriesFieldProps) => {
           <Select 
             onValueChange={field.onChange} 
             value={field.value || ""}
+            defaultValue=""
           >
             <FormControl>
               <SelectTrigger className="border-purple-light focus:border-purple">
@@ -51,7 +50,7 @@ export const SeriesField = ({ control, series = [] }: SeriesFieldProps) => {
             </FormControl>
             <SelectContent>
               <SelectItem value="">None</SelectItem>
-              {series.map((item) => (
+              {series?.map((item) => (
                 <SelectItem key={item.value} value={item.value}>
                   {item.label}
                 </SelectItem>
