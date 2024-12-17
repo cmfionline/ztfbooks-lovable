@@ -25,7 +25,7 @@ export const BookForm = ({
   submitLabel = "Save Book",
 }: BookFormProps) => {
   const { toast } = useToast();
-  const { series, authors, publishers, tags, languages, isLoading } = useBookFormData({
+  const { series = [], authors = [], publishers = [], tags = [], languages = [], isLoading } = useBookFormData({
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -77,21 +77,21 @@ export const BookForm = ({
             <div className="space-y-4">
               <BookBasicInfo
                 control={form.control}
-                series={series || []}
-                languages={languages || []}
+                series={series}
+                languages={languages}
               />
               <BookFiles control={form.control} />
             </div>
             <div className="space-y-4">
               <BookMetadata
                 control={form.control}
-                authors={authors || []}
-                publishers={publishers || []}
+                authors={authors}
+                publishers={publishers}
               />
               <BookTags
                 selectedTags={form.watch("tags") || []}
                 setSelectedTags={(tags) => form.setValue("tags", tags)}
-                tags={tags || []}
+                tags={tags}
               />
             </div>
           </div>

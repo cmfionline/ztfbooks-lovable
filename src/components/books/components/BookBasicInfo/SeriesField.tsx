@@ -43,11 +43,11 @@ export const SeriesField = ({ control, series = [] }: SeriesFieldProps) => {
             value={field.value || ""}
           >
             <FormControl>
-              <SelectTrigger className="border-purple-light focus:border-purple">
+              <SelectTrigger className="border-purple-light focus:border-purple bg-white">
                 <SelectValue placeholder="Select series" />
               </SelectTrigger>
             </FormControl>
-            <SelectContent>
+            <SelectContent className="bg-white">
               <SelectItem value="">None</SelectItem>
               {series.map((item) => (
                 <SelectItem key={item.value} value={item.value}>

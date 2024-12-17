@@ -1,7 +1,6 @@
 import { Control } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { PlusCircle, Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { PlusCircle } from "lucide-react";
 import {
   FormControl,
   FormField,
@@ -9,19 +8,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface LanguageFieldProps {
   control: Control<any>;
@@ -45,48 +38,23 @@ export const LanguageField = ({ control, languages = [] }: LanguageFieldProps) =
               Add Language
             </Link>
           </div>
-          <Popover>
-            <PopoverTrigger asChild>
-              <FormControl>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  className={cn(
-                    "w-full justify-between border-purple-light focus:border-purple",
-                    !field.value && "text-muted-foreground"
-                  )}
-                >
-                  {field.value
-                    ? languages.find((item) => item.value === field.value)?.label
-                    : "Select language"}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </FormControl>
-            </PopoverTrigger>
-            <PopoverContent className="w-full p-0">
-              <Command>
-                <CommandInput placeholder="Search languages..." />
-                <CommandEmpty>No language found.</CommandEmpty>
-                <CommandGroup>
-                  {languages.map((item) => (
-                    <CommandItem
-                      key={item.value}
-                      value={item.value}
-                      onSelect={() => field.onChange(item.value)}
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          field.value === item.value ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                      {item.label}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
+          <Select 
+            onValueChange={field.onChange} 
+            value={field.value || ""}
+          >
+            <FormControl>
+              <SelectTrigger className="border-purple-light focus:border-purple bg-white">
+                <SelectValue placeholder="Select language" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent className="bg-white">
+              {languages.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <FormMessage />
         </FormItem>
       )}
