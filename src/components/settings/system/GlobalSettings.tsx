@@ -205,53 +205,55 @@ export const GlobalSettings = () => {
 
   return (
     <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
-      <CardHeader>
+      <CardHeader className="pb-4">
         <CardTitle>Global Configuration</CardTitle>
         <CardDescription>Manage your global system settings</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="site_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Site Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} className="max-w-md" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="contact_email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Support Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" {...field} className="max-w-md" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="support_phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Support Phone</FormLabel>
-                  <FormControl>
-                    <Input {...field} className="max-w-md" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="site_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm">Site Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} className="h-9" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="contact_email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm">Support Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" {...field} className="h-9" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="support_phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm">Support Phone</FormLabel>
+                    <FormControl>
+                      <Input {...field} className="h-9" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
               <LogoUploadSection
                 type="admin"
                 logoUrl={settings?.logos?.admin}
@@ -265,8 +267,8 @@ export const GlobalSettings = () => {
             </div>
             <Button 
               type="submit" 
-              className="bg-purple hover:bg-purple-dark text-white"
-              disabled={form.formState.isSubmitting}
+              className="bg-purple hover:bg-purple-dark text-white mt-4"
+              disabled={form.formState.isSubmitting || !form.formState.isDirty}
             >
               {form.formState.isSubmitting ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />

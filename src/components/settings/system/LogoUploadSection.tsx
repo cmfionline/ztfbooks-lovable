@@ -9,8 +9,8 @@ interface LogoUploadSectionProps {
 
 export const LogoUploadSection = ({ type, logoUrl, onUpload }: LogoUploadSectionProps) => {
   return (
-    <div>
-      <FormLabel>{type === 'admin' ? 'Admin Portal Logo' : 'Client Portal Logo'}</FormLabel>
+    <div className="space-y-2">
+      <FormLabel className="text-sm">{type === 'admin' ? 'Admin Portal Logo' : 'Client Portal Logo'}</FormLabel>
       <Input
         type="file"
         accept="image/*"
@@ -18,13 +18,13 @@ export const LogoUploadSection = ({ type, logoUrl, onUpload }: LogoUploadSection
           const file = e.target.files?.[0];
           if (file) onUpload(file, type);
         }}
-        className="max-w-md border-purple-light focus:border-purple file:bg-purple file:text-white file:border-0 file:rounded-md file:px-4 file:py-2 hover:file:bg-purple/90"
+        className="h-9 border-purple-light focus:border-purple file:bg-purple file:text-white file:border-0 file:rounded-md file:px-3 file:py-1 hover:file:bg-purple/90"
       />
       {logoUrl && (
         <img 
           src={logoUrl} 
           alt={`${type === 'admin' ? 'Admin' : 'Client'} Logo`} 
-          className="h-12 w-auto object-contain mt-2"
+          className="h-10 w-auto object-contain"
         />
       )}
     </div>
