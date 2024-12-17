@@ -1,163 +1,56 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
 
-export const useBookFormData = (options = {}) => {
-  const { toast } = useToast();
+interface BookFormData {
+  series: { label: string; value: string }[];
+  authors: { label: string; value: string }[];
+  publishers: { label: string; value: string }[];
+  tags: { label: string; value: string }[];
+  languages: { label: string; value: string }[];
+  isLoading: boolean;
+  error: Error | null;
+}
 
-  const { data: seriesData, isLoading: isLoadingSeries } = useQuery({
-    queryKey: ["series"],
-    queryFn: async ({ signal }) => {
-      const { data, error } = await supabase
-        .from("series")
-        .select("*")
-        .order("name")
-        .abortSignal(signal);
-      
-      if (error) {
-        toast({
-          title: "Error fetching series",
-          description: error.message,
-          variant: "destructive",
-        });
-        throw error;
-      }
-      return data || [];
+export const useBookFormData = (options?: {
+  retry?: number;
+  retryDelay?: (attemptIndex: number) => number;
+  staleTime?: number;
+}): BookFormData => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["bookFormData"],
+    queryFn: async () => {
+      const [
+        { data: series },
+        { data: authors },
+        { data: publishers },
+        { data: tags },
+        { data: languages },
+      ] = await Promise.all([
+        supabase.from("series").select("id, name"),
+        supabase.from("authors").select("id, name"),
+        supabase.from("publishers").select("id, name"),
+        supabase.from("tags").select("id, name"),
+        supabase.from("languages").select("id, name"),
+      ]);
+
+      return {
+        series: (series || []).map((s) => ({ label: s.name, value: s.id })),
+        authors: (authors || []).map((a) => ({ label: a.name, value: a.id })),
+        publishers: (publishers || []).map((p) => ({ label: p.name, value: p.id })),
+        tags: (tags || []).map((t) => ({ label: t.name, value: t.id })),
+        languages: (languages || []).map((l) => ({ label: l.name, value: l.id })),
+      };
     },
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    staleTime: 5 * 60 * 1000, // 5 minutes
     ...options,
   });
-
-  const { data: authorsData, isLoading: isLoadingAuthors } = useQuery({
-    queryKey: ["authors"],
-    queryFn: async ({ signal }) => {
-      const { data, error } = await supabase
-        .from("authors")
-        .select("*")
-        .order("name")
-        .abortSignal(signal);
-      
-      if (error) {
-        toast({
-          title: "Error fetching authors",
-          description: error.message,
-          variant: "destructive",
-        });
-        throw error;
-      }
-      return data || [];
-    },
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    staleTime: 5 * 60 * 1000,
-    ...options,
-  });
-
-  const { data: publishersData, isLoading: isLoadingPublishers } = useQuery({
-    queryKey: ["publishers"],
-    queryFn: async ({ signal }) => {
-      const { data, error } = await supabase
-        .from("publishers")
-        .select("*")
-        .order("name")
-        .abortSignal(signal);
-      
-      if (error) {
-        toast({
-          title: "Error fetching publishers",
-          description: error.message,
-          variant: "destructive",
-        });
-        throw error;
-      }
-      return data || [];
-    },
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    staleTime: 5 * 60 * 1000,
-    ...options,
-  });
-
-  const { data: tagsData, isLoading: isLoadingTags } = useQuery({
-    queryKey: ["tags"],
-    queryFn: async ({ signal }) => {
-      const { data, error } = await supabase
-        .from("tags")
-        .select("*")
-        .order("name")
-        .abortSignal(signal);
-      
-      if (error) {
-        toast({
-          title: "Error fetching tags",
-          description: error.message,
-          variant: "destructive",
-        });
-        throw error;
-      }
-      return data || [];
-    },
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    staleTime: 5 * 60 * 1000,
-    ...options,
-  });
-
-  const { data: languagesData, isLoading: isLoadingLanguages } = useQuery({
-    queryKey: ["languages"],
-    queryFn: async ({ signal }) => {
-      const { data, error } = await supabase
-        .from("languages")
-        .select("*")
-        .order("name")
-        .abortSignal(signal);
-      
-      if (error) {
-        toast({
-          title: "Error fetching languages",
-          description: error.message,
-          variant: "destructive",
-        });
-        throw error;
-      }
-      return data || [];
-    },
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    staleTime: 5 * 60 * 1000,
-    ...options,
-  });
-
-  const isLoading = 
-    isLoadingSeries || 
-    isLoadingAuthors || 
-    isLoadingPublishers || 
-    isLoadingTags || 
-    isLoadingLanguages;
 
   return {
-    series: (seriesData || []).map((item) => ({
-      label: item.name,
-      value: item.id,
-    })),
-    authors: (authorsData || []).map((item) => ({
-      label: item.name,
-      value: item.id,
-    })),
-    publishers: (publishersData || []).map((item) => ({
-      label: item.name,
-      value: item.id,
-    })),
-    tags: (tagsData || []).map((item) => ({
-      label: item.name,
-      value: item.id,
-    })),
-    languages: (languagesData || []).map((item) => ({
-      label: `${item.name} (${item.code})`,
-      value: item.id,
-    })),
+    series: data?.series || [],
+    authors: data?.authors || [],
+    publishers: data?.publishers || [],
+    tags: data?.tags || [],
+    languages: data?.languages || [],
     isLoading,
+    error: error as Error | null,
   };
 };
