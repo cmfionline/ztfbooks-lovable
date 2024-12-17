@@ -67,30 +67,64 @@ export function RichTextEditor({
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-1 bg-white p-1 border rounded-md">
-        <Toggle size="sm" onClick={() => handleFormat('b')} aria-label="Toggle bold">
-          <Bold className="h-4 w-4" />
+        <Toggle 
+          size="sm" 
+          onClick={() => handleFormat('b')} 
+          aria-label="Toggle bold"
+          className="hover:bg-purple/20 data-[state=on]:bg-purple/20 data-[state=on]:text-purple"
+        >
+          <Bold className="h-5 w-5" />
         </Toggle>
-        <Toggle size="sm" onClick={() => handleFormat('i')} aria-label="Toggle italic">
-          <Italic className="h-4 w-4" />
+        <Toggle 
+          size="sm" 
+          onClick={() => handleFormat('i')} 
+          aria-label="Toggle italic"
+          className="hover:bg-purple/20 data-[state=on]:bg-purple/20 data-[state=on]:text-purple"
+        >
+          <Italic className="h-5 w-5" />
         </Toggle>
-        <Toggle size="sm" onClick={() => handleFormat('ul')} aria-label="Toggle list">
-          <List className="h-4 w-4" />
+        <Toggle 
+          size="sm" 
+          onClick={() => handleFormat('ul')} 
+          aria-label="Toggle list"
+          className="hover:bg-purple/20 data-[state=on]:bg-purple/20 data-[state=on]:text-purple"
+        >
+          <List className="h-5 w-5" />
         </Toggle>
         <Separator orientation="vertical" className="mx-1 h-6" />
-        <Toggle size="sm" onClick={() => handleFormat('div class="text-left"')} aria-label="Align left">
-          <AlignLeft className="h-4 w-4" />
+        <Toggle 
+          size="sm" 
+          onClick={() => handleFormat('div class="text-left"')} 
+          aria-label="Align left"
+          className="hover:bg-purple/20 data-[state=on]:bg-purple/20 data-[state=on]:text-purple"
+        >
+          <AlignLeft className="h-5 w-5" />
         </Toggle>
-        <Toggle size="sm" onClick={() => handleFormat('div class="text-center"')} aria-label="Align center">
-          <AlignCenter className="h-4 w-4" />
+        <Toggle 
+          size="sm" 
+          onClick={() => handleFormat('div class="text-center"')} 
+          aria-label="Align center"
+          className="hover:bg-purple/20 data-[state=on]:bg-purple/20 data-[state=on]:text-purple"
+        >
+          <AlignCenter className="h-5 w-5" />
         </Toggle>
-        <Toggle size="sm" onClick={() => handleFormat('div class="text-right"')} aria-label="Align right">
-          <AlignRight className="h-4 w-4" />
+        <Toggle 
+          size="sm" 
+          onClick={() => handleFormat('div class="text-right"')} 
+          aria-label="Align right"
+          className="hover:bg-purple/20 data-[state=on]:bg-purple/20 data-[state=on]:text-purple"
+        >
+          <AlignRight className="h-5 w-5" />
         </Toggle>
         <Separator orientation="vertical" className="mx-1 h-6" />
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 px-2">
-              <Link className="h-4 w-4" />
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-8 px-2 hover:bg-purple/20 hover:text-purple"
+            >
+              <Link className="h-5 w-5" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-80">
@@ -99,10 +133,11 @@ export function RichTextEditor({
                 placeholder="Enter URL"
                 value={linkUrl}
                 onChange={(e) => setLinkUrl(e.target.value)}
+                className="border-gray-200 focus:border-purple"
               />
               <Button 
                 onClick={() => handleFormat('link')}
-                className="bg-purple hover:bg-purple/90"
+                className="bg-purple hover:bg-purple/90 text-white"
               >
                 Insert Link
               </Button>
@@ -115,7 +150,7 @@ export function RichTextEditor({
         onChange={handleChange}
         onSelect={handleSelection}
         className={cn(
-          "flex min-h-[200px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex min-h-[200px] w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 ring-offset-background placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         placeholder={placeholder}
