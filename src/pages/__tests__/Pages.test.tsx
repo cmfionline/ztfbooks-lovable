@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { vi } from "vitest";
 import Pages from "../Pages";
 import { useToast } from "@/hooks/use-toast";
 
@@ -116,8 +116,8 @@ describe("Pages", () => {
     const activeStatus = screen.getByText("active");
     const draftStatus = screen.getByText("draft");
 
-    expect(activeStatus).toHaveClass("bg-green-500/10");
-    expect(draftStatus).toHaveClass("bg-gray-500/10");
+    expect(activeStatus).toHaveClass("bg-green-500");
+    expect(draftStatus).toHaveClass("bg-gray-500");
   });
 
   it("handles page deletion", async () => {

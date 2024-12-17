@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { vi } from "vitest";
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import PageForm from "../PageForm";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
@@ -98,8 +98,10 @@ describe("PageForm", () => {
       id: "1",
       title: "Existing Page",
       content: "Existing Content",
-      status: "active",
+      status: "active" as const,
       order_index: 1,
+      created_at: "2024-01-01T00:00:00Z",
+      updated_at: "2024-01-01T00:00:00Z"
     };
 
     (supabase.from as any)().update.mockResolvedValue({ error: null });
