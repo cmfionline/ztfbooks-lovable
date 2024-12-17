@@ -8,12 +8,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { getAllLanguages, formatLanguageLabel } from "@/utils/languages";
 
 interface BookBasicInfoProps {
@@ -51,21 +59,45 @@ export const BookBasicInfo = ({
         render={({ field }) => (
           <FormItem>
             <FormLabel className="text-primary">Series</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value || "null"}>
-              <FormControl>
-                <SelectTrigger className="border-purple-light focus:border-purple bg-white text-gray-900">
-                  <SelectValue placeholder="Select a series" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="null">None</SelectItem>
-                {series.map((item) => (
-                  <SelectItem key={item.value} value={item.value}>
-                    {item.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Popover>
+              <PopoverTrigger asChild>
+                <FormControl>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    className="w-full justify-between border-purple-light focus:border-purple"
+                  >
+                    {field.value
+                      ? series.find((series) => series.value === field.value)?.label
+                      : "Select series"}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </FormControl>
+              </PopoverTrigger>
+              <PopoverContent className="w-full p-0">
+                <Command>
+                  <CommandInput placeholder="Search series..." />
+                  <CommandEmpty>No series found.</CommandEmpty>
+                  <CommandGroup>
+                    {series.map((item) => (
+                      <CommandItem
+                        key={item.value}
+                        value={item.value}
+                        onSelect={() => field.onChange(item.value)}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            field.value === item.value ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        {item.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </Command>
+              </PopoverContent>
+            </Popover>
             <FormMessage />
           </FormItem>
         )}
@@ -77,20 +109,48 @@ export const BookBasicInfo = ({
         render={({ field }) => (
           <FormItem>
             <FormLabel className="text-primary">Language</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value || ""}>
-              <FormControl>
-                <SelectTrigger className="border-purple-light focus:border-purple bg-white text-gray-900">
-                  <SelectValue placeholder="Select a language" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {availableLanguages.map((lang) => (
-                  <SelectItem key={lang.code} value={lang.code}>
-                    {formatLanguageLabel(lang.name, lang.code)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Popover>
+              <PopoverTrigger asChild>
+                <FormControl>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    className="w-full justify-between border-purple-light focus:border-purple"
+                  >
+                    {field.value
+                      ? formatLanguageLabel(
+                          availableLanguages.find((lang) => lang.code === field.value)?.name || "",
+                          field.value
+                        )
+                      : "Select language"}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </FormControl>
+              </PopoverTrigger>
+              <PopoverContent className="w-full p-0">
+                <Command>
+                  <CommandInput placeholder="Search languages..." />
+                  <CommandEmpty>No language found.</CommandEmpty>
+                  <CommandGroup>
+                    {availableLanguages.map((lang) => (
+                      <CommandItem
+                        key={lang.code}
+                        value={lang.code}
+                        onSelect={() => field.onChange(lang.code)}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            field.value === lang.code ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        {formatLanguageLabel(lang.name, lang.code)}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </Command>
+              </PopoverContent>
+            </Popover>
             <FormMessage />
           </FormItem>
         )}

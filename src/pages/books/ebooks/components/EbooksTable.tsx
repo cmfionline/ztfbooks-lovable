@@ -25,6 +25,7 @@ export const EbooksTable = ({
           <TableHead>Publisher</TableHead>
           <TableHead>Series</TableHead>
           <TableHead>Price</TableHead>
+          <TableHead>Featured</TableHead>
           <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
