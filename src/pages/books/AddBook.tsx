@@ -50,10 +50,9 @@ const AddBook = () => {
             epub_file: epubFilePath,
             publication_date: values.publicationDate?.toISOString().split('T')[0],
             page_count: values.pageCount,
-            discount_percentage: values.discount_percentage,
-            discount_start_date: values.discount_start_date,
-            discount_end_date: values.discount_end_date,
-            is_featured_discount: values.is_featured_discount,
+            discount_percentage: values.hasDiscount ? values.discount_percentage : null,
+            discount_start_date: values.hasDiscount ? values.discount_start_date : null,
+            discount_end_date: values.hasDiscount ? values.discount_end_date : null,
           },
         ]);
 
