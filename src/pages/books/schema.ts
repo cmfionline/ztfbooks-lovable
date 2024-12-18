@@ -19,9 +19,17 @@ export const bookSchema = z.object({
       if (typeof val === 'undefined' || val === null) return true;
       return val >= 0;
     }, "Price must be greater than or equal to 0"),
-  discount_percentage: z.number().min(0).max(100).optional().nullable(),
+  discount_percentage: z.number().min(0).max(100).optional().nullable()
+    .refine((val) => {
+      if (typeof val === 'undefined' || val === null) return true;
+      return val >= 0 && val <= 100;
+    }, "Discount percentage must be between 0 and 100"),
   discount_start_date: z.date().optional().nullable(),
-  discount_end_date: z.date().optional().nullable(),
+  discount_end_date: z.date().optional().nullable()
+    .refine((val, ctx) => {
+      if (!val || !ctx.data.discount_start_date) return true;
+      return val > ctx.data.discount_start_date;
+    }, "End date must be after start date"),
   is_featured_discount: z.boolean().optional().default(false),
   tags: z.array(z.string().uuid()).optional().default([]),
 });
