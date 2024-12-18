@@ -42,6 +42,17 @@ export const EbookTableRow = ({
     }
   };
 
+  const isDiscountActive = book.discount_percentage && 
+    book.discount_start_date && 
+    book.discount_end_date &&
+    new Date(book.discount_start_date) <= new Date() &&
+    new Date(book.discount_end_date) >= new Date();
+
+  const getDiscountedPrice = () => {
+    if (!isDiscountActive || !book.price || !book.discount_percentage) return null;
+    return book.price - (book.price * book.discount_percentage / 100);
+  };
+
   return (
     <TableRow key={book.id}>
       <TableCell>
@@ -64,7 +75,31 @@ export const EbookTableRow = ({
       <TableCell>{book.languages?.name || "N/A"}</TableCell>
       <TableCell>{book.publishers?.name || "N/A"}</TableCell>
       <TableCell>{book.series?.name || "N/A"}</TableCell>
-      <TableCell>{book.is_free ? "Free" : formatPrice(book.price)}</TableCell>
+      <TableCell>
+        {book.is_free ? (
+          <span className="text-green-600 font-medium">Free</span>
+        ) : (
+          <div className="space-y-1">
+            {isDiscountActive ? (
+              <>
+                <div className="text-gray-500 line-through text-sm">
+                  {formatPrice(book.price)}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-600 font-medium">
+                    {formatPrice(getDiscountedPrice())}
+                  </span>
+                  <span className="text-purple-600 text-sm font-medium">
+                    (-{book.discount_percentage}%)
+                  </span>
+                </div>
+              </>
+            ) : (
+              <span>{formatPrice(book.price)}</span>
+            )}
+          </div>
+        )}
+      </TableCell>
       <TableCell>
         <div className="flex items-center space-x-2">
           <Switch
