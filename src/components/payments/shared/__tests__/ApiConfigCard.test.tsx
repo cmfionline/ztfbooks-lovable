@@ -41,7 +41,7 @@ describe('ApiConfigCard', () => {
 
   it('handles API key submission successfully', async () => {
     const mockToast = vi.fn();
-    (useToast as jest.Mock).mockReturnValue({ toast: mockToast });
+    (useToast as ReturnType<typeof vi.fn>).mockReturnValue({ toast: mockToast });
     
     render(<ApiConfigCard {...defaultProps} />);
     
@@ -62,7 +62,7 @@ describe('ApiConfigCard', () => {
 
   it('handles API key submission error', async () => {
     const mockToast = vi.fn();
-    (useToast as jest.Mock).mockReturnValue({ toast: mockToast });
+    (useToast as ReturnType<typeof vi.fn>).mockReturnValue({ toast: mockToast });
     
     vi.mocked(supabase.from).mockReturnValue({
       update: vi.fn().mockReturnThis(),
