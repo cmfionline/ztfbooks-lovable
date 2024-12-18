@@ -12,6 +12,7 @@ import { BookOpen, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SeriesFormFields } from "./components/SeriesFormFields";
+import { EditBookError } from "../components/EditBookError";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -40,7 +41,9 @@ const EditSeries = () => {
   const { data: series, isLoading, error } = useQuery({
     queryKey: ["series", id],
     queryFn: async () => {
-      if (!id) throw new Error("Series ID is required");
+      if (!id || !/^[0-9a-fA-F-]{36}$/.test(id)) {
+        throw new Error("Invalid series ID format");
+      }
 
       const { data, error } = await supabase
         .from("series")
@@ -50,11 +53,6 @@ const EditSeries = () => {
 
       if (error) {
         console.error("Error fetching series:", error);
-        toast({
-          variant: "destructive",
-          title: "Error fetching series",
-          description: error.message,
-        });
         throw error;
       }
 
@@ -86,11 +84,12 @@ const EditSeries = () => {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      if (!id) throw new Error("Series ID is required");
+      if (!id || !/^[0-9a-fA-F-]{36}$/.test(id)) {
+        throw new Error("Invalid series ID format");
+      }
 
       let imagePath = series?.image;
 
-      // Handle image upload if a new file is selected
       if (values.image instanceof File) {
         const fileExt = values.image.name.split('.').pop();
         const fileName = `${id}-${Date.now()}.${fileExt}`;
@@ -137,19 +136,7 @@ const EditSeries = () => {
   };
 
   if (error) {
-    return (
-      <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
-        <div className="max-w-2xl mx-auto">
-          <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
-            <CardContent className="p-6">
-              <div className="text-center text-red-500">
-                Error loading series: {error.message}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
+    return <EditBookError error={error} />;
   }
 
   if (isLoading) {
