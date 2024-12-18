@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Index from '../Index';
-import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
 
 // Mock the modules
 vi.mock('@tanstack/react-query', async () => {
@@ -25,15 +25,16 @@ vi.mock('@/lib/supabase', () => ({
     from: vi.fn(() => ({
       select: vi.fn().mockReturnThis(),
       order: vi.fn().mockReturnThis(),
-      data: [
-        {
+      limit: vi.fn().mockReturnThis(),
+      abortSignal: vi.fn().mockReturnThis(),
+      single: vi.fn().mockResolvedValue({
+        data: {
           total_revenue: 1000,
           total_sales: 50,
           total_orders: 25,
         },
-      ],
-      limit: vi.fn().mockReturnThis(),
-      abortSignal: vi.fn().mockReturnThis(),
+        error: null,
+      }),
     })),
   },
 }));
@@ -113,9 +114,8 @@ describe('Dashboard Page', () => {
       toasts: [],
     });
 
-    const mockError = new Error('Failed to fetch data');
     vi.mocked(supabase.from).mockImplementation(() => {
-      throw mockError;
+      throw new Error('Failed to fetch data');
     });
 
     renderWithProviders(<Index />);
