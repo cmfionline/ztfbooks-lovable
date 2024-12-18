@@ -1,7 +1,4 @@
 import { Control, useWatch } from "react-hook-form";
-import { format } from "date-fns";
-import { CalendarIcon, Percent } from "lucide-react";
-import { cn } from "@/lib/utils";
 import {
   FormControl,
   FormField,
@@ -10,6 +7,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -17,7 +15,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Switch } from "@/components/ui/switch";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface PricingFieldsProps {
   control: Control<any>;
@@ -69,6 +69,7 @@ export const PricingFields = ({ control }: PricingFieldsProps) => {
                   <Input
                     type="number"
                     step="0.01"
+                    min="0"
                     {...field}
                     onChange={(e) => field.onChange(Number(e.target.value))}
                   />
@@ -108,16 +109,13 @@ export const PricingFields = ({ control }: PricingFieldsProps) => {
                   <FormItem>
                     <FormLabel>Discount Percentage</FormLabel>
                     <FormControl>
-                      <div className="relative">
-                        <Input
-                          type="number"
-                          min="0"
-                          max="100"
-                          {...field}
-                          onChange={(e) => field.onChange(Number(e.target.value))}
-                        />
-                        <Percent className="absolute right-3 top-2.5 h-4 w-4 text-gray-500" />
-                      </div>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="100"
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

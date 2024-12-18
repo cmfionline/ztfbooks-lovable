@@ -22,7 +22,7 @@ export const bookSchema = z.object({
   tags: z.array(z.string().uuid()).optional(),
 }).superRefine((data, ctx) => {
   // Validate price for non-free books
-  if (!data.isFree && !data.price) {
+  if (!data.isFree && (data.price === undefined || data.price === null)) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       message: "Price is required for non-free books",
