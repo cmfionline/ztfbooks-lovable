@@ -30,6 +30,26 @@ serve(async (req) => {
       throw new Error('Failed to fetch notification settings')
     }
 
+    let title = ''
+    let message = ''
+
+    switch (type) {
+      case 'new_discount':
+        title = '🎉 New Discount Available!'
+        message = `Save ${variables.discount_value} on ${variables.discount_name}`
+        if (variables.book_titles) {
+          message += `\nBooks included: ${variables.book_titles}`
+        }
+        break
+      case 'new_book':
+        title = '📚 New Book Added!'
+        message = `"${variables.book_title}" by ${variables.author_name} is now available`
+        break
+      default:
+        title = variables.title
+        message = variables.message
+    }
+
     // Send to OneSignal
     const response = await fetch('https://onesignal.com/api/v1/notifications', {
       method: 'POST',
@@ -40,8 +60,8 @@ serve(async (req) => {
       body: JSON.stringify({
         app_id: settings.app_id,
         included_segments: ['All'],
-        headings: { en: variables.title },
-        contents: { en: variables.message },
+        headings: { en: title },
+        contents: { en: message },
         ...(variables.image_url && { big_picture: variables.image_url }),
         isAnyWeb: true,
       }),
