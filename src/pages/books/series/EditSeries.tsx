@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
-import { BookOpen, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SeriesFormFields } from "./components/SeriesFormFields";
@@ -57,12 +57,6 @@ const EditSeries = () => {
       }
 
       if (!data) {
-        toast({
-          variant: "destructive",
-          title: "Series not found",
-          description: "The requested series could not be found.",
-        });
-        navigate("/books/series");
         throw new Error("Series not found");
       }
 
@@ -76,7 +70,7 @@ const EditSeries = () => {
       form.reset({
         name: series.name,
         description: series.description || "",
-        languageId: series.language_id,
+        languageId: series.language_id || undefined,
         image: series.image,
       });
     }
@@ -161,8 +155,7 @@ const EditSeries = () => {
       <div className="max-w-2xl mx-auto">
         <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
-              <BookOpen className="w-6 h-6" />
+            <CardTitle className="text-2xl font-bold text-primary">
               Edit Series
             </CardTitle>
           </CardHeader>
