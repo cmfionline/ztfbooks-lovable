@@ -16,7 +16,6 @@ export const BookMetadataPrice = ({ control }: BookMetadataPriceProps) => {
   const hasDiscount = useWatch({
     control,
     name: "hasDiscount",
-    defaultValue: false,
   });
 
   return (
