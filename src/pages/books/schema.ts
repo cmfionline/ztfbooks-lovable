@@ -27,8 +27,10 @@ export const bookSchema = z.object({
   discount_start_date: z.date().optional().nullable(),
   discount_end_date: z.date().optional().nullable()
     .superRefine((val, ctx) => {
-      if (!val || !ctx.data.discount_start_date) return true;
-      if (new Date(val) <= new Date(ctx.data.discount_start_date)) {
+      const startDate = ctx.parent.discount_start_date;
+      if (!val || !startDate) return true;
+      
+      if (new Date(val) <= new Date(startDate)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "End date must be after start date",
