@@ -8,51 +8,52 @@ describe('StatCard', () => {
       <StatCard
         title="Total Orders"
         value={100}
-        icon="shopping-cart"
+        description="All orders"
       />
     );
     
     expect(screen.getByText('Total Orders')).toBeInTheDocument();
     expect(screen.getByText('100')).toBeInTheDocument();
+    expect(screen.getByText('All orders')).toBeInTheDocument();
   });
 
-  it('renders with percentage change', () => {
+  it('renders with sub value', () => {
     render(
       <StatCard
         title="Total Orders"
         value={100}
-        icon="shopping-cart"
-        percentageChange={15}
+        description="All orders"
+        subValue="15% increase"
       />
     );
     
-    expect(screen.getByText('+15%')).toBeInTheDocument();
+    expect(screen.getByText('15% increase')).toBeInTheDocument();
   });
 
-  it('handles negative percentage change', () => {
+  it('renders with negative sub value', () => {
     render(
       <StatCard
         title="Total Orders"
         value={100}
-        icon="shopping-cart"
-        percentageChange={-10}
+        description="All orders"
+        subValue="-10% decrease"
       />
     );
     
-    expect(screen.getByText('-10%')).toBeInTheDocument();
+    expect(screen.getByText('-10% decrease')).toBeInTheDocument();
   });
 
-  it('renders with custom color', () => {
+  it('renders with custom className', () => {
     render(
       <StatCard
         title="Total Orders"
         value={100}
-        icon="shopping-cart"
-        color="purple"
+        description="All orders"
+        className="custom-class"
       />
     );
     
-    const card = screen.getByTestId('stat-card');
-    expect(card).toHaveClass('bg-purple-50');
+    const card = screen.getByText('Total Orders').closest('.custom-class');
+    expect(card).toBeInTheDocument();
   });
 });

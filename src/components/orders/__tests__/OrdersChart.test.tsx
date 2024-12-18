@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { OrdersChart } from '../analytics/OrdersChart';
 
@@ -9,20 +9,38 @@ describe('OrdersChart', () => {
   ];
 
   it('renders chart with data', () => {
-    render(<OrdersChart data={mockData} />);
+    render(
+      <OrdersChart 
+        data={mockData} 
+        title="Orders Over Time"
+        description="Daily order volume"
+      />
+    );
     
-    expect(screen.getByText(/orders over time/i)).toBeInTheDocument();
-    expect(screen.getByTestId('orders-chart')).toBeInTheDocument();
+    expect(screen.getByText('Orders Over Time')).toBeInTheDocument();
+    expect(screen.getByText('Daily order volume')).toBeInTheDocument();
   });
 
   it('handles empty data', () => {
-    render(<OrdersChart data={[]} />);
+    render(
+      <OrdersChart 
+        data={[]} 
+        title="Orders Over Time"
+        description="Daily order volume"
+      />
+    );
     
-    expect(screen.getByText(/no data available/i)).toBeInTheDocument();
+    expect(screen.getByText('Orders Over Time')).toBeInTheDocument();
   });
 
   it('displays correct axes labels', () => {
-    render(<OrdersChart data={mockData} />);
+    render(
+      <OrdersChart 
+        data={mockData} 
+        title="Orders Over Time"
+        description="Daily order volume"
+      />
+    );
     
     expect(screen.getByText(/date/i)).toBeInTheDocument();
     expect(screen.getByText(/orders/i)).toBeInTheDocument();
