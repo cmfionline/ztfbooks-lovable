@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 
 interface EbookTableRowProps {
   book: Book;
@@ -50,7 +51,7 @@ export const EbookTableRow = ({
 
   const getDiscountedPrice = () => {
     if (!isDiscountActive || !book.price || !book.discount_percentage) return null;
-    return book.price - (book.price * (book.discount_percentage / 100));
+    return book.price - (book.price * book.discount_percentage / 100);
   };
 
   const discountedPrice = getDiscountedPrice();
