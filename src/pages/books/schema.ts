@@ -16,50 +16,55 @@ export const bookSchema = z.object({
   isFree: z.boolean().default(false),
   hasDiscount: z.boolean().default(false),
   price: z.number().min(0).optional()
-    .superRefine((val, ctx) => {
-      const parent = ctx.parent as z.infer<typeof bookSchema>;
-      if (!parent.isFree && !val) {
+    .refine((val, ctx) => {
+      if (!ctx.parent.isFree && !val) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Price is required for non-free books"
         });
+        return false;
       }
+      return true;
     }),
   discount_percentage: z.number().min(0).max(100).optional()
-    .superRefine((val, ctx) => {
-      const parent = ctx.parent as z.infer<typeof bookSchema>;
-      if (parent.hasDiscount && !val) {
+    .refine((val, ctx) => {
+      if (ctx.parent.hasDiscount && !val) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Discount percentage is required when discount is enabled"
         });
+        return false;
       }
+      return true;
     }),
   discount_start_date: z.date().optional()
-    .superRefine((val, ctx) => {
-      const parent = ctx.parent as z.infer<typeof bookSchema>;
-      if (parent.hasDiscount && !val) {
+    .refine((val, ctx) => {
+      if (ctx.parent.hasDiscount && !val) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Start date is required when discount is enabled"
         });
+        return false;
       }
+      return true;
     }),
   discount_end_date: z.date().optional()
-    .superRefine((val, ctx) => {
-      const parent = ctx.parent as z.infer<typeof bookSchema>;
-      if (parent.hasDiscount && !val) {
+    .refine((val, ctx) => {
+      if (ctx.parent.hasDiscount && !val) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "End date is required when discount is enabled"
         });
+        return false;
       }
-      if (val && parent.discount_start_date && val <= parent.discount_start_date) {
+      if (val && ctx.parent.discount_start_date && val <= ctx.parent.discount_start_date) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "End date must be after start date"
         });
+        return false;
       }
+      return true;
     }),
   tags: z.array(z.string().uuid()).optional(),
 });
