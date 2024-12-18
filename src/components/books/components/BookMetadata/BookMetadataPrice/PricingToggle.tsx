@@ -1,49 +1,31 @@
-import { Button } from "@/components/ui/button";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
+import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Switch } from "@/components/ui/switch";
 import { Control } from "react-hook-form";
 
 interface PricingToggleProps {
   control: Control<any>;
+  name: string;
+  label: string;
+  description?: string;
 }
 
-export const PricingToggle = ({ control }: PricingToggleProps) => {
+export const PricingToggle = ({ control, name, label, description }: PricingToggleProps) => {
   return (
     <FormField
       control={control}
-      name="isFree"
+      name={name}
       render={({ field }) => (
-        <FormItem>
-          <FormLabel className="text-primary">Pricing</FormLabel>
+        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+          <div className="space-y-0.5">
+            <FormLabel className="text-primary">{label}</FormLabel>
+            {description && <p className="text-sm text-gray-500">{description}</p>}
+          </div>
           <FormControl>
-            <div className="flex items-center space-x-4">
-              <Button
-                type="button"
-                variant={field.value ? "default" : "outline"}
-                onClick={() => field.onChange(true)}
-                className={cn(
-                  field.value 
-                    ? "bg-purple text-white hover:bg-purple/90" 
-                    : "border-purple-light hover:bg-purple-light/50"
-                )}
-              >
-                Free
-              </Button>
-              <Button
-                type="button"
-                variant={!field.value ? "default" : "outline"}
-                onClick={() => field.onChange(false)}
-                className={cn(
-                  !field.value 
-                    ? "bg-purple text-white hover:bg-purple/90" 
-                    : "border-purple-light hover:bg-purple-light/50"
-                )}
-              >
-                Paid
-              </Button>
-            </div>
+            <Switch
+              checked={field.value}
+              onCheckedChange={field.onChange}
+            />
           </FormControl>
-          <FormMessage />
         </FormItem>
       )}
     />

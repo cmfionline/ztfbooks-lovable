@@ -1,11 +1,15 @@
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, Percent } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Control } from "react-hook-form";
 
 interface DiscountFieldsProps {
@@ -14,7 +18,7 @@ interface DiscountFieldsProps {
 
 export const DiscountFields = ({ control }: DiscountFieldsProps) => {
   return (
-    <>
+    <div className="space-y-4">
       <FormField
         control={control}
         name="discount_percentage"
@@ -124,6 +128,6 @@ export const DiscountFields = ({ control }: DiscountFieldsProps) => {
           )}
         />
       </div>
-    </>
+    </div>
   );
 };

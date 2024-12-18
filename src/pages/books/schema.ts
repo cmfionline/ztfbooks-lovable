@@ -14,6 +14,7 @@ export const bookSchema = z.object({
   publicationDate: z.date().optional().nullable(),
   pageCount: z.number().int().positive().optional().nullable(),
   isFree: z.boolean().default(false),
+  hasDiscount: z.boolean().default(false),
   price: z.number().min(0).optional().nullable()
     .refine((val) => {
       if (typeof val === 'undefined' || val === null) return true;
@@ -29,7 +30,7 @@ export const bookSchema = z.object({
   is_featured_discount: z.boolean().optional().default(false),
   tags: z.array(z.string().uuid()).optional().default([]),
 }).refine((data) => {
-  if (!data.discount_end_date || !data.discount_start_date) return true;
+  if (!data.hasDiscount || !data.discount_end_date || !data.discount_start_date) return true;
   return new Date(data.discount_end_date) > new Date(data.discount_start_date);
 }, {
   message: "End date must be after start date",
