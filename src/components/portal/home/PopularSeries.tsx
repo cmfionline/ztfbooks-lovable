@@ -25,7 +25,7 @@ export const PopularSeries = () => {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {[...Array(6)].map((_, i) => (
-          <Skeleton key={i} className="aspect-[2/3] rounded-lg" />
+          <Skeleton key={i} className="aspect-[21/9] rounded-lg" />
         ))}
       </div>
     );
@@ -47,17 +47,17 @@ export const PopularSeries = () => {
               <img
                 src={imageUrl}
                 alt={series.name}
-                className="aspect-[2/3] w-full object-cover"
+                className="aspect-[21/9] w-full object-cover"
               />
             ) : (
-              <div className="flex aspect-[2/3] w-full items-center justify-center bg-muted">
-                <Library className="h-12 w-12 text-muted-foreground" />
+              <div className="flex aspect-[21/9] w-full items-center justify-center bg-muted">
+                <Library className="h-8 w-8 text-muted-foreground" />
               </div>
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-              <div className="absolute bottom-0 p-4 text-white">
-                <h3 className="font-semibold line-clamp-2">{series.name}</h3>
-                <p className="text-sm text-white/80">{series.languages?.name}</p>
+              <div className="absolute bottom-0 p-2 text-white">
+                <h3 className="text-sm font-semibold line-clamp-1">{series.name}</h3>
+                <p className="text-xs text-white/80">{series.languages?.name}</p>
               </div>
             </div>
           </Card>
