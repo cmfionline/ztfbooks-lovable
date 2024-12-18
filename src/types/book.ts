@@ -16,6 +16,10 @@ export interface Book {
   updated_at: string;
   is_featured?: boolean;
   is_top_selling?: boolean;
+  discount_percentage?: number;
+  discount_start_date?: string;
+  discount_end_date?: string;
+  is_featured_discount?: boolean;
   authors: {
     name: string;
   };
@@ -24,7 +28,7 @@ export interface Book {
   };
   languages: {
     name: string;
-    code?: string; // Made code optional to match the actual data
+    code?: string;
   };
   publishers?: {
     name: string;
