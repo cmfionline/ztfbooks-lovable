@@ -69,6 +69,7 @@ describe('Dashboard Page', () => {
 
   it('displays revenue metrics when data is loaded', async () => {
     renderWithProviders(<Index />);
+    
     await waitFor(() => {
       expect(screen.getByText('Total Revenue')).toBeInTheDocument();
       expect(screen.getByText('Total Sales')).toBeInTheDocument();
@@ -78,6 +79,7 @@ describe('Dashboard Page', () => {
 
   it('displays best selling books section', async () => {
     renderWithProviders(<Index />);
+    
     await waitFor(() => {
       expect(screen.getByText('Best Selling Books')).toBeInTheDocument();
     });

@@ -58,6 +58,7 @@ describe("Support Page", () => {
 
   it("shows ticket statistics cards", async () => {
     renderWithProviders(<SupportPage />);
+    
     await waitFor(() => {
       expect(screen.getByText("Total Tickets")).toBeInTheDocument();
       expect(screen.getByText("Open Tickets")).toBeInTheDocument();
