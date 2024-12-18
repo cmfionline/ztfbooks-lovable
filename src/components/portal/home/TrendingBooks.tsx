@@ -34,10 +34,10 @@ export const TrendingBooks = () => {
       <div className="grid grid-cols-1 gap-3">
         {[...Array(2)].map((_, i) => (
           <div key={i} className="flex gap-2">
-            <Skeleton className="aspect-[4/2.5] w-1/2 h-[200px]" />
+            <Skeleton className="aspect-[2.5/4] w-1/2 h-[300px]" />
             <div className="grid grid-cols-2 gap-2 w-1/2">
               {[...Array(4)].map((_, j) => (
-                <Skeleton key={j} className="aspect-[4/2.5] h-[97px]" />
+                <Skeleton key={j} className="aspect-[2.5/4] h-[147px]" />
               ))}
             </div>
           </div>
@@ -66,17 +66,17 @@ export const TrendingBooks = () => {
           <CarouselItem key={groupIndex} className="pl-2 basis-full lg:basis-[49%]">
             <div className="flex gap-2">
               {/* Large featured book */}
-              <Card className="w-1/2 group relative overflow-hidden h-[200px]">
+              <Card className="w-1/2 group relative overflow-hidden">
                 {group[0] && (
                   <>
                     {group[0].cover_image ? (
                       <img
                         src={supabase.storage.from('books').getPublicUrl(group[0].cover_image).data.publicUrl}
                         alt={group[0].title}
-                        className="h-full w-full object-cover aspect-[4/2.5] transition-transform group-hover:scale-105"
+                        className="h-full w-full object-cover aspect-[2.5/4] transition-transform group-hover:scale-105"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-muted aspect-[4/2.5]">
+                      <div className="flex h-full w-full items-center justify-center bg-muted aspect-[2.5/4]">
                         <Book className="h-6 w-6 text-muted-foreground" />
                       </div>
                     )}
@@ -93,15 +93,15 @@ export const TrendingBooks = () => {
               {/* Grid of 4 smaller books */}
               <div className="grid grid-cols-2 gap-2 w-1/2">
                 {group.slice(1).map((book) => (
-                  <Card key={book.id} className="group relative overflow-hidden h-[97px]">
+                  <Card key={book.id} className="group relative overflow-hidden">
                     {book.cover_image ? (
                       <img
                         src={supabase.storage.from('books').getPublicUrl(book.cover_image).data.publicUrl}
                         alt={book.title}
-                        className="h-full w-full object-cover aspect-[4/2.5] transition-transform group-hover:scale-105"
+                        className="h-full w-full object-cover aspect-[2.5/4] transition-transform group-hover:scale-105"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-muted aspect-[4/2.5]">
+                      <div className="flex h-full w-full items-center justify-center bg-muted aspect-[2.5/4]">
                         <Book className="h-3 w-3 text-muted-foreground" />
                       </div>
                     )}
