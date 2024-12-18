@@ -37,16 +37,16 @@ const Books = () => {
       <Route path="add" element={<AddBook />} />
       <Route path=":id/edit" element={<EditBook />} />
       <Route path="ebooks/*" element={<EbooksPage />} />
-      <Route path="authors/*" element={<AuthorsPage />} />
+      <Route path="authors" element={<AuthorsPage />} />
       <Route path="authors/add" element={<AddAuthor />} />
       <Route path="authors/:id/edit" element={<EditAuthor />} />
-      <Route path="series/*" element={<SeriesPage />} />
+      <Route path="series" element={<SeriesPage />} />
       <Route path="series/add" element={<AddSeries />} />
       <Route path="series/:id/edit" element={<EditSeries />} />
-      <Route path="publishers/*" element={<PublishersPage />} />
+      <Route path="publishers" element={<PublishersPage />} />
       <Route path="publishers/add" element={<AddPublisher />} />
       <Route path="publishers/:id/edit" element={<EditPublisher />} />
-      <Route path="tags/*" element={<TagsPage />} />
+      <Route path="tags" element={<TagsPage />} />
       <Route path="tags/add" element={<AddTag />} />
       <Route path="tags/:id/edit" element={<EditTag />} />
     </Routes>

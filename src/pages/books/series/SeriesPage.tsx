@@ -144,7 +144,7 @@ const SeriesPage = () => {
                         size="icon"
                         asChild
                       >
-                        <Link to={`/books/series/edit/${item.id}`}>
+                        <Link to={`/books/series/${item.id}/edit`}>
                           <Pencil className="h-4 w-4" />
                         </Link>
                       </Button>
