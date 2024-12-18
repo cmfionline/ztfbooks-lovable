@@ -42,19 +42,15 @@ export const BookForm = ({
   const form = useForm<BookFormValues>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
-      title: "",
-      seriesId: undefined,
-      languageId: undefined,
-      authorId: undefined,
-      publisherId: undefined,
-      synopsis: "",
-      isFree: false,
-      hasDiscount: false,
-      price: undefined,
-      discount_percentage: undefined,
-      discount_start_date: undefined,
-      discount_end_date: undefined,
-      tags: [],
+      title: initialData?.title || "",
+      seriesId: initialData?.seriesId,
+      languageId: initialData?.languageId,
+      authorId: initialData?.authorId,
+      publisherId: initialData?.publisherId,
+      synopsis: initialData?.synopsis || "",
+      isFree: initialData?.isFree || false,
+      price: initialData?.price,
+      tags: initialData?.tags || [],
       ...initialData,
     },
     mode: "onChange",
@@ -90,7 +86,8 @@ export const BookForm = ({
     return null;
   }
 
-  const isFormValid = form.formState.isValid && Object.keys(form.formState.errors).length === 0;
+  // Changed this line to properly check form validity
+  const isFormValid = form.formState.isValid;
 
   return (
     <BookErrorBoundary>
