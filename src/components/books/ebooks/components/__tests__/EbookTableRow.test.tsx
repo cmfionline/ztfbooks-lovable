@@ -1,9 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { EbookTableRow } from '../EbookTableRow';
-import { vi } from 'vitest';
+import { vi, describe, it, expect } from 'vitest';
+import type { Book } from '@/types/book';
 
-const mockBook = {
+const mockBook: Book = {
   id: '1',
   title: 'Test Book',
   price: 9.99,
@@ -12,6 +13,11 @@ const mockBook = {
   languages: { name: 'English' },
   publishers: { name: 'Test Publisher' },
   series: { name: 'Test Series' },
+  // Adding required Book properties
+  language_id: '1',
+  author_id: '1',
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString()
 };
 
 const mockProps = {
