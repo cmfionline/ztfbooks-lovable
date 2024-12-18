@@ -3,7 +3,10 @@ import { FeaturedBooks } from "@/components/portal/home/FeaturedBooks";
 import { TrendingBooks } from "@/components/portal/home/TrendingBooks";
 import { TopSellingBooks } from "@/components/portal/home/TopSellingBooks";
 import { RecentlyViewed } from "@/components/portal/home/RecentlyViewed";
-import { BookOpen, TrendingUp, Star, Clock } from "lucide-react";
+import { PopularSeries } from "@/components/portal/home/PopularSeries";
+import { PopularAuthors } from "@/components/portal/home/PopularAuthors";
+import { RecentBooks } from "@/components/portal/home/RecentBooks";
+import { BookOpen, TrendingUp, Star, Clock, BookStack, Users, Book } from "lucide-react";
 
 const PortalHome = () => {
   return (
@@ -42,6 +45,51 @@ const PortalHome = () => {
           <Button variant="link">View All</Button>
         </div>
         <FeaturedBooks />
+      </section>
+
+      {/* Popular Series Section */}
+      <section className="px-8 max-w-7xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <BookStack className="h-6 w-6 text-purple-500" />
+              Popular Series
+            </h2>
+            <p className="text-muted-foreground">Explore our curated series</p>
+          </div>
+          <Button variant="link">View All</Button>
+        </div>
+        <PopularSeries />
+      </section>
+
+      {/* Popular Authors Section */}
+      <section className="px-8 max-w-7xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Users className="h-6 w-6 text-purple-500" />
+              Popular Authors
+            </h2>
+            <p className="text-muted-foreground">Meet our distinguished authors</p>
+          </div>
+          <Button variant="link">View All</Button>
+        </div>
+        <PopularAuthors />
+      </section>
+
+      {/* Recent Books Section */}
+      <section className="px-8 max-w-7xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Book className="h-6 w-6 text-purple-500" />
+              Recent Books
+            </h2>
+            <p className="text-muted-foreground">Fresh additions to our library</p>
+          </div>
+          <Button variant="link">View All</Button>
+        </div>
+        <RecentBooks />
       </section>
 
       {/* New & Trending Section */}
