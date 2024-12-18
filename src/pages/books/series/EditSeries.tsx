@@ -37,16 +37,19 @@ const EditSeries = () => {
     },
   });
 
-  const { data: series, isLoading } = useQuery({
+  const { data: series, isLoading, error } = useQuery({
     queryKey: ["series", id],
     queryFn: async () => {
+      if (!id) throw new Error("Series ID is required");
+
       const { data, error } = await supabase
         .from("series")
         .select("*")
         .eq("id", id)
-        .single();
+        .maybeSingle();
 
       if (error) {
+        console.error("Error fetching series:", error);
         toast({
           variant: "destructive",
           title: "Error fetching series",
@@ -54,8 +57,20 @@ const EditSeries = () => {
         });
         throw error;
       }
+
+      if (!data) {
+        toast({
+          variant: "destructive",
+          title: "Series not found",
+          description: "The requested series could not be found.",
+        });
+        navigate("/books/series");
+        throw new Error("Series not found");
+      }
+
       return data;
     },
+    enabled: !!id,
   });
 
   useEffect(() => {
@@ -71,6 +86,8 @@ const EditSeries = () => {
 
   const onSubmit = async (values: FormValues) => {
     try {
+      if (!id) throw new Error("Series ID is required");
+
       let imagePath = series?.image;
 
       // Handle image upload if a new file is selected
@@ -78,7 +95,7 @@ const EditSeries = () => {
         const fileExt = values.image.name.split('.').pop();
         const fileName = `${id}-${Date.now()}.${fileExt}`;
         
-        const { error: uploadError } = await supabase.storage
+        const { error: uploadError, data: uploadData } = await supabase.storage
           .from('books')
           .upload(`series/${fileName}`, values.image);
 
@@ -112,12 +129,28 @@ const EditSeries = () => {
     } catch (error: any) {
       console.error("Error updating series:", error);
       toast({
-        title: "Error",
-        description: error.message || "Failed to update series. Please try again.",
         variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to update series",
       });
     }
   };
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
+        <div className="max-w-2xl mx-auto">
+          <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
+            <CardContent className="p-6">
+              <div className="text-center text-red-500">
+                Error loading series: {error.message}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
