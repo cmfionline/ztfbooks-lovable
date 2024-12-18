@@ -17,8 +17,8 @@ export const bookSchema = z.object({
   hasDiscount: z.boolean().default(false),
   price: z.number().min(0).optional()
     .superRefine((val, ctx) => {
-      const data = ctx.path[0] ? ctx.path[0] : {};
-      if (!data.isFree && !val) {
+      const parent = ctx.parent as z.infer<typeof bookSchema>;
+      if (!parent.isFree && !val) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Price is required for non-free books"
@@ -27,8 +27,8 @@ export const bookSchema = z.object({
     }),
   discount_percentage: z.number().min(0).max(100).optional()
     .superRefine((val, ctx) => {
-      const data = ctx.path[0] ? ctx.path[0] : {};
-      if (data.hasDiscount && !val) {
+      const parent = ctx.parent as z.infer<typeof bookSchema>;
+      if (parent.hasDiscount && !val) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Discount percentage is required when discount is enabled"
@@ -37,8 +37,8 @@ export const bookSchema = z.object({
     }),
   discount_start_date: z.date().optional()
     .superRefine((val, ctx) => {
-      const data = ctx.path[0] ? ctx.path[0] : {};
-      if (data.hasDiscount && !val) {
+      const parent = ctx.parent as z.infer<typeof bookSchema>;
+      if (parent.hasDiscount && !val) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Start date is required when discount is enabled"
@@ -47,14 +47,14 @@ export const bookSchema = z.object({
     }),
   discount_end_date: z.date().optional()
     .superRefine((val, ctx) => {
-      const data = ctx.path[0] ? ctx.path[0] : {};
-      if (data.hasDiscount && !val) {
+      const parent = ctx.parent as z.infer<typeof bookSchema>;
+      if (parent.hasDiscount && !val) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "End date is required when discount is enabled"
         });
       }
-      if (val && data.discount_start_date && val <= data.discount_start_date) {
+      if (val && parent.discount_start_date && val <= parent.discount_start_date) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "End date must be after start date"
