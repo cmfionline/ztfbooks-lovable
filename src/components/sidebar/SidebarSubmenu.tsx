@@ -34,6 +34,7 @@ export const SidebarSubmenu = ({
   return (
     <Collapsible open={isOpen && !isCollapsed} onOpenChange={onToggle}>
       <CollapsibleTrigger
+        data-testid={`submenu-${title}`}
         className={cn(
           "flex items-center w-full px-4 py-2 text-sm text-muted-foreground rounded-lg",
           "hover:bg-purple-light/10 hover:text-purple transition-colors",
