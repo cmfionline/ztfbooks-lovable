@@ -28,7 +28,7 @@ export const bookSchema = z.object({
   discount_end_date: z.date().optional().nullable()
     .refine((val, ctx) => {
       if (!val || !ctx.data.discount_start_date) return true;
-      return val > ctx.data.discount_start_date;
+      return new Date(val) > new Date(ctx.data.discount_start_date);
     }, "End date must be after start date"),
   is_featured_discount: z.boolean().optional().default(false),
   tags: z.array(z.string().uuid()).optional().default([]),

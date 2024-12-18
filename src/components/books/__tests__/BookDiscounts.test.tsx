@@ -1,10 +1,11 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { EbookTableRow } from '../ebooks/components/EbookTableRow';
 import { BrowserRouter } from 'react-router-dom';
+import type { Book } from '@/types/book';
 
 describe('Book Discounts', () => {
-  const mockBook = {
+  const mockBook: Book = {
     id: '1',
     title: 'Test Book',
     price: 100,
@@ -15,7 +16,12 @@ describe('Book Discounts', () => {
     authors: { name: 'Test Author' },
     languages: { name: 'English' },
     publishers: { name: 'Test Publisher' },
-    series: { name: 'Test Series' }
+    series: { name: 'Test Series' },
+    // Adding required Book properties
+    language_id: '1',
+    author_id: '1',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   };
 
   const mockHandlers = {
@@ -50,7 +56,7 @@ describe('Book Discounts', () => {
   });
 
   it('does not display discount when dates are invalid', () => {
-    const bookWithExpiredDiscount = {
+    const bookWithExpiredDiscount: Book = {
       ...mockBook,
       discount_start_date: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
       discount_end_date: new Date(Date.now() - 86400000).toISOString(), // Yesterday
