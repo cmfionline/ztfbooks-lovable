@@ -2,13 +2,14 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Index from '../Index';
+import { supabase } from '@/lib/supabase';
 
 // Mock the supabase client
 vi.mock('@/lib/supabase', () => ({
   supabase: {
-    from: () => ({
-      select: () => ({
-        order: () => ({
+    from: vi.fn(() => ({
+      select: vi.fn(() => ({
+        order: vi.fn(() => ({
           data: [
             {
               total_revenue: 1000,
@@ -16,8 +17,8 @@ vi.mock('@/lib/supabase', () => ({
               total_orders: 25,
             },
           ],
-          limit: () => ({
-            abortSignal: () => ({
+          limit: vi.fn(() => ({
+            abortSignal: vi.fn(() => ({
               data: [
                 {
                   id: '1',
@@ -26,11 +27,11 @@ vi.mock('@/lib/supabase', () => ({
                   authors: { name: 'Test Author' },
                 },
               ],
-            }),
-          }),
-        }),
-      }),
-    }),
+            })),
+          })),
+        })),
+      })),
+    })),
   },
 }));
 
@@ -103,9 +104,11 @@ describe('Dashboard Page', () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     
     // Force an error by modifying the mock
-    vi.mocked(supabase.from).mockImplementationOnce(() => {
+    const mockFrom = vi.fn(() => {
       throw new Error('Failed to fetch data');
     });
+    
+    vi.mocked(supabase.from).mockImplementation(mockFrom);
 
     renderWithProviders(<Index />);
     
