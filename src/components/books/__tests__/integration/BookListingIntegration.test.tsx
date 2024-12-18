@@ -1,8 +1,8 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { vi } from "vitest";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { Books } from "@/pages/Books";
+import Books from "@/pages/Books"; // Changed to default import
 
 // Mock dependencies
 vi.mock("@tanstack/react-query");

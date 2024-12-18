@@ -1,5 +1,5 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { vi } from "vitest";
 import { BookMetadata } from "@/components/books/components/BookMetadata";
 import { useQuery } from "@tanstack/react-query";
 
@@ -8,13 +8,13 @@ vi.mock("@tanstack/react-query");
 
 describe("BookMetadata Integration", () => {
   const mockAuthors = [
-    { id: "1", name: "Author 1" },
-    { id: "2", name: "Author 2" },
+    { label: "Author 1", value: "1" },
+    { label: "Author 2", value: "2" },
   ];
 
   const mockPublishers = [
-    { id: "1", name: "Publisher 1" },
-    { id: "2", name: "Publisher 2" },
+    { label: "Publisher 1", value: "1" },
+    { label: "Publisher 2", value: "2" },
   ];
 
   const mockControl = {
