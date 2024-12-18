@@ -5,27 +5,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import { BookOpen, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SeriesLanguage } from "./components/SeriesLanguage";
+import { SeriesFormFields } from "./components/SeriesFormFields";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   description: z.string().optional(),
   languageId: z.string().optional(),
+  image: z.any().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -41,6 +33,7 @@ const EditSeries = () => {
       name: "",
       description: "",
       languageId: undefined,
+      image: undefined,
     },
   });
 
@@ -71,18 +64,40 @@ const EditSeries = () => {
         name: series.name,
         description: series.description || "",
         languageId: series.language_id,
+        image: series.image,
       });
     }
   }, [series, form]);
 
   const onSubmit = async (values: FormValues) => {
     try {
+      let imagePath = series?.image;
+
+      // Handle image upload if a new file is selected
+      if (values.image instanceof File) {
+        const fileExt = values.image.name.split('.').pop();
+        const fileName = `${id}-${Date.now()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('books')
+          .upload(`series/${fileName}`, values.image);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('books')
+          .getPublicUrl(`series/${fileName}`);
+
+        imagePath = publicUrl;
+      }
+
       const { error } = await supabase
         .from("series")
         .update({
           name: values.name,
           description: values.description,
           language_id: values.languageId,
+          image: imagePath,
         })
         .eq("id", id);
 
@@ -134,41 +149,7 @@ const EditSeries = () => {
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary">Name</FormLabel>
-                      <FormControl>
-                        <Input 
-                          {...field} 
-                          className="border-purple-light focus:border-purple focus:ring-purple"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary">Description</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          {...field} 
-                          className="border-purple-light focus:border-purple focus:ring-purple"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <SeriesLanguage control={form.control} />
+                <SeriesFormFields control={form.control} />
 
                 <div className="flex gap-4">
                   <Button
