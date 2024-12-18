@@ -6,7 +6,8 @@ import { RecentlyViewed } from "@/components/portal/home/RecentlyViewed";
 import { PopularSeries } from "@/components/portal/home/PopularSeries";
 import { PopularAuthors } from "@/components/portal/home/PopularAuthors";
 import { RecentBooks } from "@/components/portal/home/RecentBooks";
-import { BookOpen, TrendingUp, Star, Clock, Library, Users, Book } from "lucide-react";
+import { HotDiscounts } from "@/components/portal/home/HotDiscounts";
+import { BookOpen, TrendingUp, Star, Clock, Library, Users, Book, BadgePercent } from "lucide-react";
 
 const PortalHome = () => {
   return (
@@ -30,6 +31,21 @@ const PortalHome = () => {
             </Button>
           </div>
         </div>
+      </section>
+
+      {/* Hot Discounts Section */}
+      <section className="px-8 max-w-7xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <BadgePercent className="h-6 w-6 text-purple-500" />
+              Hot Discounts
+            </h2>
+            <p className="text-muted-foreground">Limited time offers you can't miss</p>
+          </div>
+          <Button variant="link">View All</Button>
+        </div>
+        <HotDiscounts />
       </section>
 
       {/* Featured Books Section */}
