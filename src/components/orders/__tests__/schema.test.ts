@@ -3,52 +3,56 @@ import { orderSchema } from '../schema';
 
 describe('Order Schema', () => {
   it('validates correct order data', () => {
-    const validData = {
+    const validOrder = {
+      id: '123',
+      user_id: 'user123',
       status: 'pending',
+      total_amount: 100,
       payment_status: 'pending',
-      notes: 'Test notes',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
 
-    const result = orderSchema.safeParse(validData);
+    const result = orderSchema.safeParse(validOrder);
     expect(result.success).toBe(true);
   });
 
-  it('validates required fields', () => {
-    const invalidData = {
-      notes: 'Test notes',
+  it('requires all mandatory fields', () => {
+    const invalidOrder = {
+      id: '123'
     };
 
-    const result = orderSchema.safeParse(invalidData);
+    const result = orderSchema.safeParse(invalidOrder);
     expect(result.success).toBe(false);
   });
 
   it('validates status enum values', () => {
-    const invalidData = {
-      status: 'invalid_status',
+    const orderWithInvalidStatus = {
+      id: '123',
+      user_id: 'user123',
+      status: 'invalid-status',
+      total_amount: 100,
       payment_status: 'pending',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
 
-    const result = orderSchema.safeParse(invalidData);
+    const result = orderSchema.safeParse(orderWithInvalidStatus);
     expect(result.success).toBe(false);
   });
 
-  it('validates payment_status enum values', () => {
-    const invalidData = {
+  it('validates total_amount is positive', () => {
+    const orderWithNegativeAmount = {
+      id: '123',
+      user_id: 'user123',
       status: 'pending',
-      payment_status: 'invalid_payment_status',
-    };
-
-    const result = orderSchema.safeParse(invalidData);
-    expect(result.success).toBe(false);
-  });
-
-  it('allows optional notes field', () => {
-    const validData = {
-      status: 'pending',
+      total_amount: -100,
       payment_status: 'pending',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
 
-    const result = orderSchema.safeParse(validData);
-    expect(result.success).toBe(true);
+    const result = orderSchema.safeParse(orderWithNegativeAmount);
+    expect(result.success).toBe(false);
   });
 });

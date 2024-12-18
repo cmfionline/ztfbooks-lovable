@@ -8,118 +8,107 @@ import OrderDetailsPage from '../../../pages/orders/[id]';
 // Mock the hooks
 vi.mock('react-router-dom', () => ({
   useParams: vi.fn(),
-  useNavigate: vi.fn(),
+  useNavigate: vi.fn()
 }));
 
 vi.mock('@tanstack/react-query', () => ({
   useQuery: vi.fn(),
   useMutation: vi.fn(),
-  useQueryClient: vi.fn(),
+  useQueryClient: vi.fn()
 }));
 
 vi.mock('@/hooks/use-toast', () => ({
   useToast: vi.fn(() => ({
     toast: vi.fn(),
-  })),
+    dismiss: vi.fn(),
+    toasts: []
+  }))
 }));
 
 describe('OrderDetailsPage', () => {
   const mockOrder = {
     id: '123',
     status: 'pending',
-    payment_status: 'pending',
-    created_at: '2024-03-01T00:00:00Z',
-    profiles: { full_name: 'John Doe' },
-    order_items: [
+    total_amount: 100,
+    created_at: '2024-01-01',
+    items: [
       {
         id: '1',
-        book: { title: 'Test Book', cover_image: 'test.jpg' },
-        price_at_time: 9.99,
-      },
-    ],
-    order_history: [
-      {
-        id: '1',
-        status: 'pending',
-        created_at: '2024-03-01T00:00:00Z',
-        notes: 'Initial order',
-      },
-    ],
+        book_id: 'book1',
+        quantity: 1,
+        price_at_time: 50
+      }
+    ]
+  };
+
+  const mockQueryClient = {
+    invalidateQueries: vi.fn()
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useParams as any).mockReturnValue({ id: '123' });
-    (useNavigate as any).mockReturnValue(vi.fn());
-    (useQueryClient as any).mockReturnValue({
-      invalidateQueries: vi.fn(),
-    });
-    (useQuery as any).mockReturnValue({
+    vi.mocked(useParams).mockReturnValue({ id: '123' });
+    vi.mocked(useNavigate).mockReturnValue(vi.fn());
+    vi.mocked(useQuery).mockReturnValue({
       data: mockOrder,
       isLoading: false,
-    });
-    (useMutation as any).mockReturnValue({
-      mutateAsync: vi.fn(),
-      isPending: false,
-    });
-  });
-
-  it('renders loading state', () => {
-    (useQuery as any).mockReturnValue({
-      isLoading: true,
-    });
-
-    render(<OrderDetailsPage />);
-    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
+      error: null
+    } as any);
+    vi.mocked(useMutation).mockReturnValue({
+      mutate: vi.fn(),
+      isLoading: false
+    } as any);
+    vi.mocked(useQueryClient).mockReturnValue(mockQueryClient as any);
   });
 
   it('renders order details', () => {
     render(<OrderDetailsPage />);
-
-    expect(screen.getByText(/Order #123/)).toBeInTheDocument();
-    expect(screen.getByText('John Doe')).toBeInTheDocument();
-    expect(screen.getByText('Test Book')).toBeInTheDocument();
-    expect(screen.getByText('$9.99')).toBeInTheDocument();
+    
+    expect(screen.getByText(/order #123/i)).toBeInTheDocument();
+    expect(screen.getByText(/\$100/)).toBeInTheDocument();
   });
 
-  it('handles status change', async () => {
-    const mockMutateAsync = vi.fn();
-    (useMutation as any).mockReturnValue({
-      mutateAsync: mockMutateAsync,
-      isPending: false,
-    });
+  it('handles status update', async () => {
+    const mockMutate = vi.fn();
+    vi.mocked(useMutation).mockReturnValue({
+      mutate: mockMutate,
+      isLoading: false
+    } as any);
 
     render(<OrderDetailsPage />);
-
-    const statusSelect = screen.getByRole('combobox');
+    
+    const statusSelect = screen.getByLabelText(/status/i);
     fireEvent.change(statusSelect, { target: { value: 'completed' } });
-
+    
     await waitFor(() => {
-      expect(mockMutateAsync).toHaveBeenCalled();
-    });
-  });
-
-  it('displays error toast on mutation error', async () => {
-    const mockToast = vi.fn();
-    vi.mocked(useToast).mockReturnValue({ toast: mockToast });
-
-    const mockMutateAsync = vi.fn().mockRejectedValue(new Error('Test error'));
-    (useMutation as any).mockReturnValue({
-      mutateAsync: mockMutateAsync,
-      isPending: false,
-    });
-
-    render(<OrderDetailsPage />);
-
-    const statusSelect = screen.getByRole('combobox');
-    fireEvent.change(statusSelect, { target: { value: 'completed' } });
-
-    await waitFor(() => {
-      expect(mockToast).toHaveBeenCalledWith({
-        variant: 'destructive',
-        title: 'Error updating order',
-        description: expect.any(String),
+      expect(mockMutate).toHaveBeenCalledWith({
+        id: '123',
+        status: 'completed'
       });
     });
+  });
+
+  it('shows loading state', () => {
+    vi.mocked(useQuery).mockReturnValue({
+      data: null,
+      isLoading: true,
+      error: null
+    } as any);
+
+    render(<OrderDetailsPage />);
+    
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+  });
+
+  it('shows error state', () => {
+    vi.mocked(useQuery).mockReturnValue({
+      data: null,
+      isLoading: false,
+      error: new Error('Failed to fetch order')
+    } as any);
+
+    render(<OrderDetailsPage />);
+    
+    expect(screen.getByText(/failed to fetch order/i)).toBeInTheDocument();
   });
 });

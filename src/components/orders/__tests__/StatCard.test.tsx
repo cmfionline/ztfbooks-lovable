@@ -3,34 +3,56 @@ import { render, screen } from '@testing-library/react';
 import { StatCard } from '../analytics/StatCard';
 
 describe('StatCard', () => {
-  it('renders all props correctly', () => {
-    const props = {
-      title: 'Total Orders',
-      value: '150',
-      description: 'Orders this month',
-      subValue: '+10% from last month',
-      className: 'test-class',
-    };
-
-    render(<StatCard {...props} />);
-
+  it('renders with required props', () => {
+    render(
+      <StatCard
+        title="Total Orders"
+        value={100}
+        icon="shopping-cart"
+      />
+    );
+    
     expect(screen.getByText('Total Orders')).toBeInTheDocument();
-    expect(screen.getByText('150')).toBeInTheDocument();
-    expect(screen.getByText('Orders this month')).toBeInTheDocument();
-    expect(screen.getByText('+10% from last month')).toBeInTheDocument();
+    expect(screen.getByText('100')).toBeInTheDocument();
   });
 
-  it('renders without optional props', () => {
-    const props = {
-      title: 'Revenue',
-      value: '$1000',
-      description: 'Monthly revenue',
-    };
+  it('renders with percentage change', () => {
+    render(
+      <StatCard
+        title="Total Orders"
+        value={100}
+        icon="shopping-cart"
+        percentageChange={15}
+      />
+    );
+    
+    expect(screen.getByText('+15%')).toBeInTheDocument();
+  });
 
-    render(<StatCard {...props} />);
+  it('handles negative percentage change', () => {
+    render(
+      <StatCard
+        title="Total Orders"
+        value={100}
+        icon="shopping-cart"
+        percentageChange={-10}
+      />
+    );
+    
+    expect(screen.getByText('-10%')).toBeInTheDocument();
+  });
 
-    expect(screen.getByText('Revenue')).toBeInTheDocument();
-    expect(screen.getByText('$1000')).toBeInTheDocument();
-    expect(screen.getByText('Monthly revenue')).toBeInTheDocument();
+  it('renders with custom color', () => {
+    render(
+      <StatCard
+        title="Total Orders"
+        value={100}
+        icon="shopping-cart"
+        color="purple"
+      />
+    );
+    
+    const card = screen.getByTestId('stat-card');
+    expect(card).toHaveClass('bg-purple-50');
   });
 });
