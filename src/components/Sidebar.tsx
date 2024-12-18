@@ -1,29 +1,12 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import {
-  BookOpen,
-  CreditCard,
-  HelpCircle,
-  LineChart,
-  Settings,
-  FileText,
-  MessageSquare,
-  Bell,
-  Percent,
-  Menu,
-  X,
-  ShoppingCart,
-  BookText,
-  Users,
-  BookMarked,
-  Tags,
-  Building2,
-  ExternalLink,
-} from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SidebarMenuItem } from "./sidebar/SidebarMenuItem";
 import { SidebarSubmenu } from "./sidebar/SidebarSubmenu";
+import { ClientPortalLink } from "./sidebar/ClientPortalLink";
+import { menuItems } from "./sidebar/menuItems";
 
 export const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -44,83 +27,6 @@ export const Sidebar = () => {
       setIsCollapsed(true);
     }
   };
-
-  const menuItems = [
-    {
-      title: "Dashboard",
-      icon: <LineChart className="w-4 h-4" />,
-      path: "/",
-    },
-    {
-      title: "Orders",
-      icon: <ShoppingCart className="w-4 h-4" />,
-      submenu: [
-        { title: "All Orders", path: "/orders" },
-        { title: "Device Management", path: "/orders/devices" },
-        { title: "Analytics", path: "/orders/analytics" },
-      ],
-    },
-    {
-      title: "Books",
-      icon: <BookOpen className="w-4 h-4" />,
-      submenu: [
-        { title: "eBooks", icon: <BookText className="w-4 h-4" />, path: "/books/ebooks" },
-        { title: "Authors", icon: <Users className="w-4 h-4" />, path: "/books/authors" },
-        { title: "Series", icon: <BookMarked className="w-4 h-4" />, path: "/books/series" },
-        { title: "Publishers", icon: <Building2 className="w-4 h-4" />, path: "/books/publishers" },
-        { title: "Tags", icon: <Tags className="w-4 h-4" />, path: "/books/tags" },
-      ],
-    },
-    {
-      title: "Support",
-      icon: <MessageSquare className="w-4 h-4" />,
-      path: "/support",
-    },
-    {
-      title: "Ads & Discounts",
-      icon: <Percent className="w-4 h-4" />,
-      submenu: [
-        { title: "All Ads", path: "/ads" },
-        { title: "Discount Strategies", path: "/ads/discount-strategies" },
-        { title: "Analytics", path: "/ads/analytics" },
-      ],
-    },
-    {
-      title: "Payment Gateways",
-      icon: <CreditCard className="w-4 h-4" />,
-      submenu: [
-        { title: "Stripe", path: "/payments/stripe" },
-        { title: "Paystack", path: "/payments/paystack" },
-        { title: "Flutterwave", path: "/payments/flutterwave" },
-        { title: "Mobile Money", path: "/payments/mobile-money" },
-      ],
-    },
-    {
-      title: "Pages",
-      icon: <FileText className="w-4 h-4" />,
-      path: "/pages",
-    },
-    {
-      title: "Book Reviews",
-      icon: <MessageSquare className="w-4 h-4" />,
-      path: "/reviews",
-    },
-    {
-      title: "FAQs",
-      icon: <HelpCircle className="w-4 h-4" />,
-      path: "/faqs",
-    },
-    {
-      title: "Notifications",
-      icon: <Bell className="w-4 h-4" />,
-      path: "/notifications",
-    },
-    {
-      title: "Settings",
-      icon: <Settings className="w-4 h-4" />,
-      path: "/settings",
-    },
-  ];
 
   return (
     <aside
@@ -156,20 +62,7 @@ export const Sidebar = () => {
       </div>
       
       <nav className="flex-1 overflow-y-auto scrollbar-none p-2 space-y-1">
-        {/* Client Portal Link */}
-        <a
-          href="/portal"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={cn(
-            "flex items-center px-4 py-2 text-sm text-muted-foreground hover:text-foreground rounded-lg transition-all duration-200",
-            "hover:bg-purple-light/10 hover:text-purple",
-            isCollapsed && "justify-center"
-          )}
-        >
-          <ExternalLink className="w-4 h-4" />
-          {!isCollapsed && <span className="ml-3">Client Portal</span>}
-        </a>
+        <ClientPortalLink isCollapsed={isCollapsed} />
 
         {menuItems.map((item) => (
           item.submenu ? (
