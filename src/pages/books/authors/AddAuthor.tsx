@@ -10,6 +10,7 @@ import { UserPlus, Loader2 } from "lucide-react";
 import { BasicInfoFields } from "./components/BasicInfoFields";
 import { SocialMediaFields } from "./components/SocialMediaFields";
 import { authorFormSchema, type AuthorFormValues } from "./schema";
+import { supabase } from "@/integrations/supabase/client";
 
 const AddAuthor = () => {
   const { toast } = useToast();
@@ -19,7 +20,7 @@ const AddAuthor = () => {
   const form = useForm<AuthorFormValues>({
     resolver: zodResolver(authorFormSchema),
     defaultValues: {
-      name: "", // Required field initialized as empty string
+      name: "",
       nationality: "",
       photo: "",
       bio: "",
@@ -33,10 +34,27 @@ const AddAuthor = () => {
 
   const onSubmit = async (values: AuthorFormValues) => {
     try {
+      let photoPath = "";
+
+      // Handle photo upload if a file is selected
+      if (values.photo instanceof File) {
+        const fileExt = values.photo.name.split('.').pop();
+        const fileName = `authors/${crypto.randomUUID()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('books')
+          .upload(fileName, values.photo);
+
+        if (uploadError) throw uploadError;
+        photoPath = fileName;
+      }
+
       await createAuthor.mutateAsync({
         ...values,
-        name: values.name.trim(), // Ensure name is trimmed before submission
+        name: values.name.trim(),
+        photo: photoPath || undefined,
       });
+
       toast({
         title: "Success",
         description: `Author "${values.name}" has been created successfully.`,
