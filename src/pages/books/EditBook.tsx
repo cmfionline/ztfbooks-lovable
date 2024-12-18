@@ -1,13 +1,14 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Book } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { BookForm } from "@/components/books/BookForm";
 import type { BookFormValues } from "./schema";
 import { useQuery } from "@tanstack/react-query";
 import { BookLoadingState } from "@/components/books/BookLoadingState";
 import { BookErrorBoundary } from "@/components/books/BookErrorBoundary";
+import { EditBookHeader } from "./components/EditBookHeader";
+import { EditBookError } from "./components/EditBookError";
 
 const EditBook = () => {
   const { id } = useParams();
@@ -37,7 +38,7 @@ const EditBook = () => {
         throw error;
       }
 
-      const formData: Partial<BookFormValues> = {
+      return {
         title: data.title,
         seriesId: data.series_id,
         languageId: data.language_id,
@@ -56,8 +57,6 @@ const EditBook = () => {
         discount_end_date: data.discount_end_date ? new Date(data.discount_end_date) : undefined,
         tags: data.books_tags?.map(tag => tag.tag_id) || [],
       };
-
-      return formData;
     },
   });
 
@@ -66,7 +65,6 @@ const EditBook = () => {
       let coverImagePath = book?.coverImage;
       let epubFilePath = book?.epubFile;
 
-      // Handle cover image upload if a new file is selected
       if (values.coverImage && values.coverImage instanceof File) {
         const { data: coverData, error: coverError } = await supabase.storage
           .from("books")
@@ -78,7 +76,6 @@ const EditBook = () => {
         coverImagePath = coverData.path;
       }
 
-      // Handle epub file upload if a new file is selected
       if (values.epubFile && values.epubFile instanceof File) {
         const { data: epubData, error: epubError } = await supabase.storage
           .from("books")
@@ -90,7 +87,6 @@ const EditBook = () => {
         epubFilePath = epubData.path;
       }
 
-      // Update book data
       const { error: updateError } = await supabase
         .from("books")
         .update({
@@ -115,15 +111,12 @@ const EditBook = () => {
 
       if (updateError) throw updateError;
 
-      // Update book tags
       if (values.tags) {
-        // First, remove all existing tags
         await supabase
           .from("books_tags")
           .delete()
           .eq("book_id", id);
 
-        // Then insert new tags
         if (values.tags.length > 0) {
           const tagRows = values.tags.map(tagId => ({
             book_id: id,
@@ -155,22 +148,7 @@ const EditBook = () => {
   };
 
   if (error) {
-    return (
-      <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
-        <div className="max-w-5xl mx-auto">
-          <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
-            <CardHeader>
-              <CardTitle className="text-2xl font-bold text-destructive">
-                Error
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>{error.message}</p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
+    return <EditBookError error={error} />;
   }
 
   if (isLoading) {
@@ -182,12 +160,7 @@ const EditBook = () => {
       <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
         <div className="max-w-5xl mx-auto">
           <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
-            <CardHeader>
-              <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
-                <Book className="w-6 h-6" />
-                Edit Book
-              </CardTitle>
-            </CardHeader>
+            <EditBookHeader />
             <CardContent>
               <BookForm 
                 onSubmit={handleSubmit}
