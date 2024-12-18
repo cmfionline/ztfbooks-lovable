@@ -49,7 +49,11 @@ export const BookForm = ({
       publisherId: initialData?.publisherId,
       synopsis: initialData?.synopsis || "",
       isFree: initialData?.isFree || false,
+      hasDiscount: initialData?.hasDiscount || false,
       price: initialData?.price,
+      discount_percentage: initialData?.discount_percentage,
+      discount_start_date: initialData?.discount_start_date,
+      discount_end_date: initialData?.discount_end_date,
       tags: initialData?.tags || [],
       ...initialData,
     },
@@ -86,7 +90,6 @@ export const BookForm = ({
     return null;
   }
 
-  // Changed this line to properly check form validity
   const isFormValid = form.formState.isValid;
 
   return (
