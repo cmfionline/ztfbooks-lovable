@@ -137,7 +137,7 @@ export const EbookTableRow = ({
           size="icon"
           asChild
         >
-          <Link to={`/books/${book.id}/edit`}>
+          <Link to={`/books/authors/edit/${book.id}`}>
             <Pencil className="h-4 w-4" />
           </Link>
         </Button>
