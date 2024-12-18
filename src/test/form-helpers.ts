@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { Control } from 'react-hook-form';
 
 export const createMockControl = (defaultValues = {}) => {
