@@ -12,10 +12,13 @@ export const TopSellingBooks = () => {
         .from("books")
         .select(`
           *,
-          authors (name)
+          authors (
+            id,
+            name
+          )
         `)
         .eq("is_top_selling", true)
-        .limit(6);
+        .limit(10); // Increased from 6 to 10 books
 
       if (error) throw error;
       return data;
@@ -25,7 +28,7 @@ export const TopSellingBooks = () => {
   if (isLoading) {
     return (
       <div className="space-y-4">
-        {[...Array(6)].map((_, i) => (
+        {[...Array(10)].map((_, i) => ( // Updated skeleton count to match new limit
           <Skeleton key={i} className="h-24" />
         ))}
       </div>
