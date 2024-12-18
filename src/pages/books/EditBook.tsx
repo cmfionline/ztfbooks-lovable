@@ -49,7 +49,11 @@ const EditBook = () => {
         publicationDate: data.publication_date ? new Date(data.publication_date) : undefined,
         pageCount: data.page_count,
         isFree: data.is_free,
+        hasDiscount: !!data.discount_percentage,
         price: data.price,
+        discount_percentage: data.discount_percentage,
+        discount_start_date: data.discount_start_date ? new Date(data.discount_start_date) : undefined,
+        discount_end_date: data.discount_end_date ? new Date(data.discount_end_date) : undefined,
         tags: data.books_tags?.map(tag => tag.tag_id) || [],
       };
 
@@ -102,6 +106,9 @@ const EditBook = () => {
           epub_file: epubFilePath,
           publication_date: values.publicationDate?.toISOString().split('T')[0],
           page_count: values.pageCount,
+          discount_percentage: values.hasDiscount ? values.discount_percentage : null,
+          discount_start_date: values.hasDiscount ? values.discount_start_date?.toISOString() : null,
+          discount_end_date: values.hasDiscount ? values.discount_end_date?.toISOString() : null,
           updated_at: new Date().toISOString(),
         })
         .eq("id", id);
