@@ -17,7 +17,7 @@ import { EditBookError } from "../components/EditBookError";
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   description: z.string().optional(),
-  languageId: z.string().optional(),
+  languageId: z.string().uuid("Please select a language"),
   image: z.any().optional(),
 });
 
@@ -41,9 +41,7 @@ const EditSeries = () => {
   const { data: series, isLoading, error } = useQuery({
     queryKey: ["series", id],
     queryFn: async () => {
-      if (!id || !/^[0-9a-fA-F-]{36}$/.test(id)) {
-        throw new Error("Invalid series ID format");
-      }
+      if (!id) throw new Error("Series ID is required");
 
       const { data, error } = await supabase
         .from("series")
@@ -51,14 +49,8 @@ const EditSeries = () => {
         .eq("id", id)
         .maybeSingle();
 
-      if (error) {
-        console.error("Error fetching series:", error);
-        throw error;
-      }
-
-      if (!data) {
-        throw new Error("Series not found");
-      }
+      if (error) throw error;
+      if (!data) throw new Error("Series not found");
 
       return data;
     },
@@ -78,9 +70,7 @@ const EditSeries = () => {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      if (!id || !/^[0-9a-fA-F-]{36}$/.test(id)) {
-        throw new Error("Invalid series ID format");
-      }
+      if (!id) throw new Error("Series ID is required");
 
       let imagePath = series?.image;
 
@@ -130,7 +120,7 @@ const EditSeries = () => {
   };
 
   if (error) {
-    return <EditBookError error={error} />;
+    return <EditBookError error={error as Error} />;
   }
 
   if (isLoading) {

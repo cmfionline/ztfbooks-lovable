@@ -13,14 +13,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getAllLanguages, formatLanguageLabel } from "@/utils/languages";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 
 interface SeriesLanguageProps {
   control: Control<any>;
 }
 
 export const SeriesLanguage = ({ control }: SeriesLanguageProps) => {
-  const availableLanguages = getAllLanguages();
+  const { data: languages = [] } = useQuery({
+    queryKey: ["languages"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("languages")
+        .select("*")
+        .order("name");
+      if (error) throw error;
+      return data || [];
+    },
+  });
 
   return (
     <FormField
@@ -36,9 +47,9 @@ export const SeriesLanguage = ({ control }: SeriesLanguageProps) => {
               </SelectTrigger>
             </FormControl>
             <SelectContent className="bg-white">
-              {availableLanguages.map((lang) => (
-                <SelectItem key={lang.code} value={lang.code}>
-                  {formatLanguageLabel(lang.name, lang.code)}
+              {languages.map((lang) => (
+                <SelectItem key={lang.id} value={lang.id}>
+                  {lang.name} ({lang.code})
                 </SelectItem>
               ))}
             </SelectContent>
