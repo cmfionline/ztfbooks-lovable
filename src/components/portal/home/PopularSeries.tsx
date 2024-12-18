@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { BookStack } from "lucide-react";
+import { Library } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -51,7 +51,7 @@ export const PopularSeries = () => {
               />
             ) : (
               <div className="flex aspect-[2/3] w-full items-center justify-center bg-muted">
-                <BookStack className="h-12 w-12 text-muted-foreground" />
+                <Library className="h-12 w-12 text-muted-foreground" />
               </div>
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">

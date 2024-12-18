@@ -6,7 +6,7 @@ import { RecentlyViewed } from "@/components/portal/home/RecentlyViewed";
 import { PopularSeries } from "@/components/portal/home/PopularSeries";
 import { PopularAuthors } from "@/components/portal/home/PopularAuthors";
 import { RecentBooks } from "@/components/portal/home/RecentBooks";
-import { BookOpen, TrendingUp, Star, Clock, BookStack, Users, Book } from "lucide-react";
+import { BookOpen, TrendingUp, Star, Clock, Library, Users, Book } from "lucide-react";
 
 const PortalHome = () => {
   return (
@@ -52,7 +52,7 @@ const PortalHome = () => {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl font-bold flex items-center gap-2">
-              <BookStack className="h-6 w-6 text-purple-500" />
+              <Library className="h-6 w-6 text-purple-500" />
               Popular Series
             </h2>
             <p className="text-muted-foreground">Explore our curated series</p>
