@@ -18,6 +18,78 @@ interface EbookTableRowProps {
   onDelete: (id: string) => void;
 }
 
+// Split into smaller components for better maintainability
+const BookCoverAndTitle = ({ book }: { book: Book }) => {
+  const coverImageUrl = book.cover_image 
+    ? supabase.storage.from('books').getPublicUrl(book.cover_image).data.publicUrl
+    : null;
+
+  return (
+    <div className="flex items-center space-x-3">
+      {coverImageUrl ? (
+        <img 
+          src={coverImageUrl} 
+          alt={`Cover of ${book.title}`}
+          className="h-12 w-8 object-cover rounded"
+        />
+      ) : (
+        <div className="h-12 w-8 bg-muted rounded flex items-center justify-center">
+          <span className="text-xs text-muted-foreground">No cover</span>
+        </div>
+      )}
+      <span>{book.title}</span>
+    </div>
+  );
+};
+
+const BookPrice = ({ book }: { book: Book }) => {
+  const isDiscountActive = book.discount_percentage && 
+    book.discount_start_date && 
+    book.discount_end_date &&
+    new Date(book.discount_start_date) <= new Date() &&
+    new Date(book.discount_end_date) >= new Date();
+
+  const getDiscountedPrice = () => {
+    if (!isDiscountActive || !book.price || !book.discount_percentage) return null;
+    return book.price - (book.price * book.discount_percentage / 100);
+  };
+
+  const discountedPrice = getDiscountedPrice();
+
+  if (book.is_free) {
+    return <span className="text-green-600 font-medium">Free</span>;
+  }
+
+  return (
+    <div className="space-y-1">
+      {isDiscountActive ? (
+        <>
+          <div className="text-gray-500 line-through text-sm">
+            {formatPrice(book.price)}
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-green-600 font-medium">
+              {formatPrice(discountedPrice)}
+            </span>
+            <span className="text-purple-600 text-sm font-medium">
+              (-{book.discount_percentage}%)
+            </span>
+          </div>
+        </>
+      ) : book.discount_percentage && book.discount_start_date && new Date(book.discount_start_date) > new Date() ? (
+        <div className="space-y-1">
+          <span>{formatPrice(book.price)}</span>
+          <div className="text-orange-500 text-xs">
+            {book.discount_percentage}% off starting {format(new Date(book.discount_start_date), "MMM d")}
+          </div>
+        </div>
+      ) : (
+        <span>{formatPrice(book.price)}</span>
+      )}
+    </div>
+  );
+};
+
 export const EbookTableRow = ({
   book,
   index,
@@ -26,9 +98,6 @@ export const EbookTableRow = ({
   onDelete,
 }: EbookTableRowProps) => {
   const { toast } = useToast();
-  const coverImageUrl = book.cover_image 
-    ? supabase.storage.from('books').getPublicUrl(book.cover_image).data.publicUrl
-    : null;
 
   const handleFeaturedToggle = async () => {
     try {
@@ -43,72 +112,17 @@ export const EbookTableRow = ({
     }
   };
 
-  const isDiscountActive = book.discount_percentage && 
-    book.discount_start_date && 
-    book.discount_end_date &&
-    new Date(book.discount_start_date) <= new Date() &&
-    new Date(book.discount_end_date) >= new Date();
-
-  const getDiscountedPrice = () => {
-    if (!isDiscountActive || !book.price || !book.discount_percentage) return null;
-    return book.price - (book.price * book.discount_percentage / 100);
-  };
-
-  const discountedPrice = getDiscountedPrice();
-
   return (
     <TableRow key={book.id}>
       <TableCell>
-        <div className="flex items-center space-x-3">
-          {coverImageUrl ? (
-            <img 
-              src={coverImageUrl} 
-              alt={`Cover of ${book.title}`}
-              className="h-12 w-8 object-cover rounded"
-            />
-          ) : (
-            <div className="h-12 w-8 bg-muted rounded flex items-center justify-center">
-              <span className="text-xs text-muted-foreground">No cover</span>
-            </div>
-          )}
-          <span>{book.title}</span>
-        </div>
+        <BookCoverAndTitle book={book} />
       </TableCell>
       <TableCell>{book.authors?.name || "N/A"}</TableCell>
       <TableCell>{book.languages?.name || "N/A"}</TableCell>
       <TableCell>{book.publishers?.name || "N/A"}</TableCell>
       <TableCell>{book.series?.name || "N/A"}</TableCell>
       <TableCell>
-        {book.is_free ? (
-          <span className="text-green-600 font-medium">Free</span>
-        ) : (
-          <div className="space-y-1">
-            {isDiscountActive ? (
-              <>
-                <div className="text-gray-500 line-through text-sm">
-                  {formatPrice(book.price)}
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-green-600 font-medium">
-                    {formatPrice(discountedPrice)}
-                  </span>
-                  <span className="text-purple-600 text-sm font-medium">
-                    (-{book.discount_percentage}%)
-                  </span>
-                </div>
-              </>
-            ) : book.discount_percentage && book.discount_start_date && new Date(book.discount_start_date) > new Date() ? (
-              <div className="space-y-1">
-                <span>{formatPrice(book.price)}</span>
-                <div className="text-orange-500 text-xs">
-                  {book.discount_percentage}% off starting {format(new Date(book.discount_start_date), "MMM d")}
-                </div>
-              </div>
-            ) : (
-              <span>{formatPrice(book.price)}</span>
-            )}
-          </div>
-        )}
+        <BookPrice book={book} />
       </TableCell>
       <TableCell>
         <div className="flex items-center space-x-2">
@@ -137,7 +151,7 @@ export const EbookTableRow = ({
           size="icon"
           asChild
         >
-          <Link to={`/books/authors/edit/${book.id}`}>
+          <Link to={`/books/edit/${book.id}`}>
             <Pencil className="h-4 w-4" />
           </Link>
         </Button>
