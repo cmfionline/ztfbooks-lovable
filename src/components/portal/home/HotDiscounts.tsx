@@ -83,7 +83,8 @@ export const HotDiscounts = () => {
                 </div>
               </Card>
             </CarouselItem>
-          ))}
+          );
+        })}
       </CarouselContent>
       <CarouselPrevious />
       <CarouselNext />
