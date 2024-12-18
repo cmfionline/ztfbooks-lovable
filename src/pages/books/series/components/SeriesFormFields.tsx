@@ -12,9 +12,10 @@ import { SeriesLanguage } from "./SeriesLanguage";
 
 interface SeriesFormFieldsProps {
   control: Control<any>;
+  currentImage?: string;
 }
 
-export const SeriesFormFields = ({ control }: SeriesFormFieldsProps) => {
+export const SeriesFormFields = ({ control, currentImage }: SeriesFormFieldsProps) => {
   return (
     <div className="space-y-6">
       <FormField
@@ -73,9 +74,9 @@ export const SeriesFormFields = ({ control }: SeriesFormFieldsProps) => {
                 className="border-purple-light focus:border-purple file:bg-purple file:text-white file:border-0 file:rounded-md file:px-4 file:py-2 hover:file:bg-purple/90"
               />
             </FormControl>
-            {value && typeof value === 'string' && (
+            {currentImage && (
               <img 
-                src={value} 
+                src={currentImage} 
                 alt="Current series image" 
                 className="mt-2 h-32 w-auto object-contain rounded-md"
               />

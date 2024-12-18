@@ -52,9 +52,16 @@ const EditSeries = () => {
       if (error) throw error;
       if (!data) throw new Error("Series not found");
 
+      // If there's an image, get its public URL
+      if (data.image) {
+        const { data: { publicUrl } } = supabase.storage
+          .from('books')
+          .getPublicUrl(data.image);
+        data.imageUrl = publicUrl;
+      }
+
       return data;
     },
-    enabled: !!id,
   });
 
   useEffect(() => {
@@ -63,7 +70,7 @@ const EditSeries = () => {
         name: series.name,
         description: series.description || "",
         languageId: series.language_id || undefined,
-        image: series.image,
+        image: series.imageUrl || undefined,
       });
     }
   }, [series, form]);
@@ -76,19 +83,16 @@ const EditSeries = () => {
 
       if (values.image instanceof File) {
         const fileExt = values.image.name.split('.').pop();
-        const fileName = `${id}-${Date.now()}.${fileExt}`;
+        const fileName = `series/${id}-${Date.now()}.${fileExt}`;
         
         const { error: uploadError, data: uploadData } = await supabase.storage
           .from('books')
-          .upload(`series/${fileName}`, values.image);
+          .upload(fileName, values.image, {
+            upsert: true
+          });
 
         if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('books')
-          .getPublicUrl(`series/${fileName}`);
-
-        imagePath = publicUrl;
+        imagePath = fileName;
       }
 
       const { error } = await supabase
@@ -152,7 +156,7 @@ const EditSeries = () => {
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <SeriesFormFields control={form.control} />
+                <SeriesFormFields control={form.control} currentImage={series?.imageUrl} />
 
                 <div className="flex gap-4">
                   <Button
