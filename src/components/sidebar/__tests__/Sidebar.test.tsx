@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { Sidebar } from '../Sidebar';
+import { Sidebar } from '@/components/Sidebar';
 import { BrowserRouter } from 'react-router-dom';
 
 // Mock window.innerWidth
