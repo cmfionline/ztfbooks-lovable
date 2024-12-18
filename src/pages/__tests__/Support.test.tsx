@@ -1,29 +1,28 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import SupportPage from '../support';
+import { supabase } from '@/lib/supabase';
 
 // Mock the supabase client
 vi.mock('@/lib/supabase', () => ({
   supabase: {
-    from: () => ({
-      select: () => ({
-        order: () => ({
-          data: [
-            {
-              id: '1',
-              subject: 'Test Ticket',
-              status: 'open',
-              priority: 'high',
-              category: 'technical',
-              created_at: '2024-01-01T00:00:00Z',
-              updated_at: '2024-01-01T00:00:00Z',
-            },
-          ],
-        }),
-      }),
-    }),
+    from: vi.fn(() => ({
+      select: vi.fn().mockReturnThis(),
+      order: vi.fn().mockReturnThis(),
+      data: [
+        {
+          id: '1',
+          subject: 'Test Ticket',
+          status: 'open',
+          priority: 'high',
+          category: 'technical',
+          created_at: '2024-01-01T00:00:00Z',
+          updated_at: '2024-01-01T00:00:00Z',
+        },
+      ],
+    })),
   },
 }));
 
@@ -46,6 +45,10 @@ const renderWithProviders = (component: React.ReactNode) => {
 };
 
 describe('Support Page', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('renders the support page title', () => {
     renderWithProviders(<SupportPage />);
     expect(screen.getByText('Support Tickets')).toBeInTheDocument();

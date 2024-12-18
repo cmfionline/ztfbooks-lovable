@@ -1,36 +1,39 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Index from '../Index';
 import { supabase } from '@/lib/supabase';
+import { useToast } from '@/hooks/use-toast';
 
-// Mock the supabase client
+// Mock the modules
+vi.mock('@tanstack/react-query', async () => {
+  const actual = await vi.importActual('@tanstack/react-query');
+  return {
+    ...actual,
+    useQuery: vi.fn(),
+  };
+});
+
+vi.mock('@/hooks/use-toast', () => ({
+  useToast: vi.fn(() => ({
+    toast: vi.fn(),
+  })),
+}));
+
 vi.mock('@/lib/supabase', () => ({
   supabase: {
     from: vi.fn(() => ({
-      select: vi.fn(() => ({
-        order: vi.fn(() => ({
-          data: [
-            {
-              total_revenue: 1000,
-              total_sales: 50,
-              total_orders: 25,
-            },
-          ],
-          limit: vi.fn(() => ({
-            abortSignal: vi.fn(() => ({
-              data: [
-                {
-                  id: '1',
-                  title: 'Test Book',
-                  price: 19.99,
-                  authors: { name: 'Test Author' },
-                },
-              ],
-            })),
-          })),
-        })),
-      })),
+      select: vi.fn().mockReturnThis(),
+      order: vi.fn().mockReturnThis(),
+      data: [
+        {
+          total_revenue: 1000,
+          total_sales: 50,
+          total_orders: 25,
+        },
+      ],
+      limit: vi.fn().mockReturnThis(),
+      abortSignal: vi.fn().mockReturnThis(),
     })),
   },
 }));
@@ -65,6 +68,10 @@ const renderWithProviders = (component: React.ReactNode) => {
 };
 
 describe('Dashboard Page', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('renders the dashboard title', () => {
     renderWithProviders(<Index />);
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
@@ -95,27 +102,30 @@ describe('Dashboard Page', () => {
 
   it('handles loading state correctly', () => {
     renderWithProviders(<Index />);
-    // Initially, loading indicators should be present
     expect(screen.getByRole('main')).toBeInTheDocument();
   });
 
   it('displays error toast when data fetching fails', async () => {
-    // Mock console.error to prevent error logs in tests
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    
-    // Force an error by modifying the mock
-    const mockFrom = vi.fn(() => {
-      throw new Error('Failed to fetch data');
+    const mockToast = vi.fn();
+    vi.mocked(useToast).mockReturnValue({
+      toast: mockToast,
+      dismiss: vi.fn(),
+      toasts: [],
     });
-    
-    vi.mocked(supabase.from).mockImplementation(mockFrom);
+
+    const mockError = new Error('Failed to fetch data');
+    vi.mocked(supabase.from).mockImplementation(() => {
+      throw mockError;
+    });
 
     renderWithProviders(<Index />);
     
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalled();
+      expect(mockToast).toHaveBeenCalledWith({
+        variant: "destructive",
+        title: "Error",
+        description: "There was a problem loading the dashboard. Please try again.",
+      });
     });
-
-    consoleSpy.mockRestore();
   });
 });
