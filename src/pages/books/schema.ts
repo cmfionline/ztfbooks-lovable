@@ -15,45 +15,56 @@ export const bookSchema = z.object({
   pageCount: z.number().int().positive().optional(),
   isFree: z.boolean().default(false),
   hasDiscount: z.boolean().default(false),
-  price: z.number().min(0).optional().superRefine((val, ctx) => {
-    if (!ctx.parent.isFree && !val) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Price is required for non-free books"
-      });
-    }
-  }),
-  discount_percentage: z.number().min(0).max(100).optional().superRefine((val, ctx) => {
-    if (ctx.parent.hasDiscount && !val) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Discount percentage is required when discount is enabled"
-      });
-    }
-  }),
-  discount_start_date: z.date().optional().superRefine((val, ctx) => {
-    if (ctx.parent.hasDiscount && !val) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Start date is required when discount is enabled"
-      });
-    }
-  }),
-  discount_end_date: z.date().optional().superRefine((val, ctx) => {
-    if (ctx.parent.hasDiscount && !val) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "End date is required when discount is enabled"
-      });
-    }
-    if (val && ctx.parent.discount_start_date && val <= ctx.parent.discount_start_date) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "End date must be after start date"
-      });
-    }
-  }),
+  price: z.number().min(0).optional(),
+  discount_percentage: z.number().min(0).max(100).optional(),
+  discount_start_date: z.date().optional(),
+  discount_end_date: z.date().optional(),
   tags: z.array(z.string().uuid()).optional(),
+}).superRefine((data, ctx) => {
+  // Validate price for non-free books
+  if (!data.isFree && !data.price) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Price is required for non-free books",
+      path: ["price"],
+    });
+  }
+
+  // Validate discount fields when discount is enabled
+  if (data.hasDiscount) {
+    if (!data.discount_percentage) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Discount percentage is required when discount is enabled",
+        path: ["discount_percentage"],
+      });
+    }
+
+    if (!data.discount_start_date) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Start date is required when discount is enabled",
+        path: ["discount_start_date"],
+      });
+    }
+
+    if (!data.discount_end_date) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "End date is required when discount is enabled",
+        path: ["discount_end_date"],
+      });
+    }
+
+    if (data.discount_start_date && data.discount_end_date && 
+        data.discount_end_date <= data.discount_start_date) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "End date must be after start date",
+        path: ["discount_end_date"],
+      });
+    }
+  }
 });
 
 export type BookFormValues = z.infer<typeof bookSchema>;
