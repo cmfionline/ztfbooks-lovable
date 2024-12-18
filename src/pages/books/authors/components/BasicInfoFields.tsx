@@ -31,9 +31,10 @@ const countries = [
 
 type BasicInfoFieldsProps = {
   control: Control<AuthorFormValues>;
+  currentPhoto?: string;
 };
 
-export const BasicInfoFields = ({ control }: BasicInfoFieldsProps) => {
+export const BasicInfoFields = ({ control, currentPhoto }: BasicInfoFieldsProps) => {
   return (
     <div className="grid grid-cols-2 gap-4">
       <FormField
@@ -146,12 +147,30 @@ export const BasicInfoFields = ({ control }: BasicInfoFieldsProps) => {
       <FormField
         control={control}
         name="photo"
-        render={({ field }) => (
+        render={({ field: { value, onChange, ...field } }) => (
           <FormItem className="col-span-2">
-            <FormLabel>Photo URL</FormLabel>
+            <FormLabel>Photo</FormLabel>
             <FormControl>
-              <Input {...field} placeholder="Enter photo URL" />
+              <Input
+                {...field}
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    onChange(file);
+                  }
+                }}
+                className="border-purple-light focus:border-purple file:bg-purple file:text-white file:border-0 file:rounded-md file:px-4 file:py-2 hover:file:bg-purple/90"
+              />
             </FormControl>
+            {currentPhoto && (
+              <img 
+                src={currentPhoto} 
+                alt="Current author photo" 
+                className="mt-2 h-32 w-auto object-contain rounded-md"
+              />
+            )}
             <FormMessage />
           </FormItem>
         )}

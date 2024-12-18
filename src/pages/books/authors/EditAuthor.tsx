@@ -45,7 +45,7 @@ const EditAuthor = () => {
         .from("authors")
         .select("*")
         .eq("id", id)
-        .single();
+        .maybeSingle();
 
       if (error) {
         toast({
@@ -55,6 +55,24 @@ const EditAuthor = () => {
         });
         throw error;
       }
+
+      if (!data) {
+        toast({
+          variant: "destructive",
+          title: "Author not found",
+          description: "The requested author could not be found.",
+        });
+        throw new Error("Author not found");
+      }
+
+      // If there's a photo, get its public URL
+      if (data.photo) {
+        const { data: { publicUrl } } = supabase.storage
+          .from('books')
+          .getPublicUrl(data.photo);
+        data.photoUrl = publicUrl;
+      }
+
       return data;
     },
   });
@@ -75,12 +93,30 @@ const EditAuthor = () => {
         facebook_url: author.facebook_url || "",
         twitter_url: author.twitter_url || "",
         instagram_url: author.instagram_url || "",
+        photo: author.photoUrl || undefined,
       });
     }
   }, [author, form]);
 
   const onSubmit = async (values: AuthorFormValues) => {
     try {
+      let photoPath = author?.photo;
+
+      // Handle photo upload if a new file is selected
+      if (values.photo instanceof File) {
+        const fileExt = values.photo.name.split('.').pop();
+        const fileName = `authors/${id}-${Date.now()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('books')
+          .upload(fileName, values.photo, {
+            upsert: true
+          });
+
+        if (uploadError) throw uploadError;
+        photoPath = fileName;
+      }
+
       const { error } = await supabase
         .from("authors")
         .update({
@@ -97,6 +133,7 @@ const EditAuthor = () => {
           facebook_url: values.facebook_url || null,
           twitter_url: values.twitter_url || null,
           instagram_url: values.instagram_url || null,
+          photo: photoPath,
         })
         .eq("id", id);
 
@@ -148,7 +185,7 @@ const EditAuthor = () => {
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <BasicInfoFields control={form.control} />
+                <BasicInfoFields control={form.control} currentPhoto={author?.photoUrl} />
                 <SocialMediaFields control={form.control} />
 
                 <div className="flex gap-4">
