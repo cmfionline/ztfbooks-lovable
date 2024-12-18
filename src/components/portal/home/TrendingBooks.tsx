@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { Book } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { BookDiscountBadge } from "@/components/books/components/BookDiscountBadge";
 import {
   Carousel,
   CarouselContent,
@@ -54,6 +55,14 @@ export const TrendingBooks = () => {
     return acc;
   }, []);
 
+  const isDiscountActive = (book: any) => {
+    return book.discount_percentage && 
+      book.discount_start_date && 
+      book.discount_end_date &&
+      new Date(book.discount_start_date) <= new Date() &&
+      new Date(book.discount_end_date) >= new Date();
+  };
+
   return (
     <Carousel
       opts={{
@@ -80,6 +89,12 @@ export const TrendingBooks = () => {
                         <Book className="h-6 w-6 text-muted-foreground" />
                       </div>
                     )}
+                    {isDiscountActive(group[0]) && (
+                      <BookDiscountBadge
+                        originalPrice={group[0].price || 0}
+                        discountPercentage={group[0].discount_percentage || 0}
+                      />
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                       <div className="absolute bottom-0 p-2 text-white">
                         <h3 className="font-semibold text-sm line-clamp-2">{group[0].title}</h3>
@@ -104,6 +119,13 @@ export const TrendingBooks = () => {
                       <div className="flex h-full w-full items-center justify-center bg-muted aspect-[2/3]">
                         <Book className="h-3 w-3 text-muted-foreground" />
                       </div>
+                    )}
+                    {isDiscountActive(book) && (
+                      <BookDiscountBadge
+                        originalPrice={book.price || 0}
+                        discountPercentage={book.discount_percentage || 0}
+                        className="scale-75 origin-top-right"
+                      />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                       <div className="absolute bottom-0 p-1 text-white">

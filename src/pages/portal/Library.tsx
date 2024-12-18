@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Book } from "lucide-react";
+import { BookDiscountBadge } from "@/components/books/components/BookDiscountBadge";
 
 const PortalLibrary = () => {
   const { data: books } = useQuery({
@@ -21,6 +22,14 @@ const PortalLibrary = () => {
     },
   });
 
+  const isDiscountActive = (book: any) => {
+    return book.discount_percentage && 
+      book.discount_start_date && 
+      book.discount_end_date &&
+      new Date(book.discount_start_date) <= new Date() &&
+      new Date(book.discount_end_date) >= new Date();
+  };
+
   return (
     <div className="space-y-8">
       <h1 className="text-3xl font-bold">My Library</h1>
@@ -31,7 +40,7 @@ const PortalLibrary = () => {
             : null;
 
           return (
-            <Card key={book.id} className="p-4">
+            <Card key={book.id} className="p-4 relative">
               {coverImageUrl ? (
                 <img
                   src={coverImageUrl}
@@ -42,6 +51,12 @@ const PortalLibrary = () => {
                 <div className="flex aspect-[3/4] w-full items-center justify-center bg-muted rounded-md">
                   <Book className="h-12 w-12 text-muted-foreground" />
                 </div>
+              )}
+              {isDiscountActive(book) && (
+                <BookDiscountBadge
+                  originalPrice={book.price || 0}
+                  discountPercentage={book.discount_percentage || 0}
+                />
               )}
               <div className="mt-4">
                 <h3 className="font-semibold">{book.title}</h3>
