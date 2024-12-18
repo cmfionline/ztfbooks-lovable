@@ -11,7 +11,7 @@ export const authorFormSchema = z.object({
     )
     .transform((val) => val.trim()),
   nationality: z.string().optional(),
-  photo: z.string().optional(),
+  photo: z.union([z.instanceof(File), z.string()]).optional(),
   bio: z.string().optional(),
   website: z.string().url("Invalid website URL").optional().or(z.literal("")),
   facebook_url: z.string().url("Invalid Facebook URL").optional().or(z.literal("")),

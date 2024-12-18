@@ -1,42 +1,19 @@
-import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { UserSquare2, Loader2 } from "lucide-react";
+import { UserSquare2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BasicInfoFields } from "./components/BasicInfoFields";
-import { SocialMediaFields } from "./components/SocialMediaFields";
-import { authorFormSchema, AuthorFormValues } from "./schema";
+import { AuthorForm } from "./components/AuthorForm";
+import { AuthorFormValues } from "./schema";
+import { Author } from "./types";
 
 const EditAuthor = () => {
   const { id } = useParams();
   const { toast } = useToast();
   const navigate = useNavigate();
-
-  const form = useForm<AuthorFormValues>({
-    resolver: zodResolver(authorFormSchema),
-    defaultValues: {
-      name: "",
-      designation: "",
-      education: "",
-      nationality: "",
-      date_of_birth: "",
-      bio: "",
-      mobile: "",
-      address: "",
-      description: "",
-      website: "",
-      facebook_url: "",
-      twitter_url: "",
-      instagram_url: "",
-    },
-  });
 
   const { data: author, isLoading } = useQuery({
     queryKey: ["author", id],
@@ -70,33 +47,12 @@ const EditAuthor = () => {
         const { data: { publicUrl } } = supabase.storage
           .from('books')
           .getPublicUrl(data.photo);
-        data.photoUrl = publicUrl;
+        return { ...data, photoUrl: publicUrl } as Author;
       }
 
-      return data;
+      return data as Author;
     },
   });
-
-  useEffect(() => {
-    if (author) {
-      form.reset({
-        name: author.name,
-        designation: author.designation || "",
-        education: author.education || "",
-        nationality: author.nationality || "",
-        date_of_birth: author.date_of_birth || "",
-        bio: author.bio || "",
-        mobile: author.mobile || "",
-        address: author.address || "",
-        description: author.description || "",
-        website: author.website || "",
-        facebook_url: author.facebook_url || "",
-        twitter_url: author.twitter_url || "",
-        instagram_url: author.instagram_url || "",
-        photo: author.photoUrl || undefined,
-      });
-    }
-  }, [author, form]);
 
   const onSubmit = async (values: AuthorFormValues) => {
     try {
@@ -183,34 +139,7 @@ const EditAuthor = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <BasicInfoFields control={form.control} currentPhoto={author?.photoUrl} />
-                <SocialMediaFields control={form.control} />
-
-                <div className="flex gap-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="flex-1"
-                    onClick={() => navigate("/books/authors")}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="flex-1 bg-purple hover:bg-purple/90 text-white"
-                    disabled={form.formState.isSubmitting}
-                  >
-                    {form.formState.isSubmitting ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      "Update Author"
-                    )}
-                  </Button>
-                </div>
-              </form>
-            </Form>
+            <AuthorForm author={author} onSubmit={onSubmit} />
           </CardContent>
         </Card>
       </div>
