@@ -73,10 +73,10 @@ export const TrendingBooks = () => {
                       <img
                         src={supabase.storage.from('books').getPublicUrl(group[0].cover_image).data.publicUrl}
                         alt={group[0].title}
-                        className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                        className="h-full w-full object-cover aspect-[4/2.5] transition-transform group-hover:scale-105"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-muted">
+                      <div className="flex h-full w-full items-center justify-center bg-muted aspect-[4/2.5]">
                         <Book className="h-6 w-6 text-muted-foreground" />
                       </div>
                     )}
@@ -98,10 +98,10 @@ export const TrendingBooks = () => {
                       <img
                         src={supabase.storage.from('books').getPublicUrl(book.cover_image).data.publicUrl}
                         alt={book.title}
-                        className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                        className="h-full w-full object-cover aspect-[4/2.5] transition-transform group-hover:scale-105"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-muted">
+                      <div className="flex h-full w-full items-center justify-center bg-muted aspect-[4/2.5]">
                         <Book className="h-3 w-3 text-muted-foreground" />
                       </div>
                     )}
