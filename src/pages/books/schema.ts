@@ -26,10 +26,17 @@ export const bookSchema = z.object({
     }, "Discount percentage must be between 0 and 100"),
   discount_start_date: z.date().optional().nullable(),
   discount_end_date: z.date().optional().nullable()
-    .refine((val, ctx) => {
+    .superRefine((val, ctx) => {
       if (!val || !ctx.data.discount_start_date) return true;
-      return new Date(val) > new Date(ctx.data.discount_start_date);
-    }, "End date must be after start date"),
+      if (new Date(val) <= new Date(ctx.data.discount_start_date)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "End date must be after start date",
+        });
+        return false;
+      }
+      return true;
+    }),
   is_featured_discount: z.boolean().optional().default(false),
   tags: z.array(z.string().uuid()).optional().default([]),
 });
