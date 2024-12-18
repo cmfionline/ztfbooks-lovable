@@ -19,6 +19,10 @@ export const bookSchema = z.object({
       if (typeof val === 'undefined' || val === null) return true;
       return val >= 0;
     }, "Price must be greater than or equal to 0"),
+  discount_percentage: z.number().min(0).max(100).optional().nullable(),
+  discount_start_date: z.date().optional().nullable(),
+  discount_end_date: z.date().optional().nullable(),
+  is_featured_discount: z.boolean().optional().default(false),
   tags: z.array(z.string().uuid()).optional().default([]),
 });
 

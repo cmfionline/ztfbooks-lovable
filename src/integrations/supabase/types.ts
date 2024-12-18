@@ -570,9 +570,13 @@ export type Database = {
           author_id: string
           cover_image: string | null
           created_at: string
+          discount_end_date: string | null
+          discount_percentage: number | null
+          discount_start_date: string | null
           epub_file: string | null
           id: string
           is_featured: boolean | null
+          is_featured_discount: boolean | null
           is_free: boolean | null
           is_top_selling: boolean | null
           language_id: string
@@ -589,9 +593,13 @@ export type Database = {
           author_id: string
           cover_image?: string | null
           created_at?: string
+          discount_end_date?: string | null
+          discount_percentage?: number | null
+          discount_start_date?: string | null
           epub_file?: string | null
           id?: string
           is_featured?: boolean | null
+          is_featured_discount?: boolean | null
           is_free?: boolean | null
           is_top_selling?: boolean | null
           language_id: string
@@ -608,9 +616,13 @@ export type Database = {
           author_id?: string
           cover_image?: string | null
           created_at?: string
+          discount_end_date?: string | null
+          discount_percentage?: number | null
+          discount_start_date?: string | null
           epub_file?: string | null
           id?: string
           is_featured?: boolean | null
+          is_featured_discount?: boolean | null
           is_free?: boolean | null
           is_top_selling?: boolean | null
           language_id?: string
@@ -677,6 +689,93 @@ export type Database = {
           },
           {
             foreignKeyName: "books_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bulk_discount_books: {
+        Row: {
+          book_id: string
+          discount_id: string
+        }
+        Insert: {
+          book_id: string
+          discount_id: string
+        }
+        Update: {
+          book_id?: string
+          discount_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bulk_discount_books_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bulk_discount_books_discount_id_fkey"
+            columns: ["discount_id"]
+            isOneToOne: false
+            referencedRelation: "bulk_discounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bulk_discounts: {
+        Row: {
+          created_at: string
+          discount_end_date: string
+          discount_percentage: number
+          discount_start_date: string
+          id: string
+          is_featured: boolean | null
+          name: string
+          series_id: string | null
+          tag_id: string | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          discount_end_date: string
+          discount_percentage: number
+          discount_start_date: string
+          id?: string
+          is_featured?: boolean | null
+          name: string
+          series_id?: string | null
+          tag_id?: string | null
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          discount_end_date?: string
+          discount_percentage?: number
+          discount_start_date?: string
+          id?: string
+          is_featured?: boolean | null
+          name?: string
+          series_id?: string | null
+          tag_id?: string | null
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bulk_discounts_series_id_fkey"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "series"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bulk_discounts_tag_id_fkey"
             columns: ["tag_id"]
             isOneToOne: false
             referencedRelation: "tags"
