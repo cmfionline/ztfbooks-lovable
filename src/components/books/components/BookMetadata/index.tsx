@@ -2,7 +2,7 @@ import { Control } from "react-hook-form";
 import { BookMetadataAuthor } from "./BookMetadataAuthor";
 import { BookMetadataPublisher } from "./BookMetadataPublisher";
 import { BookMetadataDate } from "./BookMetadataDate";
-import { BookMetadataPrice } from "./BookMetadataPrice";
+import { PricingFields } from "./PricingFields";
 
 interface BookMetadataProps {
   control: Control<any>;
@@ -20,7 +20,7 @@ export const BookMetadata = ({
       <BookMetadataAuthor control={control} authors={authors} />
       <BookMetadataPublisher control={control} publishers={publishers} />
       <BookMetadataDate control={control} />
-      <BookMetadataPrice control={control} />
+      <PricingFields control={control} />
     </div>
   );
 };
