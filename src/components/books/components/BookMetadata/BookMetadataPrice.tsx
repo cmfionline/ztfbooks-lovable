@@ -1,4 +1,4 @@
-import { Control } from "react-hook-form";
+import { Control, useWatch } from "react-hook-form";
 import { PricingToggle } from "./BookMetadataPrice/PricingToggle";
 import { PriceField } from "./BookMetadataPrice/PriceField";
 import { DiscountFields } from "./BookMetadataPrice/DiscountFields";
@@ -8,15 +8,37 @@ interface BookMetadataPriceProps {
 }
 
 export const BookMetadataPrice = ({ control }: BookMetadataPriceProps) => {
+  const isFree = useWatch({
+    control,
+    name: "isFree",
+  });
+
+  const hasDiscount = useWatch({
+    control,
+    name: "hasDiscount",
+  });
+
   return (
-    <>
-      <PricingToggle control={control} />
-      {!control._formValues.isFree && (
+    <div className="space-y-4">
+      <PricingToggle
+        control={control}
+        name="isFree"
+        label="Free Book"
+        description="Make this book available for free"
+      />
+
+      {!isFree && (
         <>
           <PriceField control={control} />
-          <DiscountFields control={control} />
+          <PricingToggle
+            control={control}
+            name="hasDiscount"
+            label="Apply Discount"
+            description="Enable discount pricing for this book"
+          />
+          {hasDiscount && <DiscountFields control={control} />}
         </>
       )}
-    </>
+    </div>
   );
 };
