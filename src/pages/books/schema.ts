@@ -22,10 +22,10 @@ export const bookSchema = z.object({
   tags: z.array(z.string().uuid()).optional(),
 }).refine((data) => {
   if (!data.hasDiscount) return true;
-  if (!data.discount_start_date || !data.discount_end_date) return false;
+  if (!data.discount_percentage || !data.discount_start_date || !data.discount_end_date) return false;
   return data.discount_end_date > data.discount_start_date;
 }, {
-  message: "End date must be after start date",
+  message: "Please fill in all discount fields and ensure end date is after start date",
   path: ["discount_end_date"]
 });
 

@@ -74,9 +74,6 @@ export const DiscountFields = ({ control }: DiscountFieldsProps) => {
                     mode="single"
                     selected={field.value}
                     onSelect={field.onChange}
-                    disabled={(date) =>
-                      date < new Date()
-                    }
                     initialFocus
                   />
                 </PopoverContent>
@@ -117,7 +114,7 @@ export const DiscountFields = ({ control }: DiscountFieldsProps) => {
                     selected={field.value}
                     onSelect={field.onChange}
                     disabled={(date) =>
-                      date < new Date() || (control._formValues.discount_start_date && date < control._formValues.discount_start_date)
+                      date < new Date(field.value) || (control._formValues.discount_start_date && date < control._formValues.discount_start_date)
                     }
                     initialFocus
                   />

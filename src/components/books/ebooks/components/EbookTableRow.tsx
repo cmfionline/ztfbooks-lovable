@@ -96,6 +96,13 @@ export const EbookTableRow = ({
                   </span>
                 </div>
               </>
+            ) : book.discount_percentage && book.discount_start_date && new Date(book.discount_start_date) > new Date() ? (
+              <div className="space-y-1">
+                <span>{formatPrice(book.price)}</span>
+                <div className="text-orange-500 text-xs">
+                  {book.discount_percentage}% off starting {format(new Date(book.discount_start_date), "MMM d")}
+                </div>
+              </div>
             ) : (
               <span>{formatPrice(book.price)}</span>
             )}
