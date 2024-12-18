@@ -34,10 +34,10 @@ export const TrendingBooks = () => {
       <div className="grid grid-cols-1 gap-3">
         {[...Array(2)].map((_, i) => (
           <div key={i} className="flex gap-2">
-            <Skeleton className="aspect-[2/3] w-1/2 h-[100px]" />
+            <Skeleton className="aspect-[3/4] w-1/2 h-[200px]" />
             <div className="grid grid-cols-2 gap-2 w-1/2">
               {[...Array(4)].map((_, j) => (
-                <Skeleton key={j} className="aspect-[2/3] h-[47px]" />
+                <Skeleton key={j} className="aspect-[3/4] h-[97px]" />
               ))}
             </div>
           </div>
@@ -66,7 +66,7 @@ export const TrendingBooks = () => {
           <CarouselItem key={groupIndex} className="pl-2 basis-full lg:basis-[49%]">
             <div className="flex gap-2">
               {/* Large featured book */}
-              <Card className="w-1/2 group relative overflow-hidden h-[100px]">
+              <Card className="w-1/2 group relative overflow-hidden h-[200px]">
                 {group[0] && (
                   <>
                     {group[0].cover_image ? (
@@ -93,7 +93,7 @@ export const TrendingBooks = () => {
               {/* Grid of 4 smaller books */}
               <div className="grid grid-cols-2 gap-2 w-1/2">
                 {group.slice(1).map((book) => (
-                  <Card key={book.id} className="group relative overflow-hidden h-[47px]">
+                  <Card key={book.id} className="group relative overflow-hidden h-[97px]">
                     {book.cover_image ? (
                       <img
                         src={supabase.storage.from('books').getPublicUrl(book.cover_image).data.publicUrl}
