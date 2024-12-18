@@ -119,7 +119,7 @@ export const BookForm = ({
           <Button
             type="submit"
             className="w-full bg-purple hover:bg-purple/90"
-            disabled={form.formState.isSubmitting}
+            disabled={form.formState.isSubmitting || !form.formState.isValid}
           >
             {form.formState.isSubmitting ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

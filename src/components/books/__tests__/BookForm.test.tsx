@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BookForm } from '../BookForm';
 import { useBookFormData } from '@/hooks/useBookFormData';
 import { useToast } from '@/hooks/use-toast';
+import userEvent from '@testing-library/user-event';
 
 // Mock the hooks
 vi.mock('@/hooks/useBookFormData');
@@ -46,25 +47,93 @@ describe('BookForm', () => {
     });
   });
 
-  it('renders form fields when data is loaded', () => {
-    render(<BookForm onSubmit={mockOnSubmit} />);
-    expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/series/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/language/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/synopsis/i)).toBeInTheDocument();
-  });
-
-  it('handles form submission successfully', async () => {
+  it('validates required fields before submission', async () => {
     render(<BookForm onSubmit={mockOnSubmit} />);
     
-    fireEvent.change(screen.getByLabelText(/title/i), {
-      target: { value: 'Test Book' }
-    });
-
-    fireEvent.click(screen.getByText(/save book/i));
+    const submitButton = screen.getByText(/save book/i);
+    fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(mockOnSubmit).toHaveBeenCalled();
+      expect(mockOnSubmit).not.toHaveBeenCalled();
+    });
+
+    // Check for required field error messages
+    expect(screen.getByText(/title is required/i)).toBeInTheDocument();
+    expect(screen.getByText(/language is required/i)).toBeInTheDocument();
+    expect(screen.getByText(/author is required/i)).toBeInTheDocument();
+  });
+
+  it('validates price when book is not free', async () => {
+    render(<BookForm onSubmit={mockOnSubmit} />);
+    
+    const isFreeToggle = screen.getByRole('switch', { name: /free book/i });
+    fireEvent.click(isFreeToggle);
+    
+    const submitButton = screen.getByText(/save book/i);
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/price must be greater than 0/i)).toBeInTheDocument();
+    });
+  });
+
+  it('validates discount fields when discount is enabled', async () => {
+    render(<BookForm onSubmit={mockOnSubmit} />);
+    
+    // Enable discount
+    const hasDiscountToggle = screen.getByRole('switch', { name: /apply discount/i });
+    fireEvent.click(hasDiscountToggle);
+    
+    const submitButton = screen.getByText(/save book/i);
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/discount percentage is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/discount start date is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/discount end date is required/i)).toBeInTheDocument();
+    });
+  });
+
+  it('submits form successfully with valid data', async () => {
+    render(<BookForm onSubmit={mockOnSubmit} />);
+    
+    // Fill required fields
+    await userEvent.type(screen.getByLabelText(/title/i), 'Test Book');
+    await userEvent.selectOptions(screen.getByLabelText(/language/i), '1');
+    await userEvent.selectOptions(screen.getByLabelText(/author/i), '1');
+
+    const submitButton = screen.getByText(/save book/i);
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(mockOnSubmit).toHaveBeenCalledWith(expect.objectContaining({
+        title: 'Test Book',
+        languageId: '1',
+        authorId: '1',
+      }));
+    });
+  });
+
+  it('handles form submission errors', async () => {
+    const error = new Error('Submission failed');
+    mockOnSubmit.mockRejectedValueOnce(error);
+
+    render(<BookForm onSubmit={mockOnSubmit} />);
+    
+    // Fill required fields
+    await userEvent.type(screen.getByLabelText(/title/i), 'Test Book');
+    await userEvent.selectOptions(screen.getByLabelText(/language/i), '1');
+    await userEvent.selectOptions(screen.getByLabelText(/author/i), '1');
+
+    const submitButton = screen.getByText(/save book/i);
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(mockToast.toast).toHaveBeenCalledWith({
+        title: "Error",
+        description: "Submission failed",
+        variant: "destructive",
+      });
     });
   });
 });
