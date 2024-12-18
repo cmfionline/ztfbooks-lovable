@@ -9,19 +9,19 @@
   }
 
   h1 {
-    @apply text-3xl font-bold;
+    @apply text-3xl font-bold text-gray-900;
   }
 
   h2 {
-    @apply text-2xl font-bold;
+    @apply text-2xl font-bold text-gray-800;
   }
 
   h3 {
-    @apply text-lg font-semibold;
+    @apply text-lg font-semibold text-gray-800;
   }
 
   p {
-    @apply text-sm text-muted-foreground;
+    @apply text-sm text-gray-600;
   }
 
   a {
@@ -30,5 +30,25 @@
 
   button {
     @apply bg-purple text-white hover:bg-purple/90;
+  }
+
+  label {
+    @apply text-gray-700 font-medium;
+  }
+
+  input, select, textarea {
+    @apply text-gray-800 placeholder-gray-400;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+
+  .form-input {
+    @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple focus:ring-purple sm:text-sm;
+  }
+
+  .form-error {
+    @apply text-red-600 text-sm mt-1;
   }
 }

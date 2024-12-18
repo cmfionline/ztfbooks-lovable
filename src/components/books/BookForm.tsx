@@ -90,12 +90,14 @@ export const BookForm = ({
     return null;
   }
 
+  const isFormValid = form.formState.isValid && Object.keys(form.formState.errors).length === 0;
+
   return (
     <BookErrorBoundary>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white/50 backdrop-blur-sm p-6 rounded-lg shadow-sm">
+            <div className="space-y-6">
               <BookBasicInfo
                 control={form.control}
                 series={series}
@@ -103,7 +105,7 @@ export const BookForm = ({
               />
               <BookFiles control={form.control} />
             </div>
-            <div className="space-y-4">
+            <div className="space-y-6">
               <BookMetadata
                 control={form.control}
                 authors={authors}
@@ -118,11 +120,11 @@ export const BookForm = ({
           </div>
           <Button
             type="submit"
-            className="w-full bg-purple hover:bg-purple/90"
-            disabled={form.formState.isSubmitting || !form.formState.isValid}
+            className="w-full bg-purple hover:bg-purple/90 text-white font-semibold py-3 rounded-lg shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={form.formState.isSubmitting || !isFormValid}
           >
             {form.formState.isSubmitting ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
             ) : null}
             {submitLabel}
           </Button>
