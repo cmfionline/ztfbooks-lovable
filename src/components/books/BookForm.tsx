@@ -49,6 +49,7 @@ export const BookForm = ({
       publisherId: undefined,
       synopsis: "",
       isFree: false,
+      hasDiscount: false,
       price: undefined,
       tags: [],
       ...initialData,
