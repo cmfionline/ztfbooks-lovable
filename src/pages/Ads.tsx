@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -103,13 +103,15 @@ const Ads = () => {
       <div className="page-content">
         <div className="page-header">
           <h1 className="page-title">Advertisements</h1>
-          <Button 
-            onClick={() => setShowForm(!showForm)}
-            className="bg-purple hover:bg-purple/90 text-white"
-          >
-            <PlusCircle className="h-4 w-4 mr-2" />
-            {showForm ? 'Hide Form' : 'New Ad'}
-          </Button>
+          {!showForm && (
+            <Button 
+              onClick={() => setShowForm(true)}
+              className="bg-purple hover:bg-purple/90 text-white"
+            >
+              <PlusCircle className="h-4 w-4 mr-2" />
+              Create New Ad
+            </Button>
+          )}
         </div>
 
         <Tabs defaultValue="ads" className="space-y-4">
