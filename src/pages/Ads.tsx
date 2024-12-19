@@ -103,15 +103,6 @@ const Ads = () => {
       <div className="page-content">
         <div className="page-header">
           <h1 className="page-title">Advertisements</h1>
-          {!showForm && (
-            <Button 
-              onClick={() => setShowForm(true)}
-              className="bg-purple hover:bg-purple/90 text-white"
-            >
-              <PlusCircle className="h-4 w-4 mr-2" />
-              Create New Ad
-            </Button>
-          )}
         </div>
 
         <Tabs defaultValue="ads" className="space-y-4">
@@ -121,6 +112,18 @@ const Ads = () => {
           </TabsList>
 
           <TabsContent value="ads" className="space-y-6">
+            {!showForm && (
+              <div className="flex justify-end">
+                <Button 
+                  onClick={() => setShowForm(true)}
+                  className="bg-purple hover:bg-purple/90 text-white"
+                >
+                  <PlusCircle className="h-4 w-4 mr-2" />
+                  Create New Ad
+                </Button>
+              </div>
+            )}
+
             {showForm && (
               <Card className="p-6">
                 <AdForm 
