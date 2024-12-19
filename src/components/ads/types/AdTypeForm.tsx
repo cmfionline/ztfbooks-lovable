@@ -6,6 +6,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/hooks/use-toast";
+import { Control } from "react-hook-form";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -18,9 +19,10 @@ type FormValues = z.infer<typeof formSchema>;
 export interface AdTypeFormProps {
   onSuccess?: () => void;
   onCancel?: () => void;
+  control?: Control<FormValues>;
 }
 
-export const AdTypeForm = ({ onSuccess, onCancel }: AdTypeFormProps) => {
+export const AdTypeForm = ({ onSuccess, onCancel, control }: AdTypeFormProps) => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -29,6 +31,8 @@ export const AdTypeForm = ({ onSuccess, onCancel }: AdTypeFormProps) => {
       description: "",
     },
   });
+
+  const localControl = control || form.control;
 
   const onSubmit = async (values: FormValues) => {
     try {
@@ -59,7 +63,7 @@ export const AdTypeForm = ({ onSuccess, onCancel }: AdTypeFormProps) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
-          control={form.control}
+          control={localControl}
           name="name"
           render={({ field }) => (
             <FormItem>
@@ -73,7 +77,7 @@ export const AdTypeForm = ({ onSuccess, onCancel }: AdTypeFormProps) => {
         />
 
         <FormField
-          control={form.control}
+          control={localControl}
           name="type"
           render={({ field }) => (
             <FormItem>
@@ -87,7 +91,7 @@ export const AdTypeForm = ({ onSuccess, onCancel }: AdTypeFormProps) => {
         />
 
         <FormField
-          control={form.control}
+          control={localControl}
           name="description"
           render={({ field }) => (
             <FormItem>
