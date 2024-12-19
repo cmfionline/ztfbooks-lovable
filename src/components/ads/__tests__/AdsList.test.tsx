@@ -40,28 +40,21 @@ describe('AdsList', () => {
     );
   };
 
-  it('renders ads in grid view', () => {
-    renderWithRouter(<AdsList ads={mockAds} viewMode="grid" onDeleteAd={mockOnDeleteAd} />);
-    
-    expect(screen.getByText('Test Ad 1')).toBeInTheDocument();
-    expect(screen.getByText('Test Ad 2')).toBeInTheDocument();
-  });
-
-  it('renders ads in list view', () => {
-    renderWithRouter(<AdsList ads={mockAds} viewMode="list" onDeleteAd={mockOnDeleteAd} />);
+  it('renders ads list', () => {
+    renderWithRouter(<AdsList ads={mockAds} onDeleteAd={mockOnDeleteAd} />);
     
     expect(screen.getByText('Test Ad 1')).toBeInTheDocument();
     expect(screen.getByText('Test Ad 2')).toBeInTheDocument();
   });
 
   it('displays no ads message when list is empty', () => {
-    renderWithRouter(<AdsList ads={[]} viewMode="grid" onDeleteAd={mockOnDeleteAd} />);
+    renderWithRouter(<AdsList ads={[]} onDeleteAd={mockOnDeleteAd} />);
     
     expect(screen.getByText('No advertisements found')).toBeInTheDocument();
   });
 
   it('calls onDeleteAd when delete button is clicked', () => {
-    renderWithRouter(<AdsList ads={mockAds} viewMode="grid" onDeleteAd={mockOnDeleteAd} />);
+    renderWithRouter(<AdsList ads={mockAds} onDeleteAd={mockOnDeleteAd} />);
     
     const deleteButtons = screen.getAllByRole('button', { name: /delete/i });
     fireEvent.click(deleteButtons[0]);
@@ -70,13 +63,13 @@ describe('AdsList', () => {
   });
 
   it('shows expiring soon badge for ads with expiring discounts', () => {
-    renderWithRouter(<AdsList ads={mockAds} viewMode="grid" onDeleteAd={mockOnDeleteAd} />);
+    renderWithRouter(<AdsList ads={mockAds} onDeleteAd={mockOnDeleteAd} />);
     
     expect(screen.getByText('Expires Soon')).toBeInTheDocument();
   });
 
   it('displays correct discount information', () => {
-    renderWithRouter(<AdsList ads={mockAds} viewMode="grid" onDeleteAd={mockOnDeleteAd} />);
+    renderWithRouter(<AdsList ads={mockAds} onDeleteAd={mockOnDeleteAd} />);
     
     expect(screen.getByText('Discount: 10%')).toBeInTheDocument();
   });

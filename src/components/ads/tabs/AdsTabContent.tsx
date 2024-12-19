@@ -8,11 +8,7 @@ import { toast } from "@/hooks/use-toast";
 import { AdForm } from "@/components/ads/AdForm";
 import { AdsList } from "@/components/ads/AdsList";
 
-interface AdsTabContentProps {
-  viewMode: 'grid' | 'list';
-}
-
-export const AdsTabContent = ({ viewMode }: AdsTabContentProps) => {
+export const AdsTabContent = () => {
   const [showForm, setShowForm] = useState(false);
 
   const { data: ads, isLoading, refetch } = useQuery({
@@ -130,7 +126,6 @@ export const AdsTabContent = ({ viewMode }: AdsTabContentProps) => {
       ) : (
         <AdsList 
           ads={ads || []} 
-          viewMode={viewMode} 
           onDeleteAd={handleDeleteAd}
         />
       )}
