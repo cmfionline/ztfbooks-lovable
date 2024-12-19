@@ -16,25 +16,30 @@ import { Loader2 } from "lucide-react";
 interface EditAdDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  ad: AdFormValues & { id: string; image_url?: string; video_url?: string };
+  ad: AdFormValues & { id: string; image_url?: string; video_url?: string } | null;
 }
 
 const EditAdDialog = ({ open, onOpenChange, ad }: EditAdDialogProps) => {
   const queryClient = useQueryClient();
   
+  // Return early if no ad is provided
+  if (!ad) {
+    return null;
+  }
+  
   const form = useForm<AdFormValues>({
     resolver: zodResolver(adSchema),
     defaultValues: {
-      name: ad.name,
-      type: ad.type,
-      placement: ad.placement,
-      content: ad.content,
-      cta_text: ad.cta_text,
-      start_date: ad.start_date,
-      end_date: ad.end_date,
-      discount_strategy_id: ad.discount_strategy_id,
-      image_url: ad.image_url,
-      video_url: ad.video_url,
+      name: ad.name || '',
+      type: ad.type || '',
+      placement: ad.placement || 'home',
+      content: ad.content || '',
+      cta_text: ad.cta_text || '',
+      start_date: ad.start_date || '',
+      end_date: ad.end_date || '',
+      discount_strategy_id: ad.discount_strategy_id || undefined,
+      image_url: ad.image_url || '',
+      video_url: ad.video_url || '',
     },
   });
 
