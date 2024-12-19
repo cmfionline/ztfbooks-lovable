@@ -5,8 +5,6 @@ import { format, differenceInDays } from "date-fns";
 import { PriceManagement } from "./pricing/PriceManagement";
 import { DiscountAnalytics } from "./analytics/DiscountAnalytics";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
-import EditAdDialog from "./EditAdDialog";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
@@ -18,7 +16,6 @@ interface AdsListProps {
 }
 
 export const AdsList = ({ ads, onDeleteAd, onEdit }: AdsListProps) => {
-  const [editingAd, setEditingAd] = useState<any>(null);
   const queryClient = useQueryClient();
 
   const isDiscountExpiringSoon = (endDate: string) => {
@@ -68,95 +65,79 @@ export const AdsList = ({ ads, onDeleteAd, onEdit }: AdsListProps) => {
     );
   }
 
-  const handleEdit = (ad: any) => {
-    if (onEdit) {
-      onEdit(ad.id);
-    } else {
-      setEditingAd(ad);
-    }
-  };
-
   return (
-    <>
-      <div className="space-y-4">
-        {ads.map((ad) => (
-          <Card key={ad.id} className="hover:shadow-lg transition-shadow">
-            <CardContent className="flex items-center justify-between p-6">
-              <div className="space-y-2 flex-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="font-semibold">{ad.name}</h3>
-                  {ad.discount_type && isDiscountExpiringSoon(ad.discount_end_date) && (
-                    <Badge variant="destructive" className="animate-pulse">
-                      <Bell className="h-3 w-3 mr-1" />
-                      Expires Soon
-                    </Badge>
-                  )}
+    <div className="space-y-4">
+      {ads.map((ad) => (
+        <Card key={ad.id} className="hover:shadow-lg transition-shadow">
+          <CardContent className="flex items-center justify-between p-6">
+            <div className="space-y-2 flex-1">
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold">{ad.name}</h3>
+                {ad.discount_type && isDiscountExpiringSoon(ad.discount_end_date) && (
+                  <Badge variant="destructive" className="animate-pulse">
+                    <Bell className="h-3 w-3 mr-1" />
+                    Expires Soon
+                  </Badge>
+                )}
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {ad.type} • {ad.placement} • {ad.is_active ? "Active" : "Inactive"}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Duration: {format(new Date(ad.start_date), 'PP')} - {format(new Date(ad.end_date), 'PP')}
+              </p>
+              {ad.discount_type && (
+                <p className="text-sm text-muted-foreground">
+                  Discount: {ad.discount_type === 'percentage' ? `${ad.discount_value}%` : `$${ad.discount_value}`}
+                </p>
+              )}
+              {ad.image_url && (
+                <div className="mt-4">
+                  <img 
+                    src={ad.image_url} 
+                    alt={ad.name}
+                    className="w-32 h-32 object-cover rounded-lg shadow-sm"
+                  />
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  {ad.type} • {ad.placement} • {ad.is_active ? "Active" : "Inactive"}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Duration: {format(new Date(ad.start_date), 'PP')} - {format(new Date(ad.end_date), 'PP')}
-                </p>
-                {ad.discount_type && (
-                  <p className="text-sm text-muted-foreground">
-                    Discount: {ad.discount_type === 'percentage' ? `${ad.discount_value}%` : `$${ad.discount_value}`}
-                  </p>
-                )}
-                {ad.image_url && (
-                  <div className="mt-4">
-                    <img 
-                      src={ad.image_url} 
-                      alt={ad.name}
-                      className="w-32 h-32 object-cover rounded-lg shadow-sm"
-                    />
-                  </div>
-                )}
-                <PriceManagement adId={ad.id} />
-              </div>
-              <div className="flex gap-2">
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
-                >
-                  <Eye className="h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => handleEdit(ad)}
-                  className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => handleDuplicate(ad)}
-                  className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => onDeleteAd(ad.id)}
-                  className="hover:bg-red-50 text-red-600 focus:ring-2 focus:ring-red-500/50"
-                >
-                  <Trash className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <EditAdDialog 
-        open={!!editingAd} 
-        onOpenChange={(open) => !open && setEditingAd(null)}
-        ad={editingAd}
-      />
-    </>
+              )}
+              <PriceManagement adId={ad.id} />
+            </div>
+            <div className="flex gap-2">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
+              >
+                <Eye className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => onEdit?.(ad.id)}
+                className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => handleDuplicate(ad)}
+                className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => onDeleteAd(ad.id)}
+                className="hover:bg-red-50 text-red-600 focus:ring-2 focus:ring-red-500/50"
+              >
+                <Trash className="h-4 w-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   );
 };
