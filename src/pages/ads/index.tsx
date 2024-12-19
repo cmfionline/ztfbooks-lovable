@@ -52,6 +52,11 @@ const Ads = () => {
     }
   };
 
+  const handleEdit = (adId: string) => {
+    setShowCreateForm(false); // Hide create form if it's open
+    setEditingAdId(adId);
+  };
+
   return (
     <div className="page-container">
       <div className="page-content">
@@ -106,7 +111,7 @@ const Ads = () => {
             {!isLoading && !editingAdId && !showCreateForm && (
               <AdsList 
                 ads={ads || []} 
-                onEdit={setEditingAdId}
+                onEdit={handleEdit}
                 onDeleteAd={handleDelete}
               />
             )}
