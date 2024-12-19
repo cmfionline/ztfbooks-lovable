@@ -44,13 +44,6 @@ const Ads = () => {
       <div className="page-content">
         <div className="page-header">
           <h1 className="page-title">Advertisements</h1>
-          <Button 
-            onClick={() => setShowCreateForm(v => !v)}
-            className="bg-purple hover:bg-purple/90 text-white"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            {showCreateForm ? 'Cancel' : 'New Ad'}
-          </Button>
         </div>
 
         <Tabs defaultValue="ads" className="space-y-4">
@@ -60,6 +53,18 @@ const Ads = () => {
           </TabsList>
 
           <TabsContent value="ads" className="space-y-6">
+            {!showCreateForm && (
+              <div className="flex justify-end">
+                <Button 
+                  onClick={() => setShowCreateForm(true)}
+                  className="bg-purple hover:bg-purple/90 text-white"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create New Ad
+                </Button>
+              </div>
+            )}
+
             {showCreateForm && (
               <Card className="p-6">
                 <AdForm 
