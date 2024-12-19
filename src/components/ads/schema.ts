@@ -54,6 +54,8 @@ export const adSchema = z.object({
   target_audience: z.record(z.any()).optional(),
   ab_test_group: z.string().optional(),
   discount_strategy_id: z.string().uuid("Please select a valid discount strategy").optional(),
+  image_url: z.string().optional(),
+  video_url: z.string().optional(),
 });
 
 export type AdFormValues = z.infer<typeof adSchema>;

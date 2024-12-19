@@ -16,7 +16,7 @@ import { Loader2 } from "lucide-react";
 interface EditAdDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  ad: AdFormValues & { id: string };
+  ad: AdFormValues & { id: string; image_url?: string; video_url?: string };
 }
 
 const EditAdDialog = ({ open, onOpenChange, ad }: EditAdDialogProps) => {
@@ -33,6 +33,8 @@ const EditAdDialog = ({ open, onOpenChange, ad }: EditAdDialogProps) => {
       start_date: ad.start_date,
       end_date: ad.end_date,
       discount_strategy_id: ad.discount_strategy_id,
+      image_url: ad.image_url,
+      video_url: ad.video_url,
     },
   });
 
