@@ -1,11 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Eye, Settings, Trash, Bell } from "lucide-react";
-import { format, differenceInDays, addDays } from "date-fns";
+import { Eye, Settings, Trash, Bell, Pencil } from "lucide-react";
+import { format, differenceInDays } from "date-fns";
 import { PriceManagement } from "./pricing/PriceManagement";
 import { DiscountAnalytics } from "./analytics/DiscountAnalytics";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
 
 interface AdsListProps {
   ads: any[];
@@ -18,6 +20,14 @@ export const AdsList = ({ ads, viewMode, onDeleteAd }: AdsListProps) => {
     if (!endDate) return false;
     const daysUntilExpiry = differenceInDays(new Date(endDate), new Date());
     return daysUntilExpiry >= 0 && daysUntilExpiry <= 3;
+  };
+
+  const handleEdit = (adId: string) => {
+    // For now just show a toast until edit form is implemented
+    toast({
+      title: "Edit functionality coming soon",
+      description: "The edit form for ads is under development.",
+    });
   };
 
   if (!ads?.length) {
@@ -54,9 +64,10 @@ export const AdsList = ({ ads, viewMode, onDeleteAd }: AdsListProps) => {
                 <Button 
                   variant="ghost" 
                   size="icon"
+                  onClick={() => handleEdit(ad.id)}
                   className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
                 >
-                  <Settings className="h-4 w-4" />
+                  <Pencil className="h-4 w-4" />
                 </Button>
                 <Button 
                   variant="ghost" 
@@ -115,8 +126,8 @@ export const AdsList = ({ ads, viewMode, onDeleteAd }: AdsListProps) => {
     <div className="space-y-4">
       {ads.map((ad) => (
         <Card key={ad.id} className="hover:shadow-lg transition-shadow">
-          <CardContent className="flex items-center justify-between p-4">
-            <div>
+          <CardContent className="flex items-center justify-between p-6">
+            <div className="space-y-2 flex-1">
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold">{ad.name}</h3>
                 {ad.discount_type && isDiscountExpiringSoon(ad.discount_end_date) && (
@@ -129,6 +140,14 @@ export const AdsList = ({ ads, viewMode, onDeleteAd }: AdsListProps) => {
               <p className="text-sm text-muted-foreground">
                 {ad.type} • {ad.placement} • {ad.is_active ? "Active" : "Inactive"}
               </p>
+              <p className="text-sm text-muted-foreground">
+                Duration: {format(new Date(ad.start_date), 'PP')} - {format(new Date(ad.end_date), 'PP')}
+              </p>
+              {ad.discount_type && (
+                <p className="text-sm text-muted-foreground">
+                  Discount: {ad.discount_type === 'percentage' ? `${ad.discount_value}%` : `$${ad.discount_value}`}
+                </p>
+              )}
               <PriceManagement adId={ad.id} />
             </div>
             <div className="flex gap-2">
@@ -142,9 +161,10 @@ export const AdsList = ({ ads, viewMode, onDeleteAd }: AdsListProps) => {
               <Button 
                 variant="ghost" 
                 size="icon"
+                onClick={() => handleEdit(ad.id)}
                 className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
               >
-                <Settings className="h-4 w-4" />
+                <Pencil className="h-4 w-4" />
               </Button>
               <Button 
                 variant="ghost" 
