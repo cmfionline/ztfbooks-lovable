@@ -8,12 +8,13 @@ import { AdsList } from "@/components/ads/AdsList";
 import { AdTypesTabContent } from "@/components/ads/tabs/AdTypesTabContent";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const Ads = () => {
   const [editingAdId, setEditingAdId] = useState<string | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
 
-  const { data: ads, isLoading } = useQuery({
+  const { data: ads, isLoading, refetch } = useQuery({
     queryKey: ['ads'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -34,8 +35,20 @@ const Ads = () => {
         .eq('id', id);
 
       if (error) throw error;
+      
+      toast({
+        title: "Success",
+        description: "Ad deleted successfully",
+      });
+      
+      refetch();
     } catch (error: any) {
       console.error('Error deleting ad:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete ad",
+        variant: "destructive",
+      });
     }
   };
 
@@ -68,7 +81,10 @@ const Ads = () => {
             {showCreateForm && (
               <Card className="p-6">
                 <AdForm 
-                  onSuccess={() => setShowCreateForm(false)}
+                  onSuccess={() => {
+                    setShowCreateForm(false);
+                    refetch();
+                  }}
                   onCancel={() => setShowCreateForm(false)}
                 />
               </Card>
@@ -78,7 +94,10 @@ const Ads = () => {
               <Card className="p-6">
                 <AdForm 
                   ad={ads?.find(ad => ad.id === editingAdId)}
-                  onSuccess={() => setEditingAdId(null)}
+                  onSuccess={() => {
+                    setEditingAdId(null);
+                    refetch();
+                  }}
                   onCancel={() => setEditingAdId(null)}
                 />
               </Card>
