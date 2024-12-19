@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
 const adStyles = [
-  "bg-gradient-to-r from-purple-100 to-purple-50 border-purple-200",
-  "bg-gradient-to-r from-blue-100 to-blue-50 border-blue-200",
-  "bg-gradient-to-r from-pink-100 to-pink-50 border-pink-200",
-  "bg-gradient-to-r from-green-100 to-green-50 border-green-200",
+  "bg-gradient-to-r from-purple-50 to-purple-100/50 border-purple-100",
+  "bg-gradient-to-r from-blue-50 to-blue-100/50 border-blue-100",
+  "bg-gradient-to-r from-pink-50 to-pink-100/50 border-pink-100",
+  "bg-gradient-to-r from-green-50 to-green-100/50 border-green-100",
 ];
 
 export const CategoryAds = () => {
@@ -31,30 +31,30 @@ export const CategoryAds = () => {
   if (!ads?.length) return null;
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
       {ads.map((ad, index) => (
         <Card 
           key={ad.id} 
-          className={`${adStyles[index % adStyles.length]} border hover:shadow-md transition-shadow`}
+          className={`${adStyles[index % adStyles.length]} border hover:shadow-sm transition-shadow`}
         >
           <CardContent className="flex items-center gap-4 p-4">
             {ad.image_url && (
               <img 
                 src={ad.image_url} 
                 alt={ad.name}
-                className="w-20 h-20 object-cover rounded-lg shadow-sm"
+                className="w-16 h-16 object-cover rounded-lg shadow-sm"
               />
             )}
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-gray-900 mb-1 truncate">{ad.name}</h3>
-              <p className="text-sm text-gray-600 line-clamp-2">{ad.content}</p>
+              <h3 className="font-medium text-gray-900 mb-1 truncate text-sm">{ad.name}</h3>
+              <p className="text-xs text-gray-600 line-clamp-2">{ad.content}</p>
               {ad.cta_text && (
                 <Button 
                   variant="ghost" 
-                  className="mt-2 p-0 h-auto text-sm font-medium text-purple-600 hover:text-purple-700 hover:bg-transparent"
+                  className="mt-2 p-0 h-auto text-xs font-medium text-purple hover:text-purple-700 hover:bg-transparent"
                 >
                   {ad.cta_text}
-                  <ArrowRight className="w-4 h-4 ml-1" />
+                  <ArrowRight className="w-3 h-3 ml-1" />
                 </Button>
               )}
             </div>

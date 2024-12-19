@@ -1,9 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, ExternalLink } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Carousel,
   CarouselContent,
@@ -11,6 +7,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Button } from "@/components/ui/button";
+import { ExternalLink } from "lucide-react";
 
 const adVariants = {
   primary: "from-purple-600 to-purple-900",
@@ -22,7 +20,7 @@ const adVariants = {
 type AdVariant = keyof typeof adVariants;
 
 export const HomeAds = () => {
-  const { data: ads, isLoading } = useQuery({
+  const { data: ads } = useQuery({
     queryKey: ['portal-ads', 'home'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -38,16 +36,6 @@ export const HomeAds = () => {
     },
   });
 
-  if (isLoading) {
-    return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {[...Array(3)].map((_, i) => (
-          <Skeleton key={i} className="h-[300px] rounded-xl" />
-        ))}
-      </div>
-    );
-  }
-
   if (!ads?.length) return null;
 
   return (
@@ -56,15 +44,15 @@ export const HomeAds = () => {
         align: "start",
         loop: true,
       }}
-      className="w-full"
+      className="w-full max-w-[1400px] mx-auto"
     >
       <CarouselContent>
         {ads.map((ad, index) => {
           const variant = Object.keys(adVariants)[index % Object.keys(adVariants).length] as AdVariant;
           
           return (
-            <CarouselItem key={ad.id} className="md:basis-1/2 lg:basis-1/3">
-              <Card className="overflow-hidden group relative h-[300px] border-none shadow-lg">
+            <CarouselItem key={ad.id} className="basis-full lg:basis-1/2">
+              <div className="relative h-[300px] md:h-[400px] overflow-hidden rounded-lg">
                 {ad.image_url ? (
                   <div className="absolute inset-0">
                     <img
@@ -78,8 +66,8 @@ export const HomeAds = () => {
                   <div className={`absolute inset-0 bg-gradient-to-r ${adVariants[variant]}`} />
                 )}
 
-                <CardContent className="relative h-full flex flex-col justify-end p-6 text-white">
-                  <div className="space-y-4">
+                <div className="relative h-full flex flex-col justify-end p-6 text-white">
+                  <div className="space-y-4 max-w-lg">
                     {ad.html_content ? (
                       <div 
                         dangerouslySetInnerHTML={{ __html: ad.html_content }}
@@ -87,7 +75,7 @@ export const HomeAds = () => {
                       />
                     ) : (
                       <>
-                        <h3 className="text-xl font-bold tracking-tight">{ad.name}</h3>
+                        <h3 className="text-2xl font-bold tracking-tight">{ad.name}</h3>
                         <p className="text-sm text-gray-200 line-clamp-2">{ad.content}</p>
                       </>
                     )}
@@ -102,8 +90,8 @@ export const HomeAds = () => {
                       </Button>
                     )}
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </CarouselItem>
           );
         })}

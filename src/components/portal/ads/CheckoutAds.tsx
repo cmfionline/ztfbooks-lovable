@@ -22,25 +22,25 @@ export const CheckoutAds = () => {
   if (!ads?.length) return null;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       {ads.map((ad) => (
-        <Card key={ad.id} className="bg-purple-light/10">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-4">
+        <Card key={ad.id} className="bg-purple-50/50">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-3">
               {ad.image_url && (
                 <img 
                   src={ad.image_url} 
                   alt={ad.name}
-                  className="w-16 h-16 object-cover rounded"
+                  className="w-12 h-12 object-cover rounded"
                 />
               )}
               <div>
-                <h3 className="font-semibold text-purple mb-1">{ad.name}</h3>
-                <p className="text-sm text-gray-600">{ad.content}</p>
+                <h3 className="font-medium text-sm text-purple mb-0.5">{ad.name}</h3>
+                <p className="text-xs text-gray-600">{ad.content}</p>
                 {ad.cta_text && (
                   <a 
                     href="#" 
-                    className="inline-block mt-2 text-sm text-purple hover:underline"
+                    className="inline-block mt-1 text-xs text-purple hover:underline"
                   >
                     {ad.cta_text}
                   </a>

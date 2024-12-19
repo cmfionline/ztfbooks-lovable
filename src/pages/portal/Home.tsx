@@ -12,75 +12,99 @@ import { CategoryAds } from "@/components/portal/ads/CategoryAds";
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       {/* Hero Section with Main Ads */}
-      <section className="relative">
+      <section className="relative bg-background">
         <HomeAds />
       </section>
 
-      {/* Featured & Promotional Content */}
-      <div className="container mx-auto px-4 py-8 space-y-12">
-        {/* Special Offers Grid */}
-        <section className="grid gap-6 md:grid-cols-2">
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-purple-900">Special Offers</h2>
+      {/* Main Content */}
+      <div className="max-w-[1400px] mx-auto px-4 py-8 space-y-12">
+        {/* Featured & Promotional Content */}
+        <section className="grid gap-6">
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-gray-900">Special Offers</h2>
             <PromotedBooks />
           </div>
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-purple-900">Hot Discounts</h2>
-            <HotDiscounts />
-          </div>
         </section>
 
-        {/* Category-specific Ads */}
-        <section className="bg-purple-50/50 -mx-4 px-4 py-8">
-          <div className="container mx-auto">
-            <CategoryAds />
-          </div>
+        {/* Category-specific Ads - Compact Row */}
+        <section className="py-6">
+          <CategoryAds />
         </section>
 
-        {/* Main Content Grid */}
-        <div className="grid gap-12">
-          {/* Featured & Recent */}
-          <section className="grid gap-8 md:grid-cols-2">
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-purple-900">Featured Books</h2>
-              <FeaturedBooks />
-            </div>
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-purple-900">New Arrivals</h2>
-              <RecentBooks />
-            </div>
-          </section>
+        {/* Hot Discounts - Horizontal Scroll */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-gray-900">Hot Deals</h2>
+            <a href="#" className="text-sm text-purple hover:text-purple-dark">View all</a>
+          </div>
+          <HotDiscounts />
+        </section>
 
-          {/* Recently Viewed & Top Selling */}
-          <section className="grid gap-8 md:grid-cols-2">
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-purple-900">Recently Viewed</h2>
-              <RecentlyViewed />
+        {/* Featured & Recent Grid */}
+        <div className="grid gap-8 md:grid-cols-2">
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">Featured</h2>
+              <a href="#" className="text-sm text-purple hover:text-purple-dark">View all</a>
             </div>
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-purple-900">Top Selling</h2>
-              <TopSellingBooks />
-            </div>
+            <FeaturedBooks />
           </section>
-
-          {/* Trending Section */}
-          <section className="space-y-6">
-            <h2 className="text-2xl font-bold text-purple-900">Trending Now</h2>
-            <TrendingBooks />
+          
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">New Releases</h2>
+              <a href="#" className="text-sm text-purple hover:text-purple-dark">View all</a>
+            </div>
+            <RecentBooks />
           </section>
+        </div>
 
-          {/* Authors & Series Grid */}
-          <section className="grid gap-8 md:grid-cols-2">
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-purple-900">Popular Authors</h2>
-              <PopularAuthors />
+        {/* Trending Section - Full Width */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-gray-900">Trending Now</h2>
+            <a href="#" className="text-sm text-purple hover:text-purple-dark">View all</a>
+          </div>
+          <TrendingBooks />
+        </section>
+
+        {/* Recently Viewed & Top Selling Grid */}
+        <div className="grid gap-8 md:grid-cols-2">
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">Recently Viewed</h2>
+              <a href="#" className="text-sm text-purple hover:text-purple-dark">Clear</a>
             </div>
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-purple-900">Popular Series</h2>
-              <PopularSeries />
+            <RecentlyViewed />
+          </section>
+          
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">Top Selling</h2>
+              <a href="#" className="text-sm text-purple hover:text-purple-dark">View all</a>
             </div>
+            <TopSellingBooks />
+          </section>
+        </div>
+
+        {/* Authors & Series Grid */}
+        <div className="grid gap-8 md:grid-cols-2">
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">Popular Authors</h2>
+              <a href="#" className="text-sm text-purple hover:text-purple-dark">View all</a>
+            </div>
+            <PopularAuthors />
+          </section>
+          
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">Popular Series</h2>
+              <a href="#" className="text-sm text-purple hover:text-purple-dark">View all</a>
+            </div>
+            <PopularSeries />
           </section>
         </div>
       </div>
