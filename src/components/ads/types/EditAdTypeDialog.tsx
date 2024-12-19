@@ -22,40 +22,51 @@ export const EditAdTypeDialog = ({
   adType,
   onSuccess,
 }: EditAdTypeDialogProps) => {
+  // Return early if no adType is provided
+  if (!adType?.id) {
+    return null;
+  }
+
   const form = useForm<AdTypeFormValues>({
     resolver: zodResolver(adTypeSchema),
-    values: adType ? {
+    values: {
       name: adType.name,
       type: adType.type,
       description: adType.description || "",
-      status: adType.status,
-    } : undefined,
+      status: adType.status || "active",
+    },
   });
 
   const onSubmit = async (values: AdTypeFormValues) => {
-    if (!adType) return;
+    try {
+      const { error } = await supabase
+        .from('ad_types')
+        .update(values)
+        .eq('id', adType.id);
 
-    const { error } = await supabase
-      .from('ad_types')
-      .update(values)
-      .eq('id', adType.id);
+      if (error) {
+        toast({
+          title: "Error updating ad type",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
 
-    if (error) {
       toast({
-        title: "Error updating ad type",
-        description: error.message,
+        title: "Success",
+        description: "Ad type updated successfully",
+      });
+
+      onSuccess();
+      onOpenChange(false);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "An error occurred while updating the ad type",
         variant: "destructive",
       });
-      return;
     }
-
-    toast({
-      title: "Success",
-      description: "Ad type updated successfully",
-    });
-
-    onSuccess();
-    onOpenChange(false);
   };
 
   return (
@@ -67,7 +78,9 @@ export const EditAdTypeDialog = ({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <AdTypeForm control={form.control} />
-            <Button type="submit">Update Ad Type</Button>
+            <div className="flex justify-end">
+              <Button type="submit">Update Ad Type</Button>
+            </div>
           </form>
         </Form>
       </DialogContent>
