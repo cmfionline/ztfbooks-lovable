@@ -2,14 +2,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { NotifyNewDiscount } from "@/components/notifications/NotifyNewDiscount";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/hooks/use-toast";
 import { discountStrategySchema, type DiscountStrategyFormValues } from "../schema";
 import { DiscountStrategyBasicInfo } from "./DiscountStrategyBasicInfo";
 import { DiscountStrategyRules } from "./DiscountStrategyRules";
-import { DiscountDateFields } from "./discount/DiscountDateFields";
+import { DiscountDateFields } from "./DiscountDateFields";
 
 export type DiscountStrategyFormProps = {
   onSubmit?: (values: DiscountStrategyFormValues) => void;
