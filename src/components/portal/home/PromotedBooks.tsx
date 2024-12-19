@@ -1,23 +1,31 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { Skeleton } from "@/components/ui/skeleton";
-import { PromotionalBanner } from "./PromotionalBanner";
+import { BookCard } from "@/components/books/components/BookCard";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import { useRef } from "react";
 
 export const PromotedBooks = () => {
-  const { data: promotedBooks, isLoading } = useQuery({
+  const plugin = useRef(
+    Autoplay({ delay: 4000, stopOnInteraction: true })
+  );
+
+  const { data: promotedBooks } = useQuery({
     queryKey: ["promoted-books"],
     queryFn: async () => {
-      const now = new Date().toISOString();
       const { data, error } = await supabase
         .from("books")
         .select(`
           *,
           authors (name)
         `)
-        .not('discount_percentage', 'is', null)
-        .gte('discount_end_date', now)
-        .lte('discount_start_date', now)
-        .order('discount_percentage', { ascending: false })
+        .eq("is_featured", true)
         .limit(3);
 
       if (error) throw error;
@@ -25,21 +33,44 @@ export const PromotedBooks = () => {
     },
   });
 
-  if (isLoading) {
-    return (
-      <div className="space-y-4">
-        {[...Array(2)].map((_, i) => (
-          <Skeleton key={i} className="h-48 w-full" />
-        ))}
-      </div>
-    );
-  }
+  if (!promotedBooks?.length) return null;
 
   return (
-    <div className="space-y-4">
-      {promotedBooks?.map((book) => (
-        <PromotionalBanner key={book.id} book={book} />
-      ))}
-    </div>
+    <section className="py-6">
+      <div className="max-w-[1400px] mx-auto px-4">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-gray-900">Special Offers</h2>
+          <a href="#" className="text-sm text-purple hover:text-purple-dark">
+            View all
+          </a>
+        </div>
+        
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          plugins={[plugin.current]}
+          className="w-full"
+        >
+          <CarouselContent className="-ml-2 md:-ml-4">
+            {promotedBooks.map((book) => (
+              <CarouselItem key={book.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3">
+                <div className="h-full">
+                  <BookCard
+                    book={book}
+                    aspectRatio="square"
+                    width="full"
+                    className="h-full"
+                  />
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+      </div>
+    </section>
   );
 };
