@@ -71,7 +71,10 @@ export const DiscountStrategiesList = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Discount Strategies</h2>
         <Button 
-          onClick={() => setShowForm(true)}
+          onClick={() => {
+            setEditingStrategy(null);
+            setShowForm(true);
+          }}
           className="bg-primary hover:bg-primary/90"
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -84,9 +87,13 @@ export const DiscountStrategiesList = () => {
           <DiscountStrategyForm
             onSuccess={() => {
               setShowForm(false);
+              setEditingStrategy(null);
               refetch();
             }}
-            onCancel={() => setShowForm(false)}
+            onCancel={() => {
+              setShowForm(false);
+              setEditingStrategy(null);
+            }}
             editingStrategy={editingStrategy}
           />
         </div>

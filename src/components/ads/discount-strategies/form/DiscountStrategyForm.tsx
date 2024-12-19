@@ -1,26 +1,18 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { NotifyNewDiscount } from "@/components/notifications/NotifyNewDiscount";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/hooks/use-toast";
-
-const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  value: z.number().min(0, "Value must be greater than or equal to 0"),
-  type: z.enum(["percentage", "fixed"]),
-  books: z.array(z.object({
-    title: z.string(),
-  })).optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { discountStrategySchema, type DiscountStrategyFormValues } from "../schema";
+import { DiscountStrategyBasicInfo } from "./DiscountStrategyBasicInfo";
+import { DiscountStrategyRules } from "./DiscountStrategyRules";
+import { DiscountDateFields } from "./discount/DiscountDateFields";
 
 export type DiscountStrategyFormProps = {
-  onSubmit?: (values: FormValues) => void;
+  onSubmit?: (values: DiscountStrategyFormValues) => void;
   onSuccess?: () => void;
   onCancel?: () => void;
   editingStrategy?: any;
@@ -28,19 +20,22 @@ export type DiscountStrategyFormProps = {
 
 export const DiscountStrategyForm = ({ onSubmit, onSuccess, onCancel, editingStrategy }: DiscountStrategyFormProps) => {
   const [newDiscount, setNewDiscount] = useState<any>(null);
-  const [affectedBooks, setAffectedBooks] = useState<string[]>([]);
   
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<DiscountStrategyFormValues>({
+    resolver: zodResolver(discountStrategySchema),
     defaultValues: {
       name: editingStrategy?.name || "",
+      type: editingStrategy?.type || "percentage",
       value: editingStrategy?.value || 0,
-      type: editingStrategy?.type || "fixed",
-      books: [],
+      min_purchase_amount: editingStrategy?.min_purchase_amount || 0,
+      min_books_count: editingStrategy?.min_books_count || 0,
+      is_stackable: editingStrategy?.is_stackable || false,
+      start_date: editingStrategy?.start_date || "",
+      end_date: editingStrategy?.end_date || "",
     },
   });
 
-  const handleSubmit = async (values: FormValues) => {
+  const handleSubmit = async (values: DiscountStrategyFormValues) => {
     try {
       if (onSubmit) {
         await onSubmit(values);
@@ -66,8 +61,6 @@ export const DiscountStrategyForm = ({ onSubmit, onSuccess, onCancel, editingStr
           type: values.type
         });
         
-        setAffectedBooks(values.books?.map(book => book.title) || []);
-        
         toast({
           title: "Success",
           description: `Discount strategy ${editingStrategy ? 'updated' : 'created'} successfully`,
@@ -89,66 +82,17 @@ export const DiscountStrategyForm = ({ onSubmit, onSuccess, onCancel, editingStr
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-primary">Discount Name</FormLabel>
-              <FormControl>
-                <input {...field} className="border-purple-light focus:border-purple focus:ring-purple" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="value"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-primary">Discount Value</FormLabel>
-              <FormControl>
-                <input
-                  type="number"
-                  {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                  className="border-purple-light focus:border-purple focus:ring-purple"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="type"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-primary">Discount Type</FormLabel>
-              <FormControl>
-                <select {...field} className="border-purple-light focus:border-purple focus:ring-purple">
-                  <option value="fixed">Fixed Amount</option>
-                  <option value="percentage">Percentage</option>
-                </select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <DiscountStrategyBasicInfo control={form.control} />
+        <DiscountStrategyRules control={form.control} discountType={form.watch("type")} />
+        <DiscountDateFields control={form.control} />
 
         {newDiscount && (
-          <div className="mt-4 flex justify-end">
-            <NotifyNewDiscount
-              discountName={newDiscount.name}
-              discountId={newDiscount.id}
-              discountValue={newDiscount.value}
-              discountType={newDiscount.type}
-              bookTitles={affectedBooks}
-            />
-          </div>
+          <NotifyNewDiscount
+            discountName={newDiscount.name}
+            discountId={newDiscount.id}
+            discountValue={newDiscount.value}
+            discountType={newDiscount.type}
+          />
         )}
 
         <div className="flex gap-4">
