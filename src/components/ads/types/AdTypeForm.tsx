@@ -1,96 +1,124 @@
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Control } from "react-hook-form";
-import { AdTypeFormValues } from "./schema";
+import { supabase } from "@/lib/supabase";
+import { toast } from "@/hooks/use-toast";
 
-interface AdTypeFormProps {
-  control: Control<AdTypeFormValues>;
+const formSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  type: z.string().min(2, "Type must be at least 2 characters"),
+  description: z.string().optional(),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
+export interface AdTypeFormProps {
+  onSuccess?: () => void;
+  onCancel?: () => void;
 }
 
-export const AdTypeForm = ({ control }: AdTypeFormProps) => {
+export const AdTypeForm = ({ onSuccess, onCancel }: AdTypeFormProps) => {
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      type: "",
+      description: "",
+    },
+  });
+
+  const onSubmit = async (values: FormValues) => {
+    try {
+      const { error } = await supabase
+        .from('ad_types')
+        .insert([values]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Ad type created successfully",
+      });
+      
+      form.reset();
+      onSuccess?.();
+    } catch (error: any) {
+      console.error("Error creating ad type:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create ad type",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
-    <div className="space-y-4">
-      <FormField
-        control={control}
-        name="name"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Name</FormLabel>
-            <FormControl>
-              <Input placeholder="e.g., Banner Ad" {...field} />
-            </FormControl>
-            <FormDescription>
-              A descriptive name for this ad type
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={control}
-        name="type"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Type Identifier</FormLabel>
-            <FormControl>
-              <Input placeholder="e.g., banner" {...field} />
-            </FormControl>
-            <FormDescription>
-              A unique identifier using only lowercase letters, numbers, and underscores
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={control}
-        name="description"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Description</FormLabel>
-            <FormControl>
-              <Textarea 
-                placeholder="Describe this ad type..." 
-                className="resize-none h-20"
-                {...field} 
-              />
-            </FormControl>
-            <FormDescription>
-              Optional description of this ad type's purpose and usage
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={control}
-        name="status"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Status</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
+                <Input {...field} placeholder="e.g., Banner Ad" />
               </FormControl>
-              <SelectContent>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="inactive">Inactive</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormDescription>
-              Control whether this ad type is available for use
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Type Identifier</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="e.g., banner" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="Optional description..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="flex gap-4">
+          {onCancel && (
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={onCancel}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+          )}
+          <Button 
+            type="submit"
+            className="flex-1 bg-purple hover:bg-purple/90 text-white"
+          >
+            Create Ad Type
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 };
