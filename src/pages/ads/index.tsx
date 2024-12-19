@@ -6,9 +6,12 @@ import { supabase } from "@/lib/supabase";
 import { Card } from "@/components/ui/card";
 import { AdsList } from "@/components/ads/AdsList";
 import { AdTypesTabContent } from "@/components/ads/tabs/AdTypesTabContent";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 const Ads = () => {
   const [editingAdId, setEditingAdId] = useState<string | null>(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   const { data: ads, isLoading } = useQuery({
     queryKey: ['ads'],
@@ -50,6 +53,27 @@ const Ads = () => {
           </TabsList>
 
           <TabsContent value="ads" className="space-y-6">
+            {!showCreateForm && !editingAdId && (
+              <div className="flex justify-end">
+                <Button 
+                  onClick={() => setShowCreateForm(true)}
+                  className="bg-purple hover:bg-purple/90 text-white"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create New Ad
+                </Button>
+              </div>
+            )}
+
+            {showCreateForm && (
+              <Card className="p-6">
+                <AdForm 
+                  onSuccess={() => setShowCreateForm(false)}
+                  onCancel={() => setShowCreateForm(false)}
+                />
+              </Card>
+            )}
+
             {editingAdId && (
               <Card className="p-6">
                 <AdForm 
@@ -60,7 +84,7 @@ const Ads = () => {
               </Card>
             )}
 
-            {!isLoading && !editingAdId && (
+            {!isLoading && !editingAdId && !showCreateForm && (
               <AdsList 
                 ads={ads || []} 
                 onEdit={setEditingAdId}
