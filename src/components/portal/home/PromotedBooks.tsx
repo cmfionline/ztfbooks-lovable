@@ -8,12 +8,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
+import AutoPlay from "embla-carousel-autoplay";
 import { useRef } from "react";
 
 export const PromotedBooks = () => {
   const plugin = useRef(
-    Autoplay({ delay: 4000, stopOnInteraction: true })
+    AutoPlay({ delay: 4000, stopOnInteraction: true })
   );
 
   const { data: promotedBooks } = useQuery({
