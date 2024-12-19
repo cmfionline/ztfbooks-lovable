@@ -13,9 +13,10 @@ interface AdsListProps {
   ads: any[];
   viewMode: 'grid' | 'list';
   onDeleteAd: (id: string) => void;
+  onEdit?: (adId: string) => void;
 }
 
-export const AdsList = ({ ads, viewMode, onDeleteAd }: AdsListProps) => {
+export const AdsList = ({ ads, viewMode, onDeleteAd, onEdit }: AdsListProps) => {
   const [editingAd, setEditingAd] = useState<any>(null);
 
   const isDiscountExpiringSoon = (endDate: string) => {
@@ -31,6 +32,14 @@ export const AdsList = ({ ads, viewMode, onDeleteAd }: AdsListProps) => {
       </div>
     );
   }
+
+  const handleEdit = (ad: any) => {
+    if (onEdit) {
+      onEdit(ad.id);
+    } else {
+      setEditingAd(ad);
+    }
+  };
 
   return (
     <>
@@ -60,7 +69,7 @@ export const AdsList = ({ ads, viewMode, onDeleteAd }: AdsListProps) => {
                     <Button 
                       variant="ghost" 
                       size="icon"
-                      onClick={() => setEditingAd(ad)}
+                      onClick={() => handleEdit(ad)}
                       className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
                     >
                       <Pencil className="h-4 w-4" />
@@ -157,7 +166,7 @@ export const AdsList = ({ ads, viewMode, onDeleteAd }: AdsListProps) => {
                   <Button 
                     variant="ghost" 
                     size="icon"
-                    onClick={() => setEditingAd(ad)}
+                    onClick={() => handleEdit(ad)}
                     className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
                   >
                     <Pencil className="h-4 w-4" />
