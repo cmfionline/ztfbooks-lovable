@@ -9,7 +9,6 @@ import { toast } from "@/hooks/use-toast";
 import { discountStrategySchema, type DiscountStrategyFormValues } from "../schema";
 import { DiscountStrategyBasicInfo } from "./DiscountStrategyBasicInfo";
 import { DiscountStrategyRules } from "./DiscountStrategyRules";
-import { DiscountDateFields } from "./DiscountDateFields";
 
 export type DiscountStrategyFormProps = {
   onSubmit?: (values: DiscountStrategyFormValues) => void;
@@ -30,8 +29,6 @@ export const DiscountStrategyForm = ({ onSubmit, onSuccess, onCancel, editingStr
       min_purchase_amount: editingStrategy?.min_purchase_amount || null,
       min_books_count: editingStrategy?.min_books_count || null,
       is_stackable: editingStrategy?.is_stackable || false,
-      start_date: editingStrategy?.start_date || "",
-      end_date: editingStrategy?.end_date || "",
     },
   });
 
@@ -91,7 +88,6 @@ export const DiscountStrategyForm = ({ onSubmit, onSuccess, onCancel, editingStr
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <DiscountStrategyBasicInfo control={form.control} />
         <DiscountStrategyRules control={form.control} discountType={form.watch("type")} />
-        <DiscountDateFields control={form.control} />
 
         {newDiscount && (
           <NotifyNewDiscount
