@@ -113,7 +113,7 @@ export const AdsList = ({ ads, onDeleteAd, onEdit }: AdsListProps) => {
               <Button 
                 variant="ghost" 
                 size="icon"
-                onClick={() => onEdit?.(ad.id)}
+                onClick={() => onEdit && onEdit(ad.id)}
                 className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
               >
                 <Pencil className="h-4 w-4" />
