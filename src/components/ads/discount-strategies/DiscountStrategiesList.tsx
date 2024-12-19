@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, Edit, Trash2, Percent } from "lucide-react";
+import { Plus, Search, Edit, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
