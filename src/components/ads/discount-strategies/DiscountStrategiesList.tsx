@@ -25,7 +25,7 @@ export const DiscountStrategiesList = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('discount_strategies')
-        .select('*')
+        .select('id, name, type, value, min_purchase_amount, min_books_count, is_stackable')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
