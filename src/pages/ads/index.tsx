@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdForm } from "@/components/ads/form/AdForm";
 import { useQuery } from "@tanstack/react-query";
@@ -11,7 +9,6 @@ import { AdTypesTabContent } from "@/components/ads/tabs/AdTypesTabContent";
 
 const Ads = () => {
   const [editingAdId, setEditingAdId] = useState<string | null>(null);
-  const [showCreateForm, setShowCreateForm] = useState(false);
 
   const { data: ads, isLoading } = useQuery({
     queryKey: ['ads'],
@@ -53,27 +50,6 @@ const Ads = () => {
           </TabsList>
 
           <TabsContent value="ads" className="space-y-6">
-            {!showCreateForm && (
-              <div className="flex justify-end">
-                <Button 
-                  onClick={() => setShowCreateForm(true)}
-                  className="bg-purple hover:bg-purple/90 text-white"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create New Ad
-                </Button>
-              </div>
-            )}
-
-            {showCreateForm && (
-              <Card className="p-6">
-                <AdForm 
-                  onSuccess={() => setShowCreateForm(false)}
-                  onCancel={() => setShowCreateForm(false)}
-                />
-              </Card>
-            )}
-
             {editingAdId && (
               <Card className="p-6">
                 <AdForm 
@@ -84,7 +60,7 @@ const Ads = () => {
               </Card>
             )}
 
-            {!isLoading && !showCreateForm && !editingAdId && (
+            {!isLoading && !editingAdId && (
               <AdsList 
                 ads={ads || []} 
                 onEdit={setEditingAdId}
