@@ -66,6 +66,15 @@ export const AdsList = ({ ads, onDeleteAd, onEdit }: AdsListProps) => {
                     Discount: {ad.discount_type === 'percentage' ? `${ad.discount_value}%` : `$${ad.discount_value}`}
                   </p>
                 )}
+                {ad.image_url && (
+                  <div className="mt-4">
+                    <img 
+                      src={ad.image_url} 
+                      alt={ad.name}
+                      className="w-32 h-32 object-cover rounded-lg shadow-sm"
+                    />
+                  </div>
+                )}
                 <PriceManagement adId={ad.id} />
               </div>
               <div className="flex gap-2">

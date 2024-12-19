@@ -27,10 +27,7 @@ export const adSchema = z.object({
     .refine(file => ACCEPTED_VIDEO_TYPES.includes(file.type), "Only .mp4 and .webm formats are supported.")
     .optional(),
   start_date: z.string()
-    .min(1, "Start date is required")
-    .refine((date: string) => new Date(date) >= new Date(), {
-      message: "Start date must be in the future"
-    }),
+    .min(1, "Start date is required"),
   end_date: z.string()
     .min(1, "End date is required")
     .superRefine((date, ctx: z.RefinementCtx & { parent: any }) => {
