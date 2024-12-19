@@ -25,7 +25,7 @@ export const DiscountStrategiesList = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('discount_strategies')
-        .select('id, name, type, value, min_purchase_amount, min_books_count, is_stackable')
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -119,6 +119,8 @@ export const DiscountStrategiesList = () => {
               <TableHead>Min. Purchase</TableHead>
               <TableHead>Min. Books</TableHead>
               <TableHead>Stackable</TableHead>
+              <TableHead>Start Date</TableHead>
+              <TableHead>End Date</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -133,6 +135,8 @@ export const DiscountStrategiesList = () => {
                 <TableCell>${strategy.min_purchase_amount || 0}</TableCell>
                 <TableCell>{strategy.min_books_count || 0}</TableCell>
                 <TableCell>{strategy.is_stackable ? 'Yes' : 'No'}</TableCell>
+                <TableCell>{new Date(strategy.start_date).toLocaleDateString()}</TableCell>
+                <TableCell>{new Date(strategy.end_date).toLocaleDateString()}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <Button

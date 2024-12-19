@@ -893,36 +893,42 @@ export type Database = {
       discount_strategies: {
         Row: {
           created_at: string
+          end_date: string | null
           id: string
           is_active: boolean | null
           is_stackable: boolean | null
           min_books_count: number | null
           min_purchase_amount: number | null
           name: string
+          start_date: string | null
           type: Database["public"]["Enums"]["discount_strategy_type"]
           updated_at: string
           value: number
         }
         Insert: {
           created_at?: string
+          end_date?: string | null
           id?: string
           is_active?: boolean | null
           is_stackable?: boolean | null
           min_books_count?: number | null
           min_purchase_amount?: number | null
           name: string
+          start_date?: string | null
           type: Database["public"]["Enums"]["discount_strategy_type"]
           updated_at?: string
           value: number
         }
         Update: {
           created_at?: string
+          end_date?: string | null
           id?: string
           is_active?: boolean | null
           is_stackable?: boolean | null
           min_books_count?: number | null
           min_purchase_amount?: number | null
           name?: string
+          start_date?: string | null
           type?: Database["public"]["Enums"]["discount_strategy_type"]
           updated_at?: string
           value?: number
