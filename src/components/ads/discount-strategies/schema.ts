@@ -9,9 +9,15 @@ export const discountStrategySchema = z.object({
   }),
   value: z.number()
     .min(0, "Value must be greater than or equal to 0")
-    .refine((val) => val <= 100, {
-      message: "Percentage value must not exceed 100%",
-      only: ["percentage", "volume"],
+    .transform((val, ctx) => {
+      if (ctx.parent.type === "percentage" && val > 100) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Percentage value must not exceed 100%",
+        });
+        return z.NEVER;
+      }
+      return val;
     }),
   min_purchase_amount: z.number()
     .min(0, "Minimum purchase amount must be greater than or equal to 0")
@@ -26,11 +32,17 @@ export const discountStrategySchema = z.object({
   start_date: z.string().min(1, "Start date is required"),
   end_date: z.string()
     .min(1, "End date is required")
-    .refine((date, ctx) => {
+    .superRefine((date, ctx) => {
       const startDate = ctx.parent.start_date;
-      if (!startDate) return true;
-      return new Date(date) > new Date(startDate);
-    }, "End date must be after start date"),
+      if (!startDate) return;
+
+      if (new Date(date) <= new Date(startDate)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "End date must be after start date"
+        });
+      }
+    }),
 });
 
 export type DiscountStrategyFormValues = z.infer<typeof discountStrategySchema>;
