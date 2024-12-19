@@ -103,6 +103,8 @@ export const AdForm = ({ ad, onSuccess, onCancel }: AdFormProps) => {
             ...adData,
             image_url,
             video_url,
+            start_date: values.start_date,  // Explicitly include start_date
+            end_date: values.end_date,      // Explicitly include end_date
           })
           .eq('id', ad.id);
 
@@ -119,6 +121,8 @@ export const AdForm = ({ ad, onSuccess, onCancel }: AdFormProps) => {
             ...adData,
             image_url,
             video_url,
+            start_date: values.start_date,  // Explicitly include start_date
+            end_date: values.end_date,      // Explicitly include end_date
           }]);
 
         if (error) throw error;
