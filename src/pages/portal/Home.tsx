@@ -7,6 +7,7 @@ import { RecentBooks } from "@/components/portal/home/RecentBooks";
 import { RecentlyViewed } from "@/components/portal/home/RecentlyViewed";
 import { TopSellingBooks } from "@/components/portal/home/TopSellingBooks";
 import { TrendingBooks } from "@/components/portal/home/TrendingBooks";
+import { PromotedBooks } from "@/components/portal/home/PromotedBooks";
 
 const Home = () => {
   return (
@@ -14,6 +15,12 @@ const Home = () => {
       {/* Hero Section with Ads */}
       <section className="mb-12">
         <HomeAds />
+      </section>
+
+      {/* Promotional Banners */}
+      <section className="space-y-6">
+        <h2 className="text-2xl font-bold text-purple-900">Special Offers</h2>
+        <PromotedBooks />
       </section>
 
       {/* Featured Books Section */}
