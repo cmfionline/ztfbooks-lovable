@@ -1,12 +1,15 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Eye, Pencil, Trash, Bell } from "lucide-react";
+import { Eye, Pencil, Trash, Bell, Copy } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import { PriceManagement } from "./pricing/PriceManagement";
 import { DiscountAnalytics } from "./analytics/DiscountAnalytics";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import EditAdDialog from "./EditAdDialog";
+import { supabase } from "@/lib/supabase";
+import { toast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface AdsListProps {
   ads: any[];
@@ -16,11 +19,45 @@ interface AdsListProps {
 
 export const AdsList = ({ ads, onDeleteAd, onEdit }: AdsListProps) => {
   const [editingAd, setEditingAd] = useState<any>(null);
+  const queryClient = useQueryClient();
 
   const isDiscountExpiringSoon = (endDate: string) => {
     if (!endDate) return false;
     const daysUntilExpiry = differenceInDays(new Date(endDate), new Date());
     return daysUntilExpiry >= 0 && daysUntilExpiry <= 3;
+  };
+
+  const handleDuplicate = async (ad: any) => {
+    try {
+      // Remove id and timestamps from the ad object
+      const { id, created_at, updated_at, ...adData } = ad;
+      
+      // Create a new ad with the same data
+      const { data: newAd, error } = await supabase
+        .from('ads')
+        .insert([{
+          ...adData,
+          name: `${adData.name} (Copy)`,
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Advertisement duplicated successfully",
+      });
+
+      // Refresh the ads list
+      queryClient.invalidateQueries({ queryKey: ['ads'] });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to duplicate advertisement",
+        variant: "destructive",
+      });
+    }
   };
 
   if (!ads?.length) {
@@ -92,6 +129,14 @@ export const AdsList = ({ ads, onDeleteAd, onEdit }: AdsListProps) => {
                   className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
                 >
                   <Pencil className="h-4 w-4" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => handleDuplicate(ad)}
+                  className="hover:bg-purple-light/30 focus:ring-2 focus:ring-purple/50"
+                >
+                  <Copy className="h-4 w-4" />
                 </Button>
                 <Button 
                   variant="ghost" 
