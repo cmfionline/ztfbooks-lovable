@@ -29,20 +29,6 @@ export const discountStrategySchema = z.object({
     .optional()
     .nullable(),
   is_stackable: z.boolean().default(false),
-  start_date: z.string().min(1, "Start date is required"),
-  end_date: z.string()
-    .min(1, "End date is required")
-    .superRefine((date, ctx: z.RefinementCtx & { parent?: { start_date?: string } }) => {
-      const startDate = ctx.parent?.start_date;
-      if (!startDate) return;
-
-      if (new Date(date) <= new Date(startDate)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "End date must be after start date"
-        });
-      }
-    }),
 });
 
 export type DiscountStrategyFormValues = z.infer<typeof discountStrategySchema>;
