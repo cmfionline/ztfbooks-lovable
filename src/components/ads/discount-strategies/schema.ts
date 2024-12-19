@@ -9,8 +9,8 @@ export const discountStrategySchema = z.object({
   }),
   value: z.number()
     .min(0, "Value must be greater than or equal to 0")
-    .transform((val, ctx) => {
-      if (ctx.parent.type === "percentage" && val > 100) {
+    .transform((val, ctx: z.RefinementCtx & { parent?: { type?: string } }) => {
+      if (ctx.parent?.type === "percentage" && val > 100) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Percentage value must not exceed 100%",
@@ -32,8 +32,8 @@ export const discountStrategySchema = z.object({
   start_date: z.string().min(1, "Start date is required"),
   end_date: z.string()
     .min(1, "End date is required")
-    .superRefine((date, ctx) => {
-      const startDate = ctx.parent.start_date;
+    .superRefine((date, ctx: z.RefinementCtx & { parent?: { start_date?: string } }) => {
+      const startDate = ctx.parent?.start_date;
       if (!startDate) return;
 
       if (new Date(date) <= new Date(startDate)) {
