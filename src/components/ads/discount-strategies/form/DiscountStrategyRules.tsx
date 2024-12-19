@@ -6,10 +6,14 @@ import { DiscountStrategyFormValues } from "../schema";
 
 interface DiscountStrategyRulesProps {
   control: Control<DiscountStrategyFormValues>;
-  discountType?: string;
+  discountType: string;
 }
 
 export const DiscountStrategyRules = ({ control, discountType }: DiscountStrategyRulesProps) => {
+  const isPercentageDiscount = discountType === "percentage";
+  const isFixedDiscount = discountType === "fixed";
+  const isVolumeDiscount = discountType === "volume";
+
   return (
     <div className="space-y-4">
       <FormField
@@ -17,62 +21,84 @@ export const DiscountStrategyRules = ({ control, discountType }: DiscountStrateg
         name="value"
         render={({ field: { value, onChange, ...field } }) => (
           <FormItem>
-            <FormLabel>
-              {discountType === 'percentage' ? 'Discount Percentage' : 'Fixed Amount'}
+            <FormLabel className="flex items-center gap-1 text-gray-700 font-medium">
+              {isFixedDiscount ? 'Fixed Amount' : 'Discount Percentage'}
+              <span className="text-red-500">*</span>
             </FormLabel>
             <FormControl>
               <Input 
                 type="number"
-                placeholder={discountType === 'percentage' ? "Enter percentage" : "Enter amount"}
+                min="0"
+                step={isFixedDiscount ? "0.01" : "1"}
+                max={isFixedDiscount ? undefined : "100"}
+                placeholder={isFixedDiscount ? "Enter amount" : "Enter percentage"}
+                className="bg-white border-gray-200 focus:border-purple focus:ring-2 focus:ring-purple/20 transition-all"
                 {...field}
                 value={value || ""}
                 onChange={(e) => onChange(e.target.value ? parseFloat(e.target.value) : 0)}
               />
             </FormControl>
-            <FormMessage />
+            <FormDescription className="text-xs text-gray-500">
+              {isFixedDiscount 
+                ? "Enter the fixed amount to discount (e.g., 10 for $10 off)" 
+                : "Enter the percentage to discount (e.g., 20 for 20% off)"}
+            </FormDescription>
+            <FormMessage className="text-xs" />
           </FormItem>
         )}
       />
 
-      {discountType !== 'volume' && (
+      {(isPercentageDiscount || isFixedDiscount) && (
         <FormField
           control={control}
           name="min_purchase_amount"
           render={({ field: { value, onChange, ...field } }) => (
             <FormItem>
-              <FormLabel>Minimum Purchase Amount</FormLabel>
+              <FormLabel className="text-gray-700 font-medium">Minimum Purchase Amount</FormLabel>
               <FormControl>
                 <Input 
                   type="number"
-                  placeholder="Enter minimum purchase amount"
+                  min="0"
+                  step="0.01"
+                  placeholder="Enter minimum amount"
+                  className="bg-white border-gray-200 focus:border-purple focus:ring-2 focus:ring-purple/20 transition-all"
                   {...field}
                   value={value || ""}
-                  onChange={(e) => onChange(e.target.value ? parseFloat(e.target.value) : 0)}
+                  onChange={(e) => onChange(e.target.value ? parseFloat(e.target.value) : null)}
                 />
               </FormControl>
-              <FormMessage />
+              <FormDescription className="text-xs text-gray-500">
+                Minimum cart value required to apply this discount
+              </FormDescription>
+              <FormMessage className="text-xs" />
             </FormItem>
           )}
         />
       )}
 
-      {discountType === 'volume' && (
+      {isVolumeDiscount && (
         <FormField
           control={control}
           name="min_books_count"
           render={({ field: { value, onChange, ...field } }) => (
             <FormItem>
-              <FormLabel>Minimum Books Count</FormLabel>
+              <FormLabel className="text-gray-700 font-medium">Minimum Books Count</FormLabel>
               <FormControl>
                 <Input 
                   type="number"
+                  min="0"
+                  step="1"
                   placeholder="Enter minimum books count"
+                  className="bg-white border-gray-200 focus:border-purple focus:ring-2 focus:ring-purple/20 transition-all"
                   {...field}
                   value={value || ""}
-                  onChange={(e) => onChange(e.target.value ? parseInt(e.target.value) : 0)}
+                  onChange={(e) => onChange(e.target.value ? parseInt(e.target.value) : null)}
                 />
               </FormControl>
-              <FormMessage />
+              <FormDescription className="text-xs text-gray-500">
+                Minimum number of books required to apply this volume discount
+              </FormDescription>
+              <FormMessage className="text-xs" />
             </FormItem>
           )}
         />

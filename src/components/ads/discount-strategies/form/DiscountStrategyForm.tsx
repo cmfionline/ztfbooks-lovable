@@ -27,8 +27,8 @@ export const DiscountStrategyForm = ({ onSubmit, onSuccess, onCancel, editingStr
       name: editingStrategy?.name || "",
       type: editingStrategy?.type || "percentage",
       value: editingStrategy?.value || 0,
-      min_purchase_amount: editingStrategy?.min_purchase_amount || 0,
-      min_books_count: editingStrategy?.min_books_count || 0,
+      min_purchase_amount: editingStrategy?.min_purchase_amount || null,
+      min_books_count: editingStrategy?.min_books_count || null,
       is_stackable: editingStrategy?.is_stackable || false,
       start_date: editingStrategy?.start_date || "",
       end_date: editingStrategy?.end_date || "",
@@ -37,6 +37,13 @@ export const DiscountStrategyForm = ({ onSubmit, onSuccess, onCancel, editingStr
 
   const handleSubmit = async (values: DiscountStrategyFormValues) => {
     try {
+      // Reset non-applicable fields based on discount type
+      if (values.type === "volume") {
+        values.min_purchase_amount = null;
+      } else {
+        values.min_books_count = null;
+      }
+
       if (onSubmit) {
         await onSubmit(values);
         return;
@@ -70,7 +77,7 @@ export const DiscountStrategyForm = ({ onSubmit, onSuccess, onCancel, editingStr
       }
       
     } catch (error) {
-      console.error("Error creating discount:", error);
+      console.error("Error saving discount:", error);
       toast({
         title: "Error",
         description: "Failed to save discount strategy",
