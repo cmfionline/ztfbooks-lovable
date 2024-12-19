@@ -105,9 +105,9 @@ const Ads = () => {
           <h1 className="page-title">Advertisements</h1>
           <Button 
             onClick={() => setShowForm(!showForm)}
-            className="btn btn-primary"
+            className="bg-purple hover:bg-purple/90 text-white"
           >
-            <PlusCircle className="icon mr-2" />
+            <PlusCircle className="h-4 w-4 mr-2" />
             {showForm ? 'Hide Form' : 'New Ad'}
           </Button>
         </div>
@@ -118,23 +118,17 @@ const Ads = () => {
             <TabsTrigger value="types" className="tab">Ad Types</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="ads" className="space-y-4">
+          <TabsContent value="ads" className="space-y-6">
             {showForm && (
-              <Card className="card">
-                <CardHeader className="card-header">
-                  <CardTitle>Create New Advertisement</CardTitle>
-                </CardHeader>
-                <CardContent className="card-content">
-                  <AdForm onSuccess={handleAdCreated} />
-                </CardContent>
+              <Card className="p-6">
+                <AdForm 
+                  onSuccess={handleAdCreated}
+                  onCancel={() => setShowForm(false)}
+                />
               </Card>
             )}
 
-            {isLoading ? (
-              <div className="flex justify-center items-center h-32">
-                <div className="loading w-8 h-8 border-b-2 border-purple rounded-full"></div>
-              </div>
-            ) : (
+            {!isLoading && !showForm && (
               <AdsList 
                 ads={ads || []} 
                 onDeleteAd={handleDeleteAd}
