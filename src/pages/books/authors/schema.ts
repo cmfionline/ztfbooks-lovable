@@ -17,7 +17,8 @@ export const authorFormSchema = z.object({
   facebook_url: z.string().url("Invalid Facebook URL").optional().or(z.literal("")),
   twitter_url: z.string().url("Invalid Twitter URL").optional().or(z.literal("")),
   instagram_url: z.string().url("Invalid Instagram URL").optional().or(z.literal("")),
-  date_of_birth: z.string().optional(),
+  date_of_birth: z.string().optional()
+    .transform(val => val === "" ? null : val), // Transform empty string to null
   mobile: z.string().optional(),
   address: z.string().optional(),
 });

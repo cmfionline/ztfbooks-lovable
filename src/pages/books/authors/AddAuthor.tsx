@@ -28,19 +28,32 @@ const AddAuthor = () => {
         photoPath = fileName;
       }
 
-      await createAuthor.mutateAsync({
+      // Clean up values before sending to API
+      const cleanedValues = {
         ...values,
         name: values.name.trim(),
         photo: photoPath || undefined,
-      });
+        date_of_birth: values.date_of_birth || null, // Ensure null if empty
+        website: values.website || null,
+        facebook_url: values.facebook_url || null,
+        twitter_url: values.twitter_url || null,
+        instagram_url: values.instagram_url || null,
+      };
+
+      await createAuthor.mutateAsync(cleanedValues);
 
       toast({
         title: "Success",
         description: `Author "${values.name}" has been created successfully.`,
       });
       navigate("/books/authors");
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      console.error("Error creating author:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create author. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
