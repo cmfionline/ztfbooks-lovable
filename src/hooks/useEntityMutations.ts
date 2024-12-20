@@ -23,7 +23,7 @@ export const useEntityMutations = () => {
     mutationFn: async (values: {
       name: string;
       nationality?: string;
-      photo?: string;
+      photo?: File | string;
       bio?: string;
       website?: string;
       facebook_url?: string;
@@ -35,10 +35,47 @@ export const useEntityMutations = () => {
     }) => {
       console.log("Creating author with values:", values);
       
+      let photoPath = null;
+      
+      // Handle photo upload if it's a File
+      if (values.photo instanceof File) {
+        const fileExt = values.photo.name.split('.').pop();
+        const fileName = `${crypto.randomUUID()}.${fileExt}`;
+        
+        const { error: uploadError, data } = await supabase.storage
+          .from('books')
+          .upload(`authors/${fileName}`, values.photo);
+
+        if (uploadError) {
+          console.error("Upload error:", uploadError);
+          throw uploadError;
+        }
+
+        photoPath = `authors/${fileName}`;
+        console.log("File uploaded successfully:", photoPath);
+      }
+
+      // Clean up values before sending to API
+      const authorData = {
+        name: values.name.trim(),
+        nationality: values.nationality || null,
+        photo: photoPath,
+        bio: values.bio || null,
+        website: values.website || null,
+        facebook_url: values.facebook_url || null,
+        twitter_url: values.twitter_url || null,
+        instagram_url: values.instagram_url || null,
+        date_of_birth: values.date_of_birth || null,
+        mobile: values.mobile || null,
+        address: values.address || null,
+      };
+
+      console.log("Sending cleaned values to API:", authorData);
+      
       const { data, error } = await supabase
         .from("authors")
-        .insert(values)
-        .select("*")
+        .insert(authorData)
+        .select()
         .single();
 
       if (error) {
