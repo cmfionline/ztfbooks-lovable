@@ -12,14 +12,32 @@ import { adSchema, type AdFormValues } from "./schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { addDays } from "date-fns";
+import { useEffect, useState } from "react";
 
 interface AdFormProps {
   onSuccess: () => void;
 }
 
 export const AdForm = ({ onSuccess }: AdFormProps) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const tomorrow = addDays(new Date(), 1);
   const fiveDaysLater = addDays(tomorrow, 5);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+      if (!session) {
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to create or edit ads.",
+          variant: "destructive",
+        });
+      }
+    };
+    
+    checkAuth();
+  }, []);
 
   const form = useForm<AdFormValues>({
     resolver: zodResolver(adSchema),
@@ -36,6 +54,16 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
 
   const onSubmit = async (values: AdFormValues) => {
     try {
+      if (!isAuthenticated) {
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to create or edit ads.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      console.log("Submitting form with values:", values);
       let image_url = null;
       let video_url = null;
 
@@ -44,11 +72,12 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
         const fileExt = file.name.split('.').pop();
         const filePath = `${crypto.randomUUID()}.${fileExt}`;
         
-        const { error: uploadError } = await supabase.storage
+        const { error: uploadError, data } = await supabase.storage
           .from('ads')
           .upload(filePath, file);
 
         if (uploadError) {
+          console.error("Image upload error:", uploadError);
           toast({
             title: "Error uploading image",
             description: uploadError.message,
@@ -74,6 +103,7 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
           .upload(filePath, file);
 
         if (uploadError) {
+          console.error("Video upload error:", uploadError);
           toast({
             title: "Error uploading video",
             description: uploadError.message,
@@ -92,7 +122,8 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
       // Remove file fields before sending to Supabase
       const { image_file, video_file, ...adData } = values;
 
-      const { error } = await supabase
+      console.log("Sending data to Supabase:", { ...adData, image_url, video_url });
+      const { error, data } = await supabase
         .from('ads')
         .insert([{
           ...adData,
@@ -102,6 +133,7 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
         }]);
 
       if (error) {
+        console.error("Supabase error:", error);
         toast({
           title: "Error creating ad",
           description: error.message,
@@ -110,6 +142,7 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
         return;
       }
 
+      console.log("Ad created successfully:", data);
       toast({
         title: "Success",
         description: "The ad has been successfully created.",
@@ -126,6 +159,18 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
       });
     }
   };
+
+  if (!isAuthenticated) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <p className="text-center text-gray-600">
+            Please log in to create or edit ads.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Form {...form}>
