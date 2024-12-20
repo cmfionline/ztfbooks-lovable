@@ -72,7 +72,7 @@ export const menuItems = [
     icon: <LayoutTemplate className="w-4 h-4" />,
     submenu: [
       { title: "Pages", path: "/pages" },
-      { title: "Hero Sections", path: "/portal/hero" },
+      { title: "Hero Sections", path: "/hero" },
     ],
   },
   {
