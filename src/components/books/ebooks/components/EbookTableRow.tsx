@@ -8,7 +8,6 @@ import { supabase } from "@/lib/supabase";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
 
 interface EbookTableRowProps {
   book: Book;
@@ -106,7 +105,19 @@ export const EbookTableRow = ({
 
   const handleFeaturedToggle = async () => {
     try {
+      const { error } = await supabase
+        .from('books')
+        .update({ is_featured: !book.is_featured })
+        .eq('id', book.id);
+
+      if (error) throw error;
+
       onToggleFeatured(book.id, !book.is_featured);
+      
+      toast({
+        title: book.is_featured ? "Book removed from featured" : "Book marked as featured",
+        description: `${book.title} has been ${book.is_featured ? 'removed from' : 'added to'} featured books.`,
+      });
     } catch (error) {
       console.error('Error toggling featured status:', error);
       toast({
