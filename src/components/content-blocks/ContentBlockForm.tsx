@@ -110,7 +110,7 @@ export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormPro
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-4">
           <BasicInfoFields form={form} />
           <ButtonFields form={form} />

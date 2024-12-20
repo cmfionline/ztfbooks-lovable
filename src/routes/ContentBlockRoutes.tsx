@@ -5,14 +5,17 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const AddContentBlock = () => {
   const navigate = useNavigate();
+  
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-2xl font-bold mb-6">Add Content Block</h1>
-      <ContentBlockForm 
-        onSuccess={() => {
-          navigate("/content-blocks");
-        }} 
-      />
+      <div className="bg-white p-6 rounded-lg shadow">
+        <ContentBlockForm 
+          onSuccess={() => {
+            navigate("/content-blocks");
+          }} 
+        />
+      </div>
     </div>
   );
 };
@@ -20,15 +23,18 @@ const AddContentBlock = () => {
 const EditContentBlock = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-2xl font-bold mb-6">Edit Content Block</h1>
-      <ContentBlockForm 
-        initialData={{ id: id || "" }} 
-        onSuccess={() => {
-          navigate("/content-blocks");
-        }}
-      />
+      <div className="bg-white p-6 rounded-lg shadow">
+        <ContentBlockForm 
+          initialData={{ id: id || "" }} 
+          onSuccess={() => {
+            navigate("/content-blocks");
+          }}
+        />
+      </div>
     </div>
   );
 };
