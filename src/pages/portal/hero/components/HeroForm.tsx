@@ -2,19 +2,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { useQueryClient } from "@tanstack/react-query";
+import { HeroFormFields } from "./HeroFormFields";
+import { Loader2 } from "lucide-react";
 
 const heroFormSchema = z.object({
   id: z.string().optional(),
@@ -69,13 +62,13 @@ export const HeroForm = ({ initialData, onSubmit, onCancel }: HeroFormProps) => 
         const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
         const { error: uploadError, data } = await supabase.storage
-          .from('logos')
+          .from('ads')
           .upload(fileName, file);
 
         if (uploadError) throw uploadError;
 
         const { data: { publicUrl } } = supabase.storage
-          .from('logos')
+          .from('ads')
           .getPublicUrl(fileName);
 
         heroImageUrl = publicUrl;
@@ -110,7 +103,7 @@ export const HeroForm = ({ initialData, onSubmit, onCancel }: HeroFormProps) => 
 
       queryClient.invalidateQueries({ queryKey: ["hero-sections"] });
       onSubmit();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error:", error);
       toast({
         variant: "destructive",
@@ -123,158 +116,29 @@ export const HeroForm = ({ initialData, onSubmit, onCancel }: HeroFormProps) => 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-        <FormField
+        <HeroFormFields 
           control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          heroImage={typeof initialData?.hero_image === 'string' ? initialData.hero_image : undefined}
         />
-
-        <FormField
-          control={form.control}
-          name="subtitle"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Subtitle</FormLabel>
-              <FormControl>
-                <Textarea {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="primary_button_text"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Primary Button Text</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="primary_button_link"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Primary Button Link</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="secondary_button_text"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Secondary Button Text</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="secondary_button_link"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Secondary Button Link</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="app_store_link"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>App Store Link</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="play_store_link"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Play Store Link</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <FormField
-          control={form.control}
-          name="hero_image"
-          render={({ field: { value, onChange, ...field } }) => (
-            <FormItem>
-              <FormLabel>Hero Image</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) onChange(file);
-                  }}
-                  {...field}
-                />
-              </FormControl>
-              {value && typeof value === 'string' && (
-                <img
-                  src={value}
-                  alt="Hero preview"
-                  className="mt-2 max-w-xs rounded-lg"
-                />
-              )}
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
+        
         <div className="flex justify-end gap-4">
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button type="submit">Save Changes</Button>
+          <Button 
+            type="submit" 
+            disabled={form.formState.isSubmitting}
+            className="bg-purple hover:bg-purple/90 text-white"
+          >
+            {form.formState.isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {initialData ? "Updating..." : "Creating..."}
+              </>
+            ) : (
+              initialData ? "Update Changes" : "Create Section"
+            )}
+          </Button>
         </div>
       </form>
     </Form>
