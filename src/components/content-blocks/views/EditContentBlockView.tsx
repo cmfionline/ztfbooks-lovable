@@ -3,6 +3,7 @@ import { ContentBlockForm } from "../ContentBlockForm";
 import { useContentBlock } from "../hooks/useContentBlock";
 import { Loader2 } from "lucide-react";
 import { QueryErrorBoundary } from "@/components/common/QueryErrorBoundary";
+import { Button } from "@/components/ui/button";
 import { z } from "zod";
 
 const idSchema = z.string().uuid("Invalid content block ID format");
