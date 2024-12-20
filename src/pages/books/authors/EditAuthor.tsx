@@ -1,45 +1,33 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { UserSquare2, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AuthorForm } from "./components/AuthorForm";
 import { AuthorFormValues } from "./schema";
 import { Author } from "./types";
+import { EditBookError } from "../components/EditBookError";
 
 const EditAuthor = () => {
   const { id } = useParams();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const { data: author, isLoading } = useQuery({
+  const { data: author, isLoading, error } = useQuery({
     queryKey: ["author", id],
     queryFn: async () => {
+      if (!id) throw new Error("Author ID is required");
+
       const { data, error } = await supabase
         .from("authors")
         .select("*")
         .eq("id", id)
         .maybeSingle();
 
-      if (error) {
-        toast({
-          variant: "destructive",
-          title: "Error fetching author",
-          description: error.message,
-        });
-        throw error;
-      }
-
-      if (!data) {
-        toast({
-          variant: "destructive",
-          title: "Author not found",
-          description: "The requested author could not be found.",
-        });
-        throw new Error("Author not found");
-      }
+      if (error) throw error;
+      if (!data) throw new Error("Author not found");
 
       // If there's a photo, get its public URL
       if (data.photo) {
@@ -55,6 +43,8 @@ const EditAuthor = () => {
 
   const onSubmit = async (values: AuthorFormValues) => {
     try {
+      if (!id) throw new Error("Author ID is required");
+
       let photoPath = author?.photo;
 
       // Handle photo upload if a new file is selected
@@ -76,19 +66,19 @@ const EditAuthor = () => {
         .from("authors")
         .update({
           name: values.name,
-          designation: values.designation || null,
-          education: values.education || null,
           nationality: values.nationality || null,
           date_of_birth: values.date_of_birth || null,
           bio: values.bio || null,
-          mobile: values.mobile || null,
-          address: values.address || null,
-          description: values.description || null,
           website: values.website || null,
           facebook_url: values.facebook_url || null,
           twitter_url: values.twitter_url || null,
           instagram_url: values.instagram_url || null,
           photo: photoPath,
+          designation: values.designation || null,
+          education: values.education || null,
+          mobile: values.mobile || null,
+          address: values.address || null,
+          description: values.description || null,
         })
         .eq("id", id);
 
@@ -104,11 +94,15 @@ const EditAuthor = () => {
       console.error("Error updating author:", error);
       toast({
         title: "Error",
-        description: error.message || "Failed to update author. Please try again.",
+        description: error.message || "Failed to update author",
         variant: "destructive",
       });
     }
   };
+
+  if (error) {
+    return <EditBookError error={error as Error} />;
+  }
 
   if (isLoading) {
     return (

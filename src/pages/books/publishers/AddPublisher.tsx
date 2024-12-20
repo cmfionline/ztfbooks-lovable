@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PublisherBasicInfo } from "./components/PublisherBasicInfo";
 import { PublisherAddress } from "./components/PublisherAddress";
 import { PublisherOnline } from "./components/PublisherOnline";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -68,11 +69,11 @@ const AddPublisher = () => {
       });
 
       navigate("/books/publishers");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating publisher:", error);
       toast({
         title: "Error",
-        description: "Failed to create publisher. Please try again.",
+        description: error.message || "Failed to create publisher",
         variant: "destructive",
       });
     }
@@ -103,8 +104,16 @@ const AddPublisher = () => {
                 <Button 
                   type="submit"
                   className="flex-1 bg-purple hover:bg-purple/90 text-white"
+                  disabled={form.formState.isSubmitting}
                 >
-                  Create Publisher
+                  {form.formState.isSubmitting ? (
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Creating...
+                    </div>
+                  ) : (
+                    "Create Publisher"
+                  )}
                 </Button>
               </div>
             </form>
