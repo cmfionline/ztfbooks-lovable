@@ -14,6 +14,18 @@ export const contentBlockSchema = z.object({
 export type ContentBlockFormValues = z.infer<typeof contentBlockSchema>;
 
 export interface ContentBlockFormProps {
-  initialData?: ContentBlockFormValues & { id: string };
+  initialData?: ContentBlock;
   onSuccess?: () => void;
 }
+
+// Add the missing ContentBlock type
+export type ContentBlock = ContentBlockFormValues & {
+  id: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
+// Add the missing ContentBlockMutationContext type
+export type ContentBlockMutationContext = {
+  previousBlocks: ContentBlock[];
+};
