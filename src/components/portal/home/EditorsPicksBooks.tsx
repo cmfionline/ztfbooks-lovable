@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { BookCard } from "@/components/books/components/BookCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { TopChartRow } from "./TopChartRow";
 
 export const EditorsPicksBooks = () => {
   const { data: books, isLoading } = useQuery({
@@ -14,21 +14,28 @@ export const EditorsPicksBooks = () => {
         .select(`
           *,
           authors (name),
-          languages (name)
+          book_reviews (rating)
         `)
         .eq("is_featured", true)
         .limit(6);
 
       if (error) throw error;
-      return data;
+
+      // Calculate average rating for each book
+      return data.map(book => ({
+        ...book,
+        rating: book.book_reviews?.length 
+          ? book.book_reviews.reduce((acc: number, review: any) => acc + review.rating, 0) / book.book_reviews.length
+          : null
+      }));
     },
   });
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="space-y-4">
         {[...Array(6)].map((_, i) => (
-          <Skeleton key={i} className="h-[200px] rounded-lg" />
+          <Skeleton key={i} className="h-24 rounded-lg" />
         ))}
       </div>
     );
@@ -46,18 +53,9 @@ export const EditorsPicksBooks = () => {
             View all <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {books?.map((book) => (
-            <div key={book.id} className="flex gap-6 p-6 bg-[#FAFAF8] rounded-lg">
-              <div className="w-32 flex-shrink-0">
-                <BookCard book={book} className="h-full" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-medium text-[#141413] mb-2">{book.title}</h3>
-                <p className="text-[#828179] text-sm mb-4">{book.authors?.name}</p>
-                <p className="text-[#605F5B] text-sm line-clamp-3">{book.synopsis}</p>
-              </div>
-            </div>
+        <div className="space-y-2">
+          {books?.map((book, index) => (
+            <TopChartRow key={book.id} book={book} index={index} />
           ))}
         </div>
       </div>
