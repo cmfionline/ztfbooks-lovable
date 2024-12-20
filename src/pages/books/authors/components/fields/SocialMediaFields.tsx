@@ -9,7 +9,7 @@ type SocialMediaFieldsProps = {
 
 export const SocialMediaFields = ({ control }: SocialMediaFieldsProps) => {
   return (
-    <>
+    <div className="grid grid-cols-2 gap-4">
       <FormField
         control={control}
         name="website"
@@ -62,6 +62,6 @@ export const SocialMediaFields = ({ control }: SocialMediaFieldsProps) => {
           </FormItem>
         )}
       />
-    </>
+    </div>
   );
 };

@@ -9,7 +9,6 @@ import { BasicInfoFields } from "./fields/BasicInfoFields";
 import { SocialMediaFields } from "./fields/SocialMediaFields";
 import { authorFormSchema, type AuthorFormValues } from "../schema";
 import { Author } from "../types";
-import { supabase } from "@/integrations/supabase/client";
 
 interface AuthorFormProps {
   author?: Author;
