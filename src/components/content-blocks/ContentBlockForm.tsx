@@ -11,9 +11,11 @@ import { FormHeader } from "./form/FormHeader";
 import { FormSubmitButton } from "./form/FormSubmitButton";
 import { AdminAccessCheck } from "./form/AdminAccessCheck";
 import { QueryErrorBoundary } from "@/components/common/QueryErrorBoundary";
+import { ContentBlockLoadingState } from "./ContentBlockLoadingState";
 
 export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormProps) => {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const mutation = useContentBlockMutation(initialData?.id);
   
   const form = useForm<ContentBlockFormValues>({
@@ -35,22 +37,28 @@ export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormPro
       return;
     }
 
+    setIsLoading(true);
     try {
       await mutation.mutateAsync(values);
       onSuccess?.();
     } catch (error) {
       console.error("Form submission error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   if (!isAdmin) {
-    return null;
+    return <AdminAccessCheck onAccessGranted={setIsAdmin} />;
+  }
+
+  if (mutation.isPending || isLoading) {
+    return <ContentBlockLoadingState />;
   }
 
   return (
     <QueryErrorBoundary>
       <div className="space-y-6">
-        <AdminAccessCheck onAccessGranted={setIsAdmin} />
         <FormHeader isEditing={!!initialData} />
         
         <Form {...form}>
@@ -62,7 +70,7 @@ export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormPro
             </div>
 
             <FormSubmitButton 
-              isSubmitting={mutation.isPending} 
+              isSubmitting={mutation.isPending || isLoading}
               isEditing={!!initialData}
             />
           </form>
