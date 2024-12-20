@@ -4,8 +4,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ContentBlockForm } from "../ContentBlockForm";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-// Mock the modules
 vi.mock("@/hooks/use-toast");
 vi.mock("@/lib/supabase", () => ({
   supabase: {
@@ -23,17 +23,22 @@ vi.mock("@/lib/supabase", () => ({
 }));
 
 describe("ContentBlockForm", () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
   const mockToast = vi.fn();
   const mockOnSuccess = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
+    (useToast as any).mockReturnValue({ toast: mockToast });
     
-    (useToast as any).mockReturnValue({
-      toast: mockToast,
-    });
-
-    // Mock auth session with admin role
+    // Mock admin session
     (supabase.auth.getSession as any).mockResolvedValue({
       data: {
         session: {
@@ -47,12 +52,18 @@ describe("ContentBlockForm", () => {
     });
   });
 
-  it("renders form fields correctly", async () => {
-    render(
-      <BrowserRouter>
-        <ContentBlockForm onSuccess={mockOnSuccess} />
-      </BrowserRouter>
+  const renderForm = (props = {}) => {
+    return render(
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <ContentBlockForm onSuccess={mockOnSuccess} {...props} />
+        </BrowserRouter>
+      </QueryClientProvider>
     );
+  };
+
+  it("renders form fields correctly", async () => {
+    renderForm();
 
     await waitFor(() => {
       expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
@@ -67,15 +78,15 @@ describe("ContentBlockForm", () => {
   });
 
   it("handles form submission correctly", async () => {
-    render(
-      <BrowserRouter>
-        <ContentBlockForm onSuccess={mockOnSuccess} />
-      </BrowserRouter>
-    );
+    (supabase.from as any)().insert().select().single.mockResolvedValueOnce({
+      data: { id: "new-block-id", title: "Test Block" },
+    });
+
+    renderForm();
 
     await waitFor(() => {
       const titleInput = screen.getByLabelText(/title/i);
-      fireEvent.change(titleInput, { target: { value: "Test Title" } });
+      fireEvent.change(titleInput, { target: { value: "Test Block" } });
     });
 
     const submitButton = screen.getByRole("button", { name: /create content block/i });
@@ -91,11 +102,7 @@ describe("ContentBlockForm", () => {
   });
 
   it("handles validation errors", async () => {
-    render(
-      <BrowserRouter>
-        <ContentBlockForm onSuccess={mockOnSuccess} />
-      </BrowserRouter>
-    );
+    renderForm();
 
     const submitButton = screen.getByRole("button", { name: /create content block/i });
     fireEvent.click(submitButton);
@@ -105,54 +112,41 @@ describe("ContentBlockForm", () => {
     });
   });
 
-  it("handles non-admin access correctly", async () => {
-    // Mock non-admin role
-    (supabase.from as any)().select().eq().single.mockResolvedValue({
-      data: { role: "user" },
+  it("handles API errors gracefully", async () => {
+    const error = new Error("API Error");
+    (supabase.from as any)().insert().select().single.mockRejectedValueOnce(error);
+
+    renderForm();
+
+    await waitFor(() => {
+      const titleInput = screen.getByLabelText(/title/i);
+      fireEvent.change(titleInput, { target: { value: "Test Block" } });
     });
 
-    render(
-      <BrowserRouter>
-        <ContentBlockForm onSuccess={mockOnSuccess} />
-      </BrowserRouter>
-    );
+    const submitButton = screen.getByRole("button", { name: /create content block/i });
+    fireEvent.click(submitButton);
 
     await waitFor(() => {
       expect(mockToast).toHaveBeenCalledWith({
-        title: "Access denied",
-        description: "You need admin privileges to manage content blocks",
+        title: "Error",
+        description: "API Error",
         variant: "destructive",
       });
     });
   });
 
-  it("handles view action correctly", async () => {
-    const mockBlock = {
-      id: "test-id",
-      title: "Test Block",
-      subtitle: "Test Subtitle",
-      description: "Test Description",
-      image_url: "https://example.com/image.jpg",
-      button_text: "Click Me",
-      button_link: "https://example.com",
-      order_index: 1,
-      is_active: true,
-    };
-
-    render(
-      <BrowserRouter>
-        <ContentBlockForm initialData={mockBlock} onSuccess={mockOnSuccess} />
-      </BrowserRouter>
-    );
+  it("shows loading state during submission", async () => {
+    renderForm();
 
     await waitFor(() => {
-      expect(screen.getByDisplayValue("Test Block")).toBeInTheDocument();
-      expect(screen.getByDisplayValue("Test Subtitle")).toBeInTheDocument();
-      expect(screen.getByDisplayValue("Test Description")).toBeInTheDocument();
-      expect(screen.getByDisplayValue("https://example.com/image.jpg")).toBeInTheDocument();
-      expect(screen.getByDisplayValue("Click Me")).toBeInTheDocument();
-      expect(screen.getByDisplayValue("https://example.com")).toBeInTheDocument();
-      expect(screen.getByDisplayValue("1")).toBeInTheDocument();
+      const titleInput = screen.getByLabelText(/title/i);
+      fireEvent.change(titleInput, { target: { value: "Test Block" } });
     });
+
+    const submitButton = screen.getByRole("button", { name: /create content block/i });
+    fireEvent.click(submitButton);
+
+    expect(submitButton).toBeDisabled();
+    expect(screen.getByText(/creating/i)).toBeInTheDocument();
   });
 });

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { ContentBlockFormValues } from "../types";
+import { ContentBlock, ContentBlockFormValues, ContentBlockMutationContext } from "../types";
 import { useToast } from "@/hooks/use-toast";
 
 export const useContentBlockMutation = (id?: string) => {
@@ -8,7 +8,7 @@ export const useContentBlockMutation = (id?: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (values: ContentBlockFormValues) => {
+    mutationFn: async (values: ContentBlockFormValues): Promise<ContentBlock> => {
       if (id) {
         const { data, error } = await supabase
           .from("content_blocks")
@@ -30,19 +30,42 @@ export const useContentBlockMutation = (id?: string) => {
         return data;
       }
     },
+    onMutate: async (newContentBlock: ContentBlockFormValues) => {
+      await queryClient.cancelQueries({ queryKey: ["content-blocks"] });
+      const previousBlocks = queryClient.getQueryData<ContentBlock[]>(["content-blocks"]) || [];
+
+      // Optimistically update the cache
+      queryClient.setQueryData<ContentBlock[]>(["content-blocks"], (old = []) => {
+        const optimisticBlock: ContentBlock = {
+          ...newContentBlock,
+          id: id || "temp-id-" + Date.now(),
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+
+        if (id) {
+          return old.map((block) => (block.id === id ? optimisticBlock : block));
+        }
+        return [...old, optimisticBlock];
+      });
+
+      return { previousBlocks };
+    },
+    onError: (error: Error, _, context: ContentBlockMutationContext | undefined) => {
+      if (context?.previousBlocks) {
+        queryClient.setQueryData(["content-blocks"], context.previousBlocks);
+      }
+      toast({
+        title: "Error",
+        description: error.message || `Failed to ${id ? "update" : "create"} content block`,
+        variant: "destructive",
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["content-blocks"] });
       toast({
         title: "Success",
         description: `Content block ${id ? "updated" : "created"} successfully`,
-      });
-    },
-    onError: (error: Error) => {
-      console.error("Content block mutation error:", error);
-      toast({
-        title: "Error",
-        description: error.message || `Failed to ${id ? "update" : "create"} content block`,
-        variant: "destructive",
       });
     },
   });
