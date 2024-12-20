@@ -21,9 +21,11 @@ export interface Book {
   discount_end_date?: string;
   is_featured_discount?: boolean;
   authors: {
+    id: string;
     name: string;
   };
   series?: {
+    id: string;
     name: string;
   };
   languages: {
@@ -31,8 +33,16 @@ export interface Book {
     code?: string;
   };
   publishers?: {
+    id: string;
     name: string;
   };
+  books_tags?: {
+    tag_id: string;
+    tags: {
+      id: string;
+      name: string;
+    };
+  }[];
 }
 
 export interface Activity {
