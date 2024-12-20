@@ -14,19 +14,27 @@ export const QueryErrorBoundary = ({ children }: QueryErrorBoundaryProps) => {
     <ErrorBoundary
       onReset={reset}
       fallbackRender={({ error, resetErrorBoundary }) => (
-        <div className="p-4 rounded-lg bg-destructive/10 text-destructive">
-          <div className="flex items-center gap-2 mb-2">
-            <AlertCircle className="h-5 w-5" />
-            <h3 className="font-semibold">Error</h3>
+        <div className="p-6 rounded-lg bg-destructive/10 text-destructive">
+          <div className="flex items-center gap-2 mb-4">
+            <AlertCircle className="h-6 w-6" />
+            <h3 className="text-lg font-semibold">Error Occurred</h3>
           </div>
-          <p className="text-sm mb-4">{error.message}</p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => resetErrorBoundary()}
-          >
-            Try again
-          </Button>
+          <div className="space-y-4">
+            <p className="text-sm">{error.message}</p>
+            {error.stack && (
+              <pre className="text-xs bg-destructive/5 p-4 rounded overflow-auto">
+                {error.stack}
+              </pre>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => resetErrorBoundary()}
+              className="mt-4"
+            >
+              Try again
+            </Button>
+          </div>
         </div>
       )}
     >
