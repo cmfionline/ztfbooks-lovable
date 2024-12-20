@@ -80,6 +80,43 @@ export const FomumBooksButton = () => {
           publisher_id: publisherData.id,
           is_free: false,
           price: 9.99
+        },
+        // Adding the new books
+        {
+          title: "Giving to God",
+          cover_image: "covers/giving-to-god.png",
+          author_id: authorData.id,
+          language_id: languagesData[0].id,
+          publisher_id: publisherData.id,
+          is_free: false,
+          price: 9.99
+        },
+        {
+          title: "God, Money and You",
+          cover_image: "covers/god-money-and-you.png",
+          author_id: authorData.id,
+          language_id: languagesData[0].id,
+          publisher_id: publisherData.id,
+          is_free: false,
+          price: 9.99
+        },
+        {
+          title: "The Christian and Money",
+          cover_image: "covers/christian-and-money.png",
+          author_id: authorData.id,
+          language_id: languagesData[0].id,
+          publisher_id: publisherData.id,
+          is_free: false,
+          price: 9.99
+        },
+        {
+          title: "Treasures in Heaven",
+          cover_image: "covers/treasures-in-heaven.png",
+          author_id: authorData.id,
+          language_id: languagesData[0].id,
+          publisher_id: publisherData.id,
+          is_free: false,
+          price: 9.99
         }
       ];
 
