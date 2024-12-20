@@ -10,10 +10,7 @@ export interface Author {
   twitter_url?: string;
   instagram_url?: string;
   date_of_birth?: string;
-  designation?: string;
-  education?: string;
   mobile?: string;
   address?: string;
-  description?: string;
   created_at: string;
 }

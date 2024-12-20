@@ -424,9 +424,6 @@ export type Database = {
           bio: string | null
           created_at: string
           date_of_birth: string | null
-          description: string | null
-          designation: string | null
-          education: string | null
           facebook_url: string | null
           id: string
           instagram_url: string | null
@@ -442,9 +439,6 @@ export type Database = {
           bio?: string | null
           created_at?: string
           date_of_birth?: string | null
-          description?: string | null
-          designation?: string | null
-          education?: string | null
           facebook_url?: string | null
           id?: string
           instagram_url?: string | null
@@ -460,9 +454,6 @@ export type Database = {
           bio?: string | null
           created_at?: string
           date_of_birth?: string | null
-          description?: string | null
-          designation?: string | null
-          education?: string | null
           facebook_url?: string | null
           id?: string
           instagram_url?: string | null
