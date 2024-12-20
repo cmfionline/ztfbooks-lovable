@@ -30,6 +30,7 @@ import Notifications from "./pages/Notifications";
 import Settings from "./pages/Settings";
 import ManageHeroSections from "@/pages/portal/hero/ManageHeroSections";
 import ContentBlocks from "@/pages/ContentBlocks";
+import LoginPage from "@/pages/auth/Login";
 
 const AdminLayout = () => {
   return (
@@ -49,6 +50,9 @@ const App = () => {
   return (
     <Router>
       <Routes>
+        {/* Auth Routes */}
+        <Route path="/login" element={<LoginPage />} />
+        
         {/* Portal Routes */}
         <Route path="/portal" element={<PortalLayout />}>
           <Route index element={<PortalHome />} />
