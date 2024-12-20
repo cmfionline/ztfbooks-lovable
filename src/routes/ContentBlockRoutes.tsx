@@ -1,28 +1,35 @@
 import { Routes, Route } from "react-router-dom";
 import ContentBlocks from "@/pages/ContentBlocks";
 import { ContentBlockForm } from "@/components/content-blocks/ContentBlockForm";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AddContentBlock = () => {
   const navigate = useNavigate();
   return (
-    <ContentBlockForm 
-      onSuccess={() => {
-        navigate("/content-blocks");
-      }} 
-    />
+    <div className="container mx-auto py-8">
+      <h1 className="text-2xl font-bold mb-6">Add Content Block</h1>
+      <ContentBlockForm 
+        onSuccess={() => {
+          navigate("/content-blocks");
+        }} 
+      />
+    </div>
   );
 };
 
 const EditContentBlock = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   return (
-    <ContentBlockForm 
-      initialData={{ id: "" }} 
-      onSuccess={() => {
-        navigate("/content-blocks");
-      }}
-    />
+    <div className="container mx-auto py-8">
+      <h1 className="text-2xl font-bold mb-6">Edit Content Block</h1>
+      <ContentBlockForm 
+        initialData={{ id: id || "" }} 
+        onSuccess={() => {
+          navigate("/content-blocks");
+        }}
+      />
+    </div>
   );
 };
 
