@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 
 export const useEntityMutations = () => {
   const queryClient = useQueryClient();
@@ -30,6 +30,8 @@ export const useEntityMutations = () => {
       twitter_url?: string;
       instagram_url?: string;
       date_of_birth?: string;
+      mobile?: string;
+      address?: string;
     }) => {
       const { data, error } = await supabase
         .from("authors")
