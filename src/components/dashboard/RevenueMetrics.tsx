@@ -17,16 +17,18 @@ const RevenueMetrics = () => {
           .abortSignal(signal)
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching revenue metrics:', error);
+          throw error;
+        }
         return data;
       } catch (error: any) {
-        console.error('Error fetching revenue metrics:', error);
+        console.error('Error:', error);
         throw new Error(error.message);
       }
     },
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   if (error) {

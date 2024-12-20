@@ -22,7 +22,10 @@ const SalesOverview = () => {
           .limit(7)
           .abortSignal(signal);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching sales overview:', error);
+          throw error;
+        }
 
         return data.map(item => ({
           date: new Date(item.date).toLocaleDateString('en-US', { 
@@ -32,7 +35,7 @@ const SalesOverview = () => {
           total_sales: item.total_sales
         })) as SalesData[];
       } catch (error: any) {
-        console.error('Error fetching sales overview:', error);
+        console.error('Error:', error);
         throw new Error(error.message);
       }
     },

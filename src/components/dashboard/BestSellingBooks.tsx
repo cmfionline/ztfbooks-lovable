@@ -24,7 +24,10 @@ const BestSellingBooks = () => {
           .limit(5)
           .abortSignal(signal);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching best selling books:', error);
+          throw error;
+        }
         
         // Transform the data to match our Book interface
         return (data || []).map(book => ({
@@ -32,14 +35,12 @@ const BestSellingBooks = () => {
           authors: book.authors?.[0] || { name: 'Unknown Author' }
         })) as Book[];
       } catch (error: any) {
-        console.error('Error fetching best selling books:', error);
+        console.error('Error:', error);
         throw new Error(error.message);
       }
     },
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 
   if (error) {

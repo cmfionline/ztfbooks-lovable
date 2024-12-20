@@ -24,7 +24,10 @@ const RecentActivities = () => {
           .limit(5)
           .abortSignal(signal);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching recent activities:', error);
+          throw error;
+        }
         
         // Transform the data to match our Activity interface
         return (data || []).map(activity => ({
@@ -32,7 +35,7 @@ const RecentActivities = () => {
           books: activity.books?.[0] || { title: 'Unknown Book' }
         })) as Activity[];
       } catch (error: any) {
-        console.error('Error fetching recent activities:', error);
+        console.error('Error:', error);
         throw new Error(error.message);
       }
     },
