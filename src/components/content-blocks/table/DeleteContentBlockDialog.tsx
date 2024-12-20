@@ -14,9 +14,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ContentBlockFormValues } from "../types";
 
 interface DeleteContentBlockDialogProps {
-  block: any;
+  block: ContentBlockFormValues & { id: string };
 }
 
 export const DeleteContentBlockDialog = ({ block }: DeleteContentBlockDialogProps) => {
@@ -39,11 +40,12 @@ export const DeleteContentBlockDialog = ({ block }: DeleteContentBlockDialogProp
       });
       queryClient.invalidateQueries({ queryKey: ["content-blocks"] });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
+      console.error("Delete content block error:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to delete content block",
+        description: error.message || "Failed to delete content block",
       });
     },
   });
@@ -54,7 +56,7 @@ export const DeleteContentBlockDialog = ({ block }: DeleteContentBlockDialogProp
         <Button
           variant="ghost"
           size="icon"
-          className="hover:bg-red-100 text-red-500"
+          className="h-8 w-8 p-0 hover:bg-red-100 text-red-500"
         >
           <Trash2 className="h-4 w-4" />
         </Button>

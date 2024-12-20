@@ -11,13 +11,19 @@ import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { DeleteContentBlockDialog } from "./DeleteContentBlockDialog";
 import { useNavigate } from "react-router-dom";
+import { ContentBlockFormValues } from "../types";
 
-interface ContentBlocksTableProps {
-  contentBlocks: any[];
-  onEditClick: (block: any) => void;
+interface ContentBlock extends ContentBlockFormValues {
+  id: string;
+  created_at: string;
+  updated_at: string;
 }
 
-export const ContentBlocksTable = ({ contentBlocks, onEditClick }: ContentBlocksTableProps) => {
+interface ContentBlocksTableProps {
+  contentBlocks: ContentBlock[];
+}
+
+export const ContentBlocksTable = ({ contentBlocks }: ContentBlocksTableProps) => {
   const navigate = useNavigate();
 
   return (

@@ -10,13 +10,15 @@ export const useContentBlockMutation = (id?: string) => {
   return useMutation({
     mutationFn: async (values: ContentBlockFormValues) => {
       if (id) {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from("content_blocks")
           .update(values)
-          .eq("id", id);
+          .eq("id", id)
+          .select()
+          .single();
 
         if (error) throw error;
-        return { ...values, id };
+        return data;
       } else {
         const { data, error } = await supabase
           .from("content_blocks")
@@ -36,9 +38,10 @@ export const useContentBlockMutation = (id?: string) => {
       });
     },
     onError: (error: Error) => {
+      console.error("Content block mutation error:", error);
       toast({
         title: "Error",
-        description: error.message,
+        description: error.message || `Failed to ${id ? "update" : "create"} content block`,
         variant: "destructive",
       });
     },
