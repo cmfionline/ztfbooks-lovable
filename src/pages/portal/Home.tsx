@@ -10,13 +10,11 @@ import { EditorsPicksBooks } from "@/components/portal/home/EditorsPicksBooks";
 import { HeroSection } from "@/components/portal/home/HeroSection";
 import { SectionContainer } from "@/components/portal/home/SectionContainer";
 import { SectionHeader } from "@/components/portal/home/SectionHeader";
-import { ContentBlocks } from "@/components/portal/home/ContentBlocks";
 
 const Home = () => {
   return (
     <div className="min-h-screen bg-[#FAFAF8]">
       <HeroSection />
-      <ContentBlocks />
 
       {/* Featured Books Carousel */}
       <SectionContainer>
