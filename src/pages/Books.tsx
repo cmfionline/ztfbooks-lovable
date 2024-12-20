@@ -39,6 +39,7 @@ const Books = () => {
       <Route path="ebooks/*" element={<EbooksPage />} />
       <Route path="authors" element={<AuthorsPage />} />
       <Route path="authors/add" element={<AddAuthor />} />
+      <Route path="authors/:id" element={<EditAuthor />} />
       <Route path="authors/:id/edit" element={<EditAuthor />} />
       <Route path="series" element={<SeriesPage />} />
       <Route path="series/add" element={<AddSeries />} />
