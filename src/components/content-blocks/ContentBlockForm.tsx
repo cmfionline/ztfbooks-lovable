@@ -1,40 +1,21 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-
-const contentBlockSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  subtitle: z.string().optional(),
-  description: z.string().optional(),
-  image_url: z.string().optional(),
-  button_text: z.string().optional(),
-  button_link: z.string().optional(),
-  order_index: z.number().int().min(0),
-  is_active: z.boolean().default(true),
-});
-
-type ContentBlockFormValues = z.infer<typeof contentBlockSchema>;
-
-interface ContentBlockFormProps {
-  initialData?: ContentBlockFormValues & { id: string };
-  onSuccess?: () => void;
-}
+import { BasicInfoFields } from "./form/BasicInfoFields";
+import { ButtonFields } from "./form/ButtonFields";
+import { ConfigFields } from "./form/ConfigFields";
+import { contentBlockSchema, ContentBlockFormProps, ContentBlockFormValues } from "./types";
 
 export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   
-  // Check authentication and admin status
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -48,7 +29,6 @@ export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormPro
         return;
       }
 
-      // Check if user has admin role
       const { data: profile } = await supabase
         .from("profiles")
         .select("role")
@@ -84,7 +64,6 @@ export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormPro
 
   const onSubmit = async (values: ContentBlockFormValues) => {
     try {
-      // Get current session
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast({
@@ -132,125 +111,12 @@ export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormPro
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="subtitle"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Subtitle</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="image_url"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Image URL</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="button_text"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Button Text</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="button_link"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Button Link</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="order_index"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Order Index</FormLabel>
-              <FormControl>
-                <Input 
-                  type="number" 
-                  {...field} 
-                  onChange={(e) => field.onChange(parseInt(e.target.value))}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="is_active"
-          render={({ field }) => (
-            <FormItem className="flex items-center gap-2">
-              <FormLabel>Active</FormLabel>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
+        <div className="space-y-4">
+          <BasicInfoFields form={form} />
+          <ButtonFields form={form} />
+          <ConfigFields form={form} />
+        </div>
 
         <Button 
           type="submit" 
