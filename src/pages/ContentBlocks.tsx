@@ -2,15 +2,34 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { Plus, Eye, Pencil, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 
 const ContentBlocks = () => {
-  const [selectedBlock, setSelectedBlock] = useState<any>(null);
-  const { toast } = useToast();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const { data: contentBlocks, refetch } = useQuery({
     queryKey: ["content-blocks"],
@@ -60,46 +79,98 @@ const ContentBlocks = () => {
         <h1 className="text-2xl font-bold">Content Blocks</h1>
         <Button 
           onClick={handleAddClick}
-          className="bg-[#9b87f5] hover:bg-[#7E69AB] text-white"
+          className="bg-purple hover:bg-purple/90 text-white"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Content Block
         </Button>
       </div>
 
-      <div className="grid gap-4">
-        {contentBlocks?.map((block) => (
-          <Card key={block.id} className="p-4">
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="text-lg font-semibold">{block.title}</h3>
-                <p className="text-sm text-gray-600">{block.subtitle}</p>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigate(`${block.id}/edit`)}
-                >
-                  <Edit className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-red-500 hover:text-red-700"
-                  onClick={() => {
-                    if (window.confirm("Are you sure you want to delete this content block?")) {
-                      deleteMutation.mutate(block.id);
+      <Card className="p-6">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Title</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Order</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {contentBlocks?.map((block) => (
+              <TableRow key={block.id}>
+                <TableCell className="font-medium">
+                  {block.title}
+                  {block.subtitle && (
+                    <p className="text-sm text-muted-foreground">
+                      {block.subtitle}
+                    </p>
+                  )}
+                </TableCell>
+                <TableCell>
+                  <Badge 
+                    variant={block.is_active ? 'default' : 'secondary'}
+                    className={
+                      block.is_active 
+                        ? 'bg-green-500 hover:bg-green-600' 
+                        : 'bg-gray-500 hover:bg-gray-600'
                     }
-                  }}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
+                  >
+                    {block.is_active ? 'Active' : 'Inactive'}
+                  </Badge>
+                </TableCell>
+                <TableCell>{block.order_index}</TableCell>
+                <TableCell className="text-right space-x-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="hover:bg-purple-light/30"
+                    onClick={() => window.open(`/content-blocks/${block.id}`, '_blank')}
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="hover:bg-purple-light/30"
+                    onClick={() => navigate(`${block.id}/edit`)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="hover:bg-red-100 text-red-500"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently delete the content block.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => deleteMutation.mutate(block.id)}
+                          className="bg-red-500 hover:bg-red-600"
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Card>
     </div>
   );
 };
