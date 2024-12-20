@@ -20,11 +20,12 @@ export const NotificationSettings = () => {
   const [restKey, setRestKey] = useState("");
 
   const { data: settings, refetch: refetchSettings } = useQuery({
-    queryKey: ["notification_settings"],
+    queryKey: ["notification_templates", "onesignal"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("notification_settings")
+        .from("notification_templates")
         .select("*")
+        .eq('type', 'system_update')
         .limit(1)
         .maybeSingle();
 
@@ -35,16 +36,22 @@ export const NotificationSettings = () => {
 
   useEffect(() => {
     if (settings) {
-      setAppId(settings.app_id);
-      setRestKey(settings.rest_key);
+      setAppId(settings.app_id || "");
+      setRestKey(settings.rest_key || "");
     }
   }, [settings]);
 
   const handleSaveSettings = async () => {
     try {
       const { error } = await supabase
-        .from("notification_settings")
-        .upsert({ app_id: appId, rest_key: restKey })
+        .from("notification_templates")
+        .upsert({
+          type: 'system_update',
+          title_template: 'System Update',
+          message_template: 'System has been updated',
+          app_id: appId,
+          rest_key: restKey
+        })
         .select()
         .single();
 
