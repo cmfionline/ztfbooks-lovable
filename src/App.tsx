@@ -28,6 +28,7 @@ import Reviews from "./pages/Reviews";
 import Faqs from "./pages/Faqs";
 import Notifications from "./pages/Notifications";
 import Settings from "./pages/Settings";
+import ManageHeroSections from "@/pages/portal/hero/ManageHeroSections";
 
 const AdminLayout = () => {
   return (
@@ -43,9 +44,6 @@ const AdminLayout = () => {
   );
 };
 
-// Add this to the imports at the top
-import ManageHeroSections from "@/pages/portal/hero/ManageHeroSections";
-
 const App = () => {
   return (
     <Router>
@@ -57,7 +55,6 @@ const App = () => {
           <Route path="profile" element={<PortalProfile />} />
           <Route path="support" element={<PortalSupport />} />
           <Route path="books/:id" element={<PortalBookDetailPage />} />
-          <Route path="hero" element={<ManageHeroSections />} />
         </Route>
 
         {/* Admin Routes */}
@@ -89,6 +86,7 @@ const App = () => {
           <Route path="pages/add" element={<AddPage />} />
           <Route path="pages/:id/edit" element={<EditPage />} />
           <Route path="pages" element={<Pages />} />
+          <Route path="hero" element={<ManageHeroSections />} />
           
           {/* Payment Routes */}
           <Route path="payments/*" element={<Payments />} />
