@@ -5,7 +5,7 @@ import { useEntityMutations } from "@/hooks/useEntityMutations";
 import { UserPlus } from "lucide-react";
 import { AuthorForm } from "./components/AuthorForm";
 import { AuthorFormValues } from "./schema";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 
 const AddAuthor = () => {
   const { toast } = useToast();
@@ -18,14 +18,14 @@ const AddAuthor = () => {
 
       if (values.photo instanceof File) {
         const fileExt = values.photo.name.split('.').pop();
-        const fileName = `authors/${crypto.randomUUID()}.${fileExt}`;
+        const fileName = `${crypto.randomUUID()}.${fileExt}`;
         
         const { error: uploadError } = await supabase.storage
           .from('books')
-          .upload(fileName, values.photo);
+          .upload(`authors/${fileName}`, values.photo);
 
         if (uploadError) throw uploadError;
-        photoPath = fileName;
+        photoPath = `authors/${fileName}`;
       }
 
       // Clean up values before sending to API
