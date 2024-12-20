@@ -6,14 +6,42 @@ import { UserPlus } from "lucide-react";
 import { AuthorForm } from "./components/AuthorForm";
 import { AuthorFormValues } from "./schema";
 import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
+import { Session } from "@supabase/supabase-js";
 
 const AddAuthor = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { createAuthor } = useEntityMutations();
+  const [session, setSession] = useState<Session | null>(null);
+
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const onSubmit = async (values: AuthorFormValues) => {
     try {
+      if (!session) {
+        toast({
+          title: "Error",
+          description: "You must be logged in to create an author",
+          variant: "destructive",
+        });
+        return;
+      }
+
       let photoPath = "";
 
       if (values.photo instanceof File) {
@@ -33,7 +61,7 @@ const AddAuthor = () => {
         ...values,
         name: values.name.trim(),
         photo: photoPath || undefined,
-        date_of_birth: values.date_of_birth || null, // Ensure null if empty
+        date_of_birth: values.date_of_birth || null,
         website: values.website || null,
         facebook_url: values.facebook_url || null,
         twitter_url: values.twitter_url || null,
@@ -56,6 +84,20 @@ const AddAuthor = () => {
       });
     }
   };
+
+  if (!session) {
+    return (
+      <div className="container max-w-3xl mx-auto py-8 px-4">
+        <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
+          <CardContent className="p-6">
+            <p className="text-center text-gray-600">
+              Please log in to create an author.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="container max-w-3xl mx-auto py-8 px-4">
