@@ -1,7 +1,7 @@
 import { useQueryErrorResetBoundary } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
 import { Button } from "@/components/ui/button";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, RefreshCcw } from "lucide-react";
 
 interface QueryErrorBoundaryProps {
   children: React.ReactNode;
@@ -22,7 +22,7 @@ export const QueryErrorBoundary = ({ children }: QueryErrorBoundaryProps) => {
           <div className="space-y-4">
             <p className="text-sm">{error.message}</p>
             {error.stack && (
-              <pre className="text-xs bg-destructive/5 p-4 rounded overflow-auto">
+              <pre className="text-xs bg-destructive/5 p-4 rounded overflow-auto max-h-[200px]">
                 {error.stack}
               </pre>
             )}
@@ -32,6 +32,7 @@ export const QueryErrorBoundary = ({ children }: QueryErrorBoundaryProps) => {
               onClick={() => resetErrorBoundary()}
               className="mt-4"
             >
+              <RefreshCcw className="mr-2 h-4 w-4" />
               Try again
             </Button>
           </div>
