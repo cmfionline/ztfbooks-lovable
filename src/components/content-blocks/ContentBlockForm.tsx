@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BasicInfoFields } from "./form/BasicInfoFields";
 import { ButtonFields } from "./form/ButtonFields";
 import { ConfigFields } from "./form/ConfigFields";
@@ -15,37 +15,33 @@ import { contentBlockSchema, ContentBlockFormProps, ContentBlockFormValues } fro
 export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false);
   
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAdminAccess = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
-          title: "Authentication required",
-          description: "Please log in to manage content blocks",
-          variant: "destructive",
-        });
-        navigate("/login");
-        return;
-      }
+      if (session) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", session.user.id)
+          .single();
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", session.user.id)
-        .single();
-
-      if (!profile || !["admin", "super_admin"].includes(profile.role)) {
-        toast({
-          title: "Access denied",
-          description: "You need admin privileges to manage content blocks",
-          variant: "destructive",
-        });
-        navigate("/");
+        if (profile && ["admin", "super_admin"].includes(profile.role)) {
+          setIsAdmin(true);
+          return;
+        }
       }
+      
+      toast({
+        title: "Access denied",
+        description: "You need admin privileges to manage content blocks",
+        variant: "destructive",
+      });
+      navigate("/");
     };
 
-    checkAuth();
+    checkAdminAccess();
   }, [navigate, toast]);
 
   const form = useForm<ContentBlockFormValues>({
@@ -64,11 +60,10 @@ export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormPro
 
   const onSubmit = async (values: ContentBlockFormValues) => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
+      if (!isAdmin) {
         toast({
-          title: "Authentication required",
-          description: "Please log in to manage content blocks",
+          title: "Access denied",
+          description: "You need admin privileges to manage content blocks",
           variant: "destructive",
         });
         return;
@@ -108,6 +103,10 @@ export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormPro
       });
     }
   };
+
+  if (!isAdmin) {
+    return null;
+  }
 
   return (
     <Form {...form}>
