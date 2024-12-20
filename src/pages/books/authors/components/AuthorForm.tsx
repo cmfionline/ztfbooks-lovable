@@ -8,14 +8,18 @@ import { SocialMediaFields } from "./SocialMediaFields";
 import { authorFormSchema, AuthorFormValues } from "../schema";
 import { Author } from "../types";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 interface AuthorFormProps {
   author?: Author;
   onSubmit: (values: AuthorFormValues) => Promise<void>;
+  isSubmitting?: boolean;
 }
 
-export const AuthorForm = ({ author, onSubmit }: AuthorFormProps) => {
+export const AuthorForm = ({ author, onSubmit, isSubmitting = false }: AuthorFormProps) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  
   const form = useForm<AuthorFormValues>({
     resolver: zodResolver(authorFormSchema),
     defaultValues: {
@@ -36,9 +40,26 @@ export const AuthorForm = ({ author, onSubmit }: AuthorFormProps) => {
     },
   });
 
+  const handleSubmit = async (values: AuthorFormValues) => {
+    try {
+      await onSubmit(values);
+      toast({
+        title: "Success",
+        description: `Author ${author ? "updated" : "created"} successfully`,
+      });
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to save author",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <BasicInfoFields control={form.control} currentPhoto={author?.photoUrl} />
         <SocialMediaFields control={form.control} />
 
@@ -48,18 +69,22 @@ export const AuthorForm = ({ author, onSubmit }: AuthorFormProps) => {
             variant="outline"
             className="flex-1"
             onClick={() => navigate("/books/authors")}
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
           <Button
             type="submit"
             className="flex-1 bg-purple hover:bg-purple/90 text-white"
-            disabled={form.formState.isSubmitting}
+            disabled={isSubmitting}
           >
-            {form.formState.isSubmitting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                {author ? "Updating..." : "Creating..."}
+              </>
             ) : (
-              "Update Author"
+              author ? "Update Author" : "Create Author"
             )}
           </Button>
         </div>

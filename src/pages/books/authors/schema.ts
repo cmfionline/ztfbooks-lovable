@@ -12,17 +12,17 @@ export const authorFormSchema = z.object({
     .transform((val) => val.trim()),
   nationality: z.string().optional(),
   photo: z.union([z.instanceof(File), z.string()]).optional(),
-  bio: z.string().optional(),
+  bio: z.string().min(10, "Biography must be at least 10 characters").optional(),
   website: z.string().url("Invalid website URL").optional().or(z.literal("")),
   facebook_url: z.string().url("Invalid Facebook URL").optional().or(z.literal("")),
   twitter_url: z.string().url("Invalid Twitter URL").optional().or(z.literal("")),
   instagram_url: z.string().url("Invalid Instagram URL").optional().or(z.literal("")),
   date_of_birth: z.string().optional(),
-  designation: z.string().optional(),
-  education: z.string().optional(),
-  mobile: z.string().optional(),
-  address: z.string().optional(),
-  description: z.string().optional(),
+  designation: z.string().min(2, "Designation must be at least 2 characters").optional(),
+  education: z.string().min(2, "Education must be at least 2 characters").optional(),
+  mobile: z.string().regex(/^\+?[\d\s-]{10,}$/, "Invalid mobile number format").optional(),
+  address: z.string().min(5, "Address must be at least 5 characters").optional(),
+  description: z.string().min(10, "Description must be at least 10 characters").optional(),
 });
 
 export type AuthorFormValues = z.infer<typeof authorFormSchema>;

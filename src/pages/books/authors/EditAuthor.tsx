@@ -2,18 +2,20 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { UserSquare2, Loader2 } from "lucide-react";
+import { UserSquare2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AuthorForm } from "./components/AuthorForm";
 import { AuthorFormValues } from "./schema";
 import { Author } from "./types";
 import { EditBookError } from "../components/EditBookError";
+import { useState } from "react";
 
 const EditAuthor = () => {
   const { id } = useParams();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: author, isLoading, error } = useQuery({
     queryKey: ["author", id],
@@ -43,6 +45,7 @@ const EditAuthor = () => {
 
   const onSubmit = async (values: AuthorFormValues) => {
     try {
+      setIsSubmitting(true);
       if (!id) throw new Error("Author ID is required");
 
       let photoPath = author?.photo;
@@ -52,6 +55,13 @@ const EditAuthor = () => {
         const fileExt = values.photo.name.split('.').pop();
         const fileName = `authors/${id}-${Date.now()}.${fileExt}`;
         
+        // Delete old photo if exists
+        if (author?.photo) {
+          await supabase.storage
+            .from('books')
+            .remove([author.photo]);
+        }
+
         const { error: uploadError } = await supabase.storage
           .from('books')
           .upload(fileName, values.photo, {
@@ -84,11 +94,6 @@ const EditAuthor = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Author has been updated successfully",
-      });
-
       navigate("/books/authors");
     } catch (error: any) {
       console.error("Error updating author:", error);
@@ -97,6 +102,8 @@ const EditAuthor = () => {
         description: error.message || "Failed to update author",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -132,7 +139,11 @@ const EditAuthor = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <AuthorForm author={author} onSubmit={onSubmit} />
+            <AuthorForm 
+              author={author} 
+              onSubmit={onSubmit}
+              isSubmitting={isSubmitting} 
+            />
           </CardContent>
         </Card>
       </div>
