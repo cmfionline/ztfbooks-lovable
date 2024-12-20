@@ -6,6 +6,7 @@ import PortalHome from "@/pages/portal/Home";
 import PortalLibrary from "@/pages/portal/Library";
 import PortalProfile from "@/pages/portal/Profile";
 import PortalSupport from "@/pages/portal/Support";
+import PortalBookDetailPage from "@/pages/portal/books/[id]";
 import Analytics from "@/pages/Analytics";
 import Payments from "@/pages/Payments";
 import Statistics from "@/pages/Statistics";
@@ -52,6 +53,7 @@ const App = () => {
           <Route path="library" element={<PortalLibrary />} />
           <Route path="profile" element={<PortalProfile />} />
           <Route path="support" element={<PortalSupport />} />
+          <Route path="books/:id" element={<PortalBookDetailPage />} />
         </Route>
 
         {/* Admin Routes */}
