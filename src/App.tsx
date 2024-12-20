@@ -30,7 +30,7 @@ import Notifications from "./pages/Notifications";
 import Settings from "./pages/Settings";
 import ManageHeroSections from "@/pages/portal/hero/ManageHeroSections";
 import ContentBlocks from "@/pages/ContentBlocks";
-import ContentBlockForm from "@/components/content-blocks/ContentBlockForm";
+import { ContentBlockForm } from "@/components/content-blocks/ContentBlockForm";
 import LoginPage from "@/pages/auth/Login";
 
 const AdminLayout = () => {
