@@ -58,7 +58,6 @@ const ContentBlocks = () => {
       <Card className="p-6">
         <ContentBlocksTable 
           contentBlocks={contentBlocks || []} 
-          onEditClick={(block) => navigate(`/content-blocks/${block.id}/edit`)}
         />
       </Card>
 
