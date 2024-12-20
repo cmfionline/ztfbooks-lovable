@@ -37,7 +37,12 @@ const BookCoverAndTitle = ({ book }: { book: Book }) => {
           <span className="text-xs text-muted-foreground">No cover</span>
         </div>
       )}
-      <span>{book.title}</span>
+      <Link 
+        to={`/books/${book.id}`} 
+        className="hover:text-purple-600 transition-colors"
+      >
+        {book.title}
+      </Link>
     </div>
   );
 };
@@ -120,7 +125,16 @@ export const EbookTableRow = ({
       <TableCell>{book.authors?.name || "N/A"}</TableCell>
       <TableCell>{book.languages?.name || "N/A"}</TableCell>
       <TableCell>{book.publishers?.name || "N/A"}</TableCell>
-      <TableCell>{book.series?.name || "N/A"}</TableCell>
+      <TableCell>
+        {book.series ? (
+          <Link 
+            to={`/books/series/${book.series.id}`}
+            className="hover:text-purple-600 transition-colors"
+          >
+            {book.series.name}
+          </Link>
+        ) : "N/A"}
+      </TableCell>
       <TableCell>
         <BookPrice book={book} />
       </TableCell>
@@ -151,7 +165,7 @@ export const EbookTableRow = ({
           size="icon"
           asChild
         >
-          <Link to={`/books/authors/edit/${book.id}`}>
+          <Link to={`/books/${book.id}/edit`}>
             <Pencil className="h-4 w-4" />
           </Link>
         </Button>
