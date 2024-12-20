@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Plus, Eye, Pencil, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import {
   Table,
@@ -26,10 +25,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ContentBlockForm } from "@/components/content-blocks/ContentBlockForm";
 
 const ContentBlocks = () => {
-  const navigate = useNavigate();
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedBlock, setSelectedBlock] = useState<any>(null);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: contentBlocks, refetch } = useQuery({
     queryKey: ["content-blocks"],
@@ -70,7 +73,24 @@ const ContentBlocks = () => {
   });
 
   const handleAddClick = () => {
-    navigate("add");
+    setSelectedBlock(null);
+    setIsFormOpen(true);
+  };
+
+  const handleEditClick = (block: any) => {
+    setSelectedBlock(block);
+    setIsFormOpen(true);
+  };
+
+  const handleFormClose = () => {
+    setIsFormOpen(false);
+    setSelectedBlock(null);
+  };
+
+  const handleFormSuccess = () => {
+    setIsFormOpen(false);
+    setSelectedBlock(null);
+    refetch();
   };
 
   return (
@@ -79,7 +99,7 @@ const ContentBlocks = () => {
         <h1 className="text-2xl font-bold">Content Blocks</h1>
         <Button 
           onClick={handleAddClick}
-          className="bg-purple hover:bg-purple/90 text-white"
+          className="bg-purple-600 hover:bg-purple-700 text-white"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Content Block
@@ -124,7 +144,7 @@ const ContentBlocks = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="hover:bg-purple-light/30"
+                    className="hover:bg-purple-100"
                     onClick={() => window.open(`/content-blocks/${block.id}`, '_blank')}
                   >
                     <Eye className="h-4 w-4" />
@@ -132,8 +152,8 @@ const ContentBlocks = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="hover:bg-purple-light/30"
-                    onClick={() => navigate(`${block.id}/edit`)}
+                    className="hover:bg-purple-100"
+                    onClick={() => handleEditClick(block)}
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
@@ -171,6 +191,20 @@ const ContentBlocks = () => {
           </TableBody>
         </Table>
       </Card>
+
+      <Dialog open={isFormOpen} onOpenChange={handleFormClose}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedBlock ? 'Edit Content Block' : 'Add Content Block'}
+            </DialogTitle>
+          </DialogHeader>
+          <ContentBlockForm 
+            initialData={selectedBlock}
+            onSuccess={handleFormSuccess}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
