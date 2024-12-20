@@ -84,11 +84,8 @@ const EditAuthor = () => {
           twitter_url: values.twitter_url || null,
           instagram_url: values.instagram_url || null,
           photo: photoPath,
-          designation: values.designation || null,
-          education: values.education || null,
           mobile: values.mobile || null,
           address: values.address || null,
-          description: values.description || null,
         })
         .eq("id", id);
 

@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Control } from "react-hook-form";
 import { AuthorFormValues } from "../../schema";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { countries } from "@/utils/countries";
+import { countries } from "@/lib/countries";
 
 type PersonalInfoFieldsProps = {
   control: Control<AuthorFormValues>;
@@ -44,8 +44,8 @@ export const PersonalInfoFields = ({ control }: PersonalInfoFieldsProps) => {
               </FormControl>
               <SelectContent>
                 {countries.map((country) => (
-                  <SelectItem key={country} value={country}>
-                    {country}
+                  <SelectItem key={country.code} value={country.name}>
+                    {country.name}
                   </SelectItem>
                 ))}
               </SelectContent>

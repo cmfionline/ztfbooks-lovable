@@ -69,9 +69,7 @@ export const AuthorsPage = () => {
 
   const filteredAuthors = authors.filter((author) =>
     author.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    author.nationality?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    author.designation?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    author.education?.toLowerCase().includes(searchQuery.toLowerCase())
+    author.nationality?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -95,7 +93,7 @@ export const AuthorsPage = () => {
             <SearchInput
               value={searchQuery}
               onChange={setSearchQuery}
-              placeholder="Search by name, nationality, designation..."
+              placeholder="Search by name, nationality..."
             />
           </div>
 
@@ -114,8 +112,6 @@ export const AuthorsPage = () => {
                   <TableHead className="w-[50px]">SR NO.</TableHead>
                   <TableHead className="w-[100px]">PHOTO</TableHead>
                   <TableHead>NAME</TableHead>
-                  <TableHead>DESIGNATION</TableHead>
-                  <TableHead>EDUCATION</TableHead>
                   <TableHead>NATIONALITY</TableHead>
                   <TableHead>CONTACT</TableHead>
                   <TableHead className="text-right">ACTIONS</TableHead>
@@ -134,8 +130,6 @@ export const AuthorsPage = () => {
                       </Avatar>
                     </TableCell>
                     <TableCell className="font-medium">{author.name}</TableCell>
-                    <TableCell>{author.designation || "-"}</TableCell>
-                    <TableCell>{author.education || "-"}</TableCell>
                     <TableCell>{author.nationality || "-"}</TableCell>
                     <TableCell>{author.mobile || "-"}</TableCell>
                     <TableCell className="text-right">
