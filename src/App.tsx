@@ -65,6 +65,12 @@ const App = () => {
 
         {/* Admin Routes */}
         <Route path="/" element={<AdminLayout />}>
+          {/* Content Blocks Routes - Place these before the index route */}
+          <Route path="content-blocks" element={<ContentBlocks />} />
+          <Route path="content-blocks/add" element={<ContentBlockForm />} />
+          <Route path="content-blocks/:id/edit" element={<ContentBlockForm />} />
+          
+          {/* Index Route */}
           <Route index element={<Analytics />} />
           <Route path="statistics" element={<Statistics />} />
           
@@ -92,9 +98,6 @@ const App = () => {
           <Route path="pages/:id/edit" element={<EditPage />} />
           <Route path="pages" element={<Pages />} />
           <Route path="hero" element={<ManageHeroSections />} />
-          <Route path="content-blocks" element={<ContentBlocks />} />
-          <Route path="content-blocks/add" element={<ContentBlockForm />} />
-          <Route path="content-blocks/:id/edit" element={<ContentBlockForm />} />
 
           <Route path="payments/*" element={<Payments />} />
           
