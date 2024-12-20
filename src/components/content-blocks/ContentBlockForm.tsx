@@ -94,7 +94,7 @@ export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormPro
         });
       }
 
-      onSuccess?.();
+      navigate("/content-blocks");
     } catch (error: any) {
       toast({
         title: "Error",
