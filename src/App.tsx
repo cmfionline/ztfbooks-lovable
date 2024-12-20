@@ -65,43 +65,34 @@ const App = () => {
 
         {/* Admin Routes */}
         <Route path="/" element={<AdminLayout />}>
-          {/* Content Blocks Routes - Place these before the index route */}
-          <Route path="content-blocks" element={<ContentBlocks />} />
-          <Route path="content-blocks/add" element={<ContentBlockForm />} />
-          <Route path="content-blocks/:id/edit" element={<ContentBlockForm />} />
+          {/* Content Blocks Routes - Must be before the index route */}
+          <Route path="content-blocks">
+            <Route index element={<ContentBlocks />} />
+            <Route path="add" element={<ContentBlockForm />} />
+            <Route path=":id/edit" element={<ContentBlockForm />} />
+          </Route>
           
           {/* Index Route */}
           <Route index element={<Analytics />} />
-          <Route path="statistics" element={<Statistics />} />
           
-          {/* Orders Routes - Specific routes first */}
+          {/* Other Routes */}
+          <Route path="statistics" element={<Statistics />} />
           <Route path="orders/devices" element={<DevicesPage />} />
           <Route path="orders/analytics" element={<OrderAnalytics />} />
           <Route path="orders/:id" element={<OrderDetailsPage />} />
           <Route path="orders" element={<OrdersPage />} />
-          
-          {/* Support Routes - Specific routes first */}
           <Route path="support/new" element={<NewTicketPage />} />
           <Route path="support/:id" element={<TicketDetailsPage />} />
           <Route path="support" element={<SupportPage />} />
-          
-          {/* Books Routes */}
           <Route path="books/*" element={<Books />} />
-          
-          {/* Ads Routes */}
           <Route path="ads/analytics" element={<AdsAnalytics />} />
           <Route path="ads/discount-strategies" element={<DiscountStrategies />} />
           <Route path="ads" element={<Ads />} />
-
-          {/* Content Management Routes */}
           <Route path="pages/add" element={<AddPage />} />
           <Route path="pages/:id/edit" element={<EditPage />} />
           <Route path="pages" element={<Pages />} />
           <Route path="hero" element={<ManageHeroSections />} />
-
           <Route path="payments/*" element={<Payments />} />
-          
-          {/* Other Routes */}
           <Route path="reviews" element={<Reviews />} />
           <Route path="faqs" element={<Faqs />} />
           <Route path="notifications" element={<Notifications />} />
