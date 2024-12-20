@@ -1098,6 +1098,54 @@ export type Database = {
           },
         ]
       }
+      hero_sections: {
+        Row: {
+          app_store_link: string | null
+          created_at: string
+          hero_image: string | null
+          id: string
+          is_active: boolean | null
+          play_store_link: string | null
+          primary_button_link: string
+          primary_button_text: string
+          secondary_button_link: string
+          secondary_button_text: string
+          subtitle: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          app_store_link?: string | null
+          created_at?: string
+          hero_image?: string | null
+          id?: string
+          is_active?: boolean | null
+          play_store_link?: string | null
+          primary_button_link: string
+          primary_button_text: string
+          secondary_button_link: string
+          secondary_button_text: string
+          subtitle: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          app_store_link?: string | null
+          created_at?: string
+          hero_image?: string | null
+          id?: string
+          is_active?: boolean | null
+          play_store_link?: string | null
+          primary_button_link?: string
+          primary_button_text?: string
+          secondary_button_link?: string
+          secondary_button_text?: string
+          subtitle?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       languages: {
         Row: {
           code: string

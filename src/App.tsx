@@ -43,6 +43,9 @@ const AdminLayout = () => {
   );
 };
 
+// Add this to the imports at the top
+import ManageHeroSections from "@/pages/portal/hero/ManageHeroSections";
+
 const App = () => {
   return (
     <Router>
@@ -54,6 +57,7 @@ const App = () => {
           <Route path="profile" element={<PortalProfile />} />
           <Route path="support" element={<PortalSupport />} />
           <Route path="books/:id" element={<PortalBookDetailPage />} />
+          <Route path="hero" element={<ManageHeroSections />} />
         </Route>
 
         {/* Admin Routes */}
