@@ -50,12 +50,16 @@ const ContentBlocks = () => {
     },
   });
 
+  const handleAddClick = () => {
+    navigate("/content-blocks/add", { replace: true });
+  };
+
   return (
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Content Blocks</h1>
         <Button 
-          onClick={() => navigate("/content-blocks/add")}
+          onClick={handleAddClick}
           className="bg-[#9b87f5] hover:bg-[#7E69AB] text-white"
         >
           <Plus className="w-4 h-4 mr-2" />
