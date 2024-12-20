@@ -8,8 +8,8 @@ const AddContentBlock = () => {
   
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-6">Add Content Block</h1>
-      <div className="bg-white p-6 rounded-lg shadow">
+      <h1 className="text-2xl font-bold mb-6 text-[#1A1F2C]">Add Content Block</h1>
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
         <ContentBlockForm 
           onSuccess={() => {
             navigate("/content-blocks");
@@ -26,8 +26,8 @@ const EditContentBlock = () => {
   
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-6">Edit Content Block</h1>
-      <div className="bg-white p-6 rounded-lg shadow">
+      <h1 className="text-2xl font-bold mb-6 text-[#1A1F2C]">Edit Content Block</h1>
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
         <ContentBlockForm 
           initialData={{ id: id || "" }} 
           onSuccess={() => {
