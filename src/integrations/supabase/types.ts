@@ -80,7 +80,7 @@ export type Database = {
       ad_analytics: {
         Row: {
           ab_test_group: string | null
-          ad_id: string | null
+          ad_id: string
           clicks: number | null
           conversions: number | null
           created_at: string
@@ -92,7 +92,7 @@ export type Database = {
         }
         Insert: {
           ab_test_group?: string | null
-          ad_id?: string | null
+          ad_id: string
           clicks?: number | null
           conversions?: number | null
           created_at?: string
@@ -104,7 +104,7 @@ export type Database = {
         }
         Update: {
           ab_test_group?: string | null
-          ad_id?: string | null
+          ad_id?: string
           clicks?: number | null
           conversions?: number | null
           created_at?: string
@@ -129,28 +129,28 @@ export type Database = {
           ad_id: string
           book_id: string
           discount_end_date: string | null
-          discount_percentage: number | null
+          discount_percentage: number
           discount_start_date: string | null
           discounted_price: number | null
-          original_price: number | null
+          original_price: number
         }
         Insert: {
           ad_id: string
           book_id: string
           discount_end_date?: string | null
-          discount_percentage?: number | null
+          discount_percentage: number
           discount_start_date?: string | null
           discounted_price?: number | null
-          original_price?: number | null
+          original_price: number
         }
         Update: {
           ad_id?: string
           book_id?: string
           discount_end_date?: string | null
-          discount_percentage?: number | null
+          discount_percentage?: number
           discount_start_date?: string | null
           discounted_price?: number | null
-          original_price?: number | null
+          original_price?: number
         }
         Relationships: [
           {
@@ -171,33 +171,33 @@ export type Database = {
       }
       ad_discount_analytics: {
         Row: {
-          ad_id: string | null
+          ad_id: string
           created_at: string | null
           customer_segment: Json | null
           id: string
-          redemption_count: number | null
+          redemption_count: number
           roi: number | null
-          sales_impact: number | null
+          sales_impact: number
           updated_at: string | null
         }
         Insert: {
-          ad_id?: string | null
+          ad_id: string
           created_at?: string | null
           customer_segment?: Json | null
           id?: string
-          redemption_count?: number | null
+          redemption_count?: number
           roi?: number | null
-          sales_impact?: number | null
+          sales_impact?: number
           updated_at?: string | null
         }
         Update: {
-          ad_id?: string | null
+          ad_id?: string
           created_at?: string | null
           customer_segment?: Json | null
           id?: string
-          redemption_count?: number | null
+          redemption_count?: number
           roi?: number | null
-          sales_impact?: number | null
+          sales_impact?: number
           updated_at?: string | null
         }
         Relationships: [
