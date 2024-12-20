@@ -1,17 +1,19 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HeroForm } from "./components/HeroForm";
 import { HeroPreview } from "./components/HeroPreview";
 import { Plus, Eye, Edit, ToggleLeft } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { Switch } from "@/components/ui/switch";
 
 export const ManageHeroSections = () => {
   const [selectedHeroId, setSelectedHeroId] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: heroSections, isLoading } = useQuery({
     queryKey: ["hero-sections"],
@@ -34,6 +36,31 @@ export const ManageHeroSections = () => {
     },
   });
 
+  const toggleActiveMutation = useMutation({
+    mutationFn: async ({ id, isActive }: { id: string; isActive: boolean }) => {
+      const { error } = await supabase
+        .from("hero_sections")
+        .update({ is_active: isActive })
+        .eq("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["hero-sections"] });
+      toast({
+        title: "Success",
+        description: "Hero section status updated successfully",
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to update hero section status",
+      });
+    },
+  });
+
   const currentHero = heroSections?.find((hero) => hero.id === selectedHeroId) || heroSections?.[0];
 
   return (
@@ -53,13 +80,22 @@ export const ManageHeroSections = () => {
             <CardTitle className="flex items-center justify-between">
               Preview
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => setIsEditing(!isEditing)}>
-                  {isEditing ? <Eye className="w-4 h-4" /> : <Edit className="w-4 h-4" />}
-                  {isEditing ? "Preview" : "Edit"}
-                </Button>
-                <Button variant="outline" size="sm">
-                  <ToggleLeft className="w-4 h-4 mr-2" />
-                  Toggle Active
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsEditing(!isEditing)}
+                >
+                  {isEditing ? (
+                    <>
+                      <Eye className="w-4 h-4 mr-2" />
+                      Preview
+                    </>
+                  ) : (
+                    <>
+                      <Edit className="w-4 h-4 mr-2" />
+                      Edit
+                    </>
+                  )}
                 </Button>
               </div>
             </CardTitle>
@@ -94,8 +130,21 @@ export const ManageHeroSections = () => {
                   }`}
                   onClick={() => setSelectedHeroId(hero.id)}
                 >
-                  <h3 className="font-medium">{hero.title}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{hero.subtitle}</p>
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-medium">{hero.title}</h3>
+                    <Switch
+                      checked={hero.is_active}
+                      onCheckedChange={(checked) =>
+                        toggleActiveMutation.mutate({
+                          id: hero.id,
+                          isActive: checked,
+                        })
+                      }
+                    />
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {hero.subtitle}
+                  </p>
                   <div className="flex items-center gap-2 mt-2">
                     <span
                       className={`text-xs px-2 py-1 rounded-full ${

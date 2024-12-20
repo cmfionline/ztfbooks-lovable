@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -26,7 +26,8 @@ const heroFormSchema = z.object({
   secondary_button_link: z.string().min(1, "Secondary button link is required"),
   app_store_link: z.string().optional(),
   play_store_link: z.string().optional(),
-  hero_image: z.string().optional(),
+  hero_image: z.any().optional(),
+  is_active: z.boolean().optional(),
 });
 
 type HeroFormValues = z.infer<typeof heroFormSchema>;
@@ -53,20 +54,52 @@ export const HeroForm = ({ initialData, onSubmit, onCancel }: HeroFormProps) => 
       app_store_link: "",
       play_store_link: "",
       hero_image: "",
+      is_active: true,
     },
   });
 
   const handleSubmit = async (values: HeroFormValues) => {
     try {
+      let heroImageUrl = values.hero_image;
+
+      // Handle file upload if a new file is selected
+      if (values.hero_image instanceof File) {
+        const file = values.hero_image;
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${crypto.randomUUID()}.${fileExt}`;
+
+        const { error: uploadError, data } = await supabase.storage
+          .from('logos')
+          .upload(fileName, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('logos')
+          .getPublicUrl(fileName);
+
+        heroImageUrl = publicUrl;
+      }
+
       if (initialData?.id) {
         const { error } = await supabase
           .from("hero_sections")
-          .update(values)
+          .update({
+            ...values,
+            hero_image: heroImageUrl,
+            updated_at: new Date().toISOString(),
+          })
           .eq("id", initialData.id);
 
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("hero_sections").insert([values]);
+        const { error } = await supabase
+          .from("hero_sections")
+          .insert([{
+            ...values,
+            hero_image: heroImageUrl,
+          }]);
+
         if (error) throw error;
       }
 
@@ -78,6 +111,7 @@ export const HeroForm = ({ initialData, onSubmit, onCancel }: HeroFormProps) => 
       queryClient.invalidateQueries({ queryKey: ["hero-sections"] });
       onSubmit();
     } catch (error) {
+      console.error("Error:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -210,12 +244,27 @@ export const HeroForm = ({ initialData, onSubmit, onCancel }: HeroFormProps) => 
         <FormField
           control={form.control}
           name="hero_image"
-          render={({ field }) => (
+          render={({ field: { value, onChange, ...field } }) => (
             <FormItem>
-              <FormLabel>Hero Image URL</FormLabel>
+              <FormLabel>Hero Image</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) onChange(file);
+                  }}
+                  {...field}
+                />
               </FormControl>
+              {value && typeof value === 'string' && (
+                <img
+                  src={value}
+                  alt="Hero preview"
+                  className="mt-2 max-w-xs rounded-lg"
+                />
+              )}
               <FormMessage />
             </FormItem>
           )}
