@@ -51,7 +51,7 @@ const ContentBlocks = () => {
   });
 
   const handleAddClick = () => {
-    navigate("/content-blocks/add", { replace: true });
+    navigate("add");
   };
 
   return (
@@ -79,7 +79,7 @@ const ContentBlocks = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => navigate(`/content-blocks/${block.id}/edit`)}
+                  onClick={() => navigate(`${block.id}/edit`)}
                 >
                   <Edit className="w-4 h-4" />
                 </Button>
