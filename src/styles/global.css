@@ -49,7 +49,7 @@
   .form-input {
     @apply w-full rounded-md border border-input bg-background px-3 py-2 text-sm 
            ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none 
-           focus-visible:ring-2 focus-visible:ring-purple focus-visible:ring-offset-2;
+           focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2;
   }
 
   .form-error {
@@ -60,28 +60,28 @@
   .btn {
     @apply inline-flex items-center justify-center rounded-md text-sm font-medium 
            ring-offset-background transition-colors focus-visible:outline-none 
-           focus-visible:ring-2 focus-visible:ring-purple focus-visible:ring-offset-2 
+           focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 
            disabled:pointer-events-none disabled:opacity-50;
   }
 
   .btn-primary {
-    @apply bg-purple text-white hover:bg-purple/90;
+    @apply bg-accent text-primary hover:bg-accent/90;
   }
 
   .btn-secondary {
-    @apply bg-purple-light text-purple hover:bg-purple-light/80;
+    @apply bg-surface text-primary border border-border hover:bg-gray-50;
   }
 
   .btn-outline {
-    @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+    @apply border border-input bg-background hover:bg-accent/10 hover:text-accent;
   }
 
   .btn-ghost {
-    @apply hover:bg-accent hover:text-accent-foreground;
+    @apply hover:bg-accent/10 hover:text-accent;
   }
 
   .btn-danger {
-    @apply bg-red-500 text-white hover:bg-red-600;
+    @apply bg-danger text-white hover:bg-danger/90;
   }
 
   /* Icons */
@@ -110,101 +110,12 @@
     @apply p-6;
   }
 
-  /* Tabs */
-  .tabs-list {
-    @apply inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground;
+  /* Glass morphism utilities */
+  .glass {
+    @apply bg-white/80 backdrop-blur-sm border border-white/20;
   }
 
-  .tab {
-    @apply inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium 
-           ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 
-           focus-visible:ring-purple focus-visible:ring-offset-2 disabled:pointer-events-none 
-           disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground 
-           data-[state=active]:shadow-sm;
-  }
-
-  /* Sidebar */
-  .sidebar {
-    @apply fixed left-0 top-0 z-40 h-screen w-64 border-r border-border bg-background 
-           transition-transform duration-200 ease-in-out;
-  }
-
-  .sidebar-collapsed {
-    @apply w-16;
-  }
-
-  .sidebar-header {
-    @apply flex h-16 items-center border-b border-border px-4;
-  }
-
-  .sidebar-content {
-    @apply flex flex-col gap-2 p-4;
-  }
-
-  .sidebar-item {
-    @apply flex items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground 
-           hover:bg-accent hover:text-foreground transition-colors;
-  }
-
-  .sidebar-item-active {
-    @apply bg-purple-light/10 text-purple;
-  }
-
-  /* Badges */
-  .badge {
-    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold 
-           transition-colors focus:outline-none focus:ring-2 focus:ring-purple 
-           focus:ring-offset-2;
-  }
-
-  .badge-primary {
-    @apply bg-purple text-white hover:bg-purple/80;
-  }
-
-  .badge-secondary {
-    @apply bg-purple-light text-purple hover:bg-purple-light/80;
-  }
-
-  .badge-outline {
-    @apply border-purple text-purple hover:bg-purple-light/10;
-  }
-
-  /* Alerts */
-  .alert {
-    @apply relative w-full rounded-lg border p-4;
-  }
-
-  .alert-info {
-    @apply bg-blue-50 border-blue-200 text-blue-700;
-  }
-
-  .alert-success {
-    @apply bg-green-50 border-green-200 text-green-700;
-  }
-
-  .alert-warning {
-    @apply bg-yellow-50 border-yellow-200 text-yellow-700;
-  }
-
-  .alert-error {
-    @apply bg-red-50 border-red-200 text-red-700;
-  }
-
-  /* Loading States */
-  .loading {
-    @apply animate-spin text-muted;
-  }
-
-  .skeleton {
-    @apply animate-pulse rounded bg-muted;
-  }
-
-  /* Tooltips */
-  .tooltip {
-    @apply absolute z-50 rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground 
-           animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out 
-           data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 
-           data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 
-           data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2;
+  .glass-dark {
+    @apply bg-primary/80 backdrop-blur-sm border border-primary/20;
   }
 }

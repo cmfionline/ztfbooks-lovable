@@ -1,0 +1,56 @@
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-background text-text-primary antialiased;
+  }
+
+  h1 {
+    @apply text-4xl font-semibold tracking-tight text-primary;
+  }
+
+  h2 {
+    @apply text-2xl font-semibold tracking-tight text-primary;
+  }
+
+  h3 {
+    @apply text-xl font-medium tracking-tight text-primary;
+  }
+
+  p {
+    @apply text-base text-text-secondary leading-relaxed;
+  }
+
+  a {
+    @apply text-primary hover:text-secondary transition-colors duration-200;
+  }
+
+  /* Better mobile tap targets */
+  @media (max-width: 640px) {
+    button, a {
+      @apply min-h-[44px] min-w-[44px];
+    }
+  }
+
+  /* Improved focus styles */
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted rounded-full;
+  }
+}

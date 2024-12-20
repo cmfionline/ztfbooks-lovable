@@ -23,6 +23,7 @@ export default {
         primary: "#141413", // Primary text and important elements
         secondary: "#828179", // Secondary text and less important elements
         accent: "#C7FB76", // Bright accent for CTAs and highlights
+        purple: "#8989DE", // Adding purple color for focus rings
         
         // Background colors
         background: "#FAFAF8", // Main background
