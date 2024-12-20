@@ -17,6 +17,7 @@ import { supabase } from "@/lib/supabase";
 import { useQueryClient } from "@tanstack/react-query";
 
 const heroFormSchema = z.object({
+  id: z.string().optional(),
   title: z.string().min(1, "Title is required"),
   subtitle: z.string().min(1, "Subtitle is required"),
   primary_button_text: z.string().min(1, "Primary button text is required"),
@@ -57,7 +58,7 @@ export const HeroForm = ({ initialData, onSubmit, onCancel }: HeroFormProps) => 
 
   const handleSubmit = async (values: HeroFormValues) => {
     try {
-      if (initialData) {
+      if (initialData?.id) {
         const { error } = await supabase
           .from("hero_sections")
           .update(values)
