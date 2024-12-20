@@ -9,6 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const contentBlockSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -30,6 +32,42 @@ interface ContentBlockFormProps {
 
 export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  
+  // Check authentication and admin status
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to manage content blocks",
+          variant: "destructive",
+        });
+        navigate("/login");
+        return;
+      }
+
+      // Check if user has admin role
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", session.user.id)
+        .single();
+
+      if (!profile || !["admin", "super_admin"].includes(profile.role)) {
+        toast({
+          title: "Access denied",
+          description: "You need admin privileges to manage content blocks",
+          variant: "destructive",
+        });
+        navigate("/");
+      }
+    };
+
+    checkAuth();
+  }, [navigate, toast]);
+
   const form = useForm<ContentBlockFormValues>({
     resolver: zodResolver(contentBlockSchema),
     defaultValues: initialData || {
@@ -46,6 +84,17 @@ export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormPro
 
   const onSubmit = async (values: ContentBlockFormValues) => {
     try {
+      // Get current session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to manage content blocks",
+          variant: "destructive",
+        });
+        return;
+      }
+
       if (initialData?.id) {
         const { error } = await supabase
           .from("content_blocks")
