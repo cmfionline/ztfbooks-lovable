@@ -65,7 +65,7 @@ describe('BookErrorBoundary', () => {
 
   it('calls toast when error occurs', () => {
     const mockToast = vi.fn();
-    (useToast as jest.Mock).mockReturnValue({ toast: mockToast });
+    (useToast as unknown as ReturnType<typeof vi.fn>).mockReturnValue({ toast: mockToast });
 
     const ThrowError = () => {
       throw new Error('Test error');

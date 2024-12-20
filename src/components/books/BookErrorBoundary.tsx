@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { AlertCircle, RefreshCcw } from "lucide-react";
 import { ErrorBoundary as ReactErrorBoundary } from "react-error-boundary";
 import { useToast } from "@/hooks/use-toast";
+import React from 'react';
 
 interface ErrorFallbackProps {
   error: Error;
