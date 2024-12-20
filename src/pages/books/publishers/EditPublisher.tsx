@@ -5,21 +5,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { Building2, Loader2 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { Building2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PublisherBasicInfo } from "./components/PublisherBasicInfo";
+import { PublisherAddress } from "./components/PublisherAddress";
+import { PublisherOnline } from "./components/PublisherOnline";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -31,6 +25,7 @@ const formSchema = z.object({
   postcode: z.string().optional(),
   website: z.string().url().optional().or(z.literal("")),
   social_media_url: z.string().url().optional().or(z.literal("")),
+  photo: z.any().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -58,20 +53,25 @@ const EditPublisher = () => {
   const { data: publisher, isLoading } = useQuery({
     queryKey: ["publisher", id],
     queryFn: async () => {
+      if (!id) throw new Error("Publisher ID is required");
+
       const { data, error } = await supabase
         .from("publishers")
         .select("*")
         .eq("id", id)
-        .single();
+        .maybeSingle();
 
-      if (error) {
-        toast({
-          variant: "destructive",
-          title: "Error fetching publisher",
-          description: error.message,
-        });
-        throw error;
+      if (error) throw error;
+      if (!data) throw new Error("Publisher not found");
+
+      // If there's a photo, get its public URL
+      if (data.photo) {
+        const { data: { publicUrl } } = supabase.storage
+          .from('books')
+          .getPublicUrl(data.photo);
+        data.photoUrl = publicUrl;
       }
+
       return data;
     },
   });
@@ -79,7 +79,7 @@ const EditPublisher = () => {
   useEffect(() => {
     if (publisher) {
       form.reset({
-        name: publisher.name,
+        name: publisher.name || "",
         email: publisher.email || "",
         phone: publisher.phone || "",
         address: publisher.address || "",
@@ -88,12 +88,32 @@ const EditPublisher = () => {
         postcode: publisher.postcode || "",
         website: publisher.website || "",
         social_media_url: publisher.social_media_url || "",
+        photo: publisher.photoUrl || undefined,
       });
     }
   }, [publisher, form]);
 
   const onSubmit = async (values: FormValues) => {
     try {
+      if (!id) throw new Error("Publisher ID is required");
+
+      let photoPath = publisher?.photo;
+
+      // Handle photo upload if a new file is selected
+      if (values.photo instanceof File) {
+        const fileExt = values.photo.name.split('.').pop();
+        const fileName = `publishers/${id}-${Date.now()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('books')
+          .upload(fileName, values.photo, {
+            upsert: true
+          });
+
+        if (uploadError) throw uploadError;
+        photoPath = fileName;
+      }
+
       const { error } = await supabase
         .from("publishers")
         .update({
@@ -106,6 +126,7 @@ const EditPublisher = () => {
           postcode: values.postcode || null,
           website: values.website || null,
           social_media_url: values.social_media_url || null,
+          photo: photoPath,
         })
         .eq("id", id);
 
@@ -121,7 +142,7 @@ const EditPublisher = () => {
       console.error("Error updating publisher:", error);
       toast({
         title: "Error",
-        description: error.message || "Failed to update publisher. Please try again.",
+        description: error.message || "Failed to update publisher",
         variant: "destructive",
       });
     }
@@ -157,168 +178,10 @@ const EditPublisher = () => {
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary">Name</FormLabel>
-                      <FormControl>
-                        <Input 
-                          {...field} 
-                          className="border-purple-light focus:border-purple focus:ring-purple"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-primary">Email</FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            type="email"
-                            className="border-purple-light focus:border-purple focus:ring-purple"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-primary">Phone</FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            className="border-purple-light focus:border-purple focus:ring-purple"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary">Address</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          {...field} 
-                          className="border-purple-light focus:border-purple focus:ring-purple"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="city"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-primary">City</FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            className="border-purple-light focus:border-purple focus:ring-purple"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="country"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-primary">Country</FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            className="border-purple-light focus:border-purple focus:ring-purple"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="postcode"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-primary">Postcode</FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            className="border-purple-light focus:border-purple focus:ring-purple"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="website"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-primary">Website</FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            type="url"
-                            className="border-purple-light focus:border-purple focus:ring-purple"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="social_media_url"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-primary">Social Media URL</FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            type="url"
-                            className="border-purple-light focus:border-purple focus:ring-purple"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
+                <PublisherBasicInfo control={form.control} />
+                <PublisherAddress control={form.control} />
+                <PublisherOnline control={form.control} />
+                
                 <div className="flex gap-4">
                   <Button
                     type="button"
@@ -334,7 +197,10 @@ const EditPublisher = () => {
                     disabled={form.formState.isSubmitting}
                   >
                     {form.formState.isSubmitting ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Updating...
+                      </div>
                     ) : (
                       "Update Publisher"
                     )}
