@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 
 interface EbookTableRowProps {
   book: Book;
