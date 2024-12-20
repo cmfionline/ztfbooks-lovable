@@ -15,12 +15,9 @@ const App = () => {
         {/* Portal Routes */}
         <Route path="/portal/*" element={<PortalRoutes />} />
 
-        {/* Admin Routes */}
+        {/* Admin Routes with nested content blocks */}
         <Route path="/" element={<AdminLayout />}>
-          {/* Content Blocks Routes - Must be first */}
           <Route path="content-blocks/*" element={<ContentBlockRoutes />} />
-          
-          {/* Other Admin Routes */}
           <Route path="*" element={<AdminRoutes />} />
         </Route>
       </Routes>
