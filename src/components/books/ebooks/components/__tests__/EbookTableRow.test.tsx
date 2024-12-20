@@ -9,10 +9,10 @@ const mockBook: Book = {
   title: 'Test Book',
   price: 9.99,
   is_featured: false,
-  authors: { name: 'Test Author' },
+  authors: { id: '1', name: 'Test Author' },
   languages: { name: 'English' },
-  publishers: { name: 'Test Publisher' },
-  series: { name: 'Test Series' },
+  publishers: { id: '1', name: 'Test Publisher' },
+  series: { id: '1', name: 'Test Series' },
   // Adding required Book properties
   language_id: '1',
   author_id: '1',

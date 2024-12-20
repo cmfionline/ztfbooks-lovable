@@ -13,10 +13,10 @@ describe('Book Discounts', () => {
     discount_start_date: new Date(Date.now() - 86400000).toISOString(), // Yesterday
     discount_end_date: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
     is_featured: false,
-    authors: { name: 'Test Author' },
+    authors: { id: '1', name: 'Test Author' },
     languages: { name: 'English' },
-    publishers: { name: 'Test Publisher' },
-    series: { name: 'Test Series' },
+    publishers: { id: '1', name: 'Test Publisher' },
+    series: { id: '1', name: 'Test Series' },
     // Adding required Book properties
     language_id: '1',
     author_id: '1',
