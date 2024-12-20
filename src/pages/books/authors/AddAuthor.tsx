@@ -1,15 +1,10 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
 import { useEntityMutations } from "@/hooks/useEntityMutations";
-import { UserPlus, Loader2 } from "lucide-react";
-import { BasicInfoFields } from "./components/BasicInfoFields";
-import { SocialMediaFields } from "./components/SocialMediaFields";
-import { authorFormSchema, type AuthorFormValues } from "./schema";
+import { UserPlus } from "lucide-react";
+import { AuthorForm } from "./components/AuthorForm";
+import { AuthorFormValues } from "./schema";
 import { supabase } from "@/integrations/supabase/client";
 
 const AddAuthor = () => {
@@ -17,26 +12,10 @@ const AddAuthor = () => {
   const navigate = useNavigate();
   const { createAuthor } = useEntityMutations();
 
-  const form = useForm<AuthorFormValues>({
-    resolver: zodResolver(authorFormSchema),
-    defaultValues: {
-      name: "",
-      nationality: "",
-      photo: "",
-      bio: "",
-      website: "",
-      facebook_url: "",
-      twitter_url: "",
-      instagram_url: "",
-      date_of_birth: "",
-    },
-  });
-
   const onSubmit = async (values: AuthorFormValues) => {
     try {
       let photoPath = "";
 
-      // Handle photo upload if a file is selected
       if (values.photo instanceof File) {
         const fileExt = values.photo.name.split('.').pop();
         const fileName = `authors/${crypto.randomUUID()}.${fileExt}`;
@@ -61,12 +40,7 @@ const AddAuthor = () => {
       });
       navigate("/books/authors");
     } catch (error) {
-      console.error("Error creating author:", error);
-      toast({
-        title: "Error",
-        description: "Failed to create author. Please try again.",
-        variant: "destructive",
-      });
+      throw error;
     }
   };
 
@@ -80,37 +54,10 @@ const AddAuthor = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <BasicInfoFields control={form.control} />
-              <SocialMediaFields control={form.control} />
-              
-              <div className="flex gap-4 pt-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => navigate("/books/authors")}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="flex-1 bg-purple hover:bg-purple/90 text-white"
-                  disabled={createAuthor.isPending}
-                >
-                  {createAuthor.isPending ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Creating...
-                    </>
-                  ) : (
-                    "Create Author"
-                  )}
-                </Button>
-              </div>
-            </form>
-          </Form>
+          <AuthorForm 
+            onSubmit={onSubmit}
+            isSubmitting={createAuthor.isPending}
+          />
         </CardContent>
       </Card>
     </div>

@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { UserSquare2, Loader2 } from "lucide-react";
+import { UserSquare2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AuthorForm } from "./components/AuthorForm";
@@ -31,7 +31,6 @@ const EditAuthor = () => {
       if (error) throw error;
       if (!data) throw new Error("Author not found");
 
-      // If there's a photo, get its public URL
       if (data.photo) {
         const { data: { publicUrl } } = supabase.storage
           .from('books')
@@ -50,12 +49,10 @@ const EditAuthor = () => {
 
       let photoPath = author?.photo;
 
-      // Handle photo upload if a new file is selected
       if (values.photo instanceof File) {
         const fileExt = values.photo.name.split('.').pop();
         const fileName = `authors/${id}-${Date.now()}.${fileExt}`;
         
-        // Delete old photo if exists
         if (author?.photo) {
           await supabase.storage
             .from('books')
@@ -98,12 +95,7 @@ const EditAuthor = () => {
 
       navigate("/books/authors");
     } catch (error: any) {
-      console.error("Error updating author:", error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update author",
-        variant: "destructive",
-      });
+      throw error;
     } finally {
       setIsSubmitting(false);
     }

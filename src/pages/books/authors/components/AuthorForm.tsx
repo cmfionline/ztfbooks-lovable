@@ -1,13 +1,15 @@
-import { Form } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BasicInfoFields } from "./BasicInfoFields";
-import { SocialMediaFields } from "./SocialMediaFields";
-import { authorFormSchema, AuthorFormValues } from "../schema";
-import { Author } from "../types";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { useToast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
+import { BasicInfoFields } from "./fields/BasicInfoFields";
+import { SocialMediaFields } from "./fields/SocialMediaFields";
+import { authorFormSchema, type AuthorFormValues } from "../schema";
+import { Author } from "../types";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AuthorFormProps {
   author?: Author;
@@ -17,7 +19,8 @@ interface AuthorFormProps {
 
 export const AuthorForm = ({ author, onSubmit, isSubmitting = false }: AuthorFormProps) => {
   const navigate = useNavigate();
-  
+  const { toast } = useToast();
+
   const form = useForm<AuthorFormValues>({
     resolver: zodResolver(authorFormSchema),
     defaultValues: {
@@ -35,9 +38,22 @@ export const AuthorForm = ({ author, onSubmit, isSubmitting = false }: AuthorFor
     },
   });
 
+  const handleSubmit = async (values: AuthorFormValues) => {
+    try {
+      await onSubmit(values);
+    } catch (error: any) {
+      console.error("Error submitting author:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to save author. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <BasicInfoFields control={form.control} currentPhoto={author?.photoUrl} />
         <SocialMediaFields control={form.control} />
 
