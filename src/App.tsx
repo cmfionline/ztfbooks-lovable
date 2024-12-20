@@ -29,6 +29,7 @@ import Faqs from "./pages/Faqs";
 import Notifications from "./pages/Notifications";
 import Settings from "./pages/Settings";
 import ManageHeroSections from "@/pages/portal/hero/ManageHeroSections";
+import ContentBlocks from "@/pages/ContentBlocks";
 
 const AdminLayout = () => {
   return (
@@ -59,7 +60,6 @@ const App = () => {
 
         {/* Admin Routes */}
         <Route path="/" element={<AdminLayout />}>
-          {/* Dashboard */}
           <Route index element={<Analytics />} />
           <Route path="statistics" element={<Statistics />} />
           
@@ -81,14 +81,14 @@ const App = () => {
           <Route path="ads/analytics" element={<AdsAnalytics />} />
           <Route path="ads/discount-strategies" element={<DiscountStrategies />} />
           <Route path="ads" element={<Ads />} />
-          
-          {/* Pages Routes - Specific routes first */}
+
+          {/* Content Management Routes */}
           <Route path="pages/add" element={<AddPage />} />
           <Route path="pages/:id/edit" element={<EditPage />} />
           <Route path="pages" element={<Pages />} />
           <Route path="hero" element={<ManageHeroSections />} />
-          
-          {/* Payment Routes */}
+          <Route path="content-blocks" element={<ContentBlocks />} />
+
           <Route path="payments/*" element={<Payments />} />
           
           {/* Other Routes */}

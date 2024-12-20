@@ -73,6 +73,7 @@ export const menuItems = [
     submenu: [
       { title: "Pages", path: "/pages" },
       { title: "Hero Sections", path: "/hero" },
+      { title: "Content Blocks", path: "/content-blocks" },
     ],
   },
   {
