@@ -9,77 +9,10 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      ad_ab_tests: {
-        Row: {
-          ad_id: string | null
-          created_at: string
-          end_date: string
-          id: string
-          start_date: string
-          test_name: string
-          updated_at: string
-          variant_a: string | null
-          variant_b: string | null
-          winner_variant: string | null
-        }
-        Insert: {
-          ad_id?: string | null
-          created_at?: string
-          end_date: string
-          id?: string
-          start_date: string
-          test_name: string
-          updated_at?: string
-          variant_a?: string | null
-          variant_b?: string | null
-          winner_variant?: string | null
-        }
-        Update: {
-          ad_id?: string | null
-          created_at?: string
-          end_date?: string
-          id?: string
-          start_date?: string
-          test_name?: string
-          updated_at?: string
-          variant_a?: string | null
-          variant_b?: string | null
-          winner_variant?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "ad_ab_tests_ad_id_fkey"
-            columns: ["ad_id"]
-            isOneToOne: false
-            referencedRelation: "ads"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ad_ab_tests_variant_a_fkey"
-            columns: ["variant_a"]
-            isOneToOne: false
-            referencedRelation: "ads"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ad_ab_tests_variant_b_fkey"
-            columns: ["variant_b"]
-            isOneToOne: false
-            referencedRelation: "ads"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ad_ab_tests_winner_variant_fkey"
-            columns: ["winner_variant"]
-            isOneToOne: false
-            referencedRelation: "ads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       ad_analytics: {
         Row: {
           ab_test_group: string | null
+          ab_test_name: string | null
           ad_id: string
           clicks: number | null
           conversions: number | null
@@ -89,9 +22,13 @@ export type Database = {
           id: string
           impressions: number | null
           revenue: number | null
+          variant_a: string | null
+          variant_b: string | null
+          winner_variant: string | null
         }
         Insert: {
           ab_test_group?: string | null
+          ab_test_name?: string | null
           ad_id: string
           clicks?: number | null
           conversions?: number | null
@@ -101,9 +38,13 @@ export type Database = {
           id?: string
           impressions?: number | null
           revenue?: number | null
+          variant_a?: string | null
+          variant_b?: string | null
+          winner_variant?: string | null
         }
         Update: {
           ab_test_group?: string | null
+          ab_test_name?: string | null
           ad_id?: string
           clicks?: number | null
           conversions?: number | null
@@ -113,11 +54,35 @@ export type Database = {
           id?: string
           impressions?: number | null
           revenue?: number | null
+          variant_a?: string | null
+          variant_b?: string | null
+          winner_variant?: string | null
         }
         Relationships: [
           {
             foreignKeyName: "ad_analytics_ad_id_fkey"
             columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_analytics_variant_a_fkey"
+            columns: ["variant_a"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_analytics_variant_b_fkey"
+            columns: ["variant_b"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_analytics_winner_variant_fkey"
+            columns: ["winner_variant"]
             isOneToOne: false
             referencedRelation: "ads"
             referencedColumns: ["id"]
@@ -1280,30 +1245,6 @@ export type Database = {
         }
         Relationships: []
       }
-      notification_settings: {
-        Row: {
-          app_id: string
-          created_at: string
-          id: string
-          rest_key: string
-          updated_at: string
-        }
-        Insert: {
-          app_id: string
-          created_at?: string
-          id?: string
-          rest_key: string
-          updated_at?: string
-        }
-        Update: {
-          app_id?: string
-          created_at?: string
-          id?: string
-          rest_key?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       notification_subscriptions: {
         Row: {
           created_at: string
@@ -1333,25 +1274,31 @@ export type Database = {
       }
       notification_templates: {
         Row: {
+          app_id: string | null
           created_at: string
           id: string
           message_template: string
+          rest_key: string | null
           title_template: string
           type: Database["public"]["Enums"]["notification_type"]
           updated_at: string
         }
         Insert: {
+          app_id?: string | null
           created_at?: string
           id?: string
           message_template: string
+          rest_key?: string | null
           title_template: string
           type: Database["public"]["Enums"]["notification_type"]
           updated_at?: string
         }
         Update: {
+          app_id?: string | null
           created_at?: string
           id?: string
           message_template?: string
+          rest_key?: string | null
           title_template?: string
           type?: Database["public"]["Enums"]["notification_type"]
           updated_at?: string
@@ -2215,51 +2162,17 @@ export type Database = {
         }
         Relationships: []
       }
-      user_notification_preferences: {
-        Row: {
-          created_at: string | null
-          new_book_alerts: boolean | null
-          order_updates: boolean | null
-          price_drop_alerts: boolean | null
-          reading_reminders: boolean | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          new_book_alerts?: boolean | null
-          order_updates?: boolean | null
-          price_drop_alerts?: boolean | null
-          reading_reminders?: boolean | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          new_book_alerts?: boolean | null
-          order_updates?: boolean | null
-          price_drop_alerts?: boolean | null
-          reading_reminders?: boolean | null
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_notification_preferences_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       user_settings: {
         Row: {
           created_at: string
           email_notifications: boolean | null
           id: string
           marketing_emails: boolean | null
+          new_book_alerts: boolean | null
+          order_updates: boolean | null
+          price_drop_alerts: boolean | null
           push_notifications: boolean | null
+          reading_reminders: boolean | null
           updated_at: string
           user_id: string
         }
@@ -2268,7 +2181,11 @@ export type Database = {
           email_notifications?: boolean | null
           id?: string
           marketing_emails?: boolean | null
+          new_book_alerts?: boolean | null
+          order_updates?: boolean | null
+          price_drop_alerts?: boolean | null
           push_notifications?: boolean | null
+          reading_reminders?: boolean | null
           updated_at?: string
           user_id: string
         }
@@ -2277,7 +2194,11 @@ export type Database = {
           email_notifications?: boolean | null
           id?: string
           marketing_emails?: boolean | null
+          new_book_alerts?: boolean | null
+          order_updates?: boolean | null
+          price_drop_alerts?: boolean | null
           push_notifications?: boolean | null
+          reading_reminders?: boolean | null
           updated_at?: string
           user_id?: string
         }
