@@ -94,6 +94,7 @@ const App = () => {
           <Route path="hero" element={<ManageHeroSections />} />
           <Route path="content-blocks" element={<ContentBlocks />} />
           <Route path="content-blocks/add" element={<ContentBlockForm />} />
+          <Route path="content-blocks/:id/edit" element={<ContentBlockForm />} />
 
           <Route path="payments/*" element={<Payments />} />
           
