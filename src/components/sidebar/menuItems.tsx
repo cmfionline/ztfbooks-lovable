@@ -14,6 +14,7 @@ import {
   BookMarked,
   Tags,
   Building2,
+  LayoutTemplate,
 } from "lucide-react";
 
 export const menuItems = [
@@ -67,9 +68,12 @@ export const menuItems = [
     ],
   },
   {
-    title: "Pages",
-    icon: <FileText className="w-4 h-4" />,
-    path: "/pages",
+    title: "Content Management",
+    icon: <LayoutTemplate className="w-4 h-4" />,
+    submenu: [
+      { title: "Pages", path: "/pages" },
+      { title: "Hero Sections", path: "/portal/hero" },
+    ],
   },
   {
     title: "Book Reviews",
