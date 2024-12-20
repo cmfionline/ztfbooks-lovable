@@ -14,18 +14,24 @@ const AddAuthor = () => {
 
   const onSubmit = async (values: AuthorFormValues) => {
     try {
+      console.log("Submitting form with values:", values);
       let photoPath = "";
 
       if (values.photo instanceof File) {
         const fileExt = values.photo.name.split('.').pop();
         const fileName = `${crypto.randomUUID()}.${fileExt}`;
         
-        const { error: uploadError } = await supabase.storage
+        const { error: uploadError, data } = await supabase.storage
           .from('books')
           .upload(`authors/${fileName}`, values.photo);
 
-        if (uploadError) throw uploadError;
+        if (uploadError) {
+          console.error("Upload error:", uploadError);
+          throw uploadError;
+        }
+
         photoPath = `authors/${fileName}`;
+        console.log("File uploaded successfully:", photoPath);
       }
 
       // Clean up values before sending to API
@@ -39,6 +45,8 @@ const AddAuthor = () => {
         twitter_url: values.twitter_url || null,
         instagram_url: values.instagram_url || null,
       };
+
+      console.log("Sending cleaned values to API:", cleanedValues);
 
       await createAuthor.mutateAsync(cleanedValues);
 

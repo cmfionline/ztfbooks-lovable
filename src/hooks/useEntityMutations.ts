@@ -33,16 +33,20 @@ export const useEntityMutations = () => {
       mobile?: string;
       address?: string;
     }) => {
+      console.log("Creating author with values:", values);
+      
       const { data, error } = await supabase
         .from("authors")
         .insert(values)
-        .select()
+        .select("*")
         .single();
 
       if (error) {
         console.error("Supabase error:", error);
         throw error;
       }
+
+      console.log("Author created successfully:", data);
       return data;
     },
     onSuccess: () => {
