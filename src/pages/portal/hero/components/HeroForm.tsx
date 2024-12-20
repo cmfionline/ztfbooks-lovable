@@ -6,7 +6,7 @@ import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { useQueryClient } from "@tanstack/react-query";
-import { HeroFormFields } from "./HeroFormFields";
+import { HeroFormFields } from "@/components/portal/hero/components/HeroFormFields";
 import { Loader2 } from "lucide-react";
 
 const heroFormSchema = z.object({

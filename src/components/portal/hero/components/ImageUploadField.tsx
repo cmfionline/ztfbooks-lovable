@@ -14,7 +14,7 @@ export const ImageUploadField = ({ control, name, label, currentImage }: ImageUp
     <FormField
       control={control}
       name={name}
-      render={({ field: { onChange, value, ...field } }) => (
+      render={({ field: { onChange, ...field } }) => (
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
@@ -26,7 +26,7 @@ export const ImageUploadField = ({ control, name, label, currentImage }: ImageUp
                 if (file) onChange(file);
               }}
               {...field}
-              value={field.value?.filename || ''}
+              value={undefined}
               className="file:bg-purple file:text-white file:border-0 file:rounded-md file:px-4 file:py-2 hover:file:bg-purple/90"
             />
           </FormControl>
