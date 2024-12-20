@@ -125,4 +125,34 @@ describe("ContentBlockForm", () => {
       });
     });
   });
+
+  it("handles view action correctly", async () => {
+    const mockBlock = {
+      id: "test-id",
+      title: "Test Block",
+      subtitle: "Test Subtitle",
+      description: "Test Description",
+      image_url: "https://example.com/image.jpg",
+      button_text: "Click Me",
+      button_link: "https://example.com",
+      order_index: 1,
+      is_active: true,
+    };
+
+    render(
+      <BrowserRouter>
+        <ContentBlockForm initialData={mockBlock} onSuccess={mockOnSuccess} />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Test Block")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("Test Subtitle")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("Test Description")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("https://example.com/image.jpg")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("Click Me")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("https://example.com")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("1")).toBeInTheDocument();
+    });
+  });
 });

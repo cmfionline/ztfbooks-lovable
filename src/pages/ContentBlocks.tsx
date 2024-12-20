@@ -52,7 +52,7 @@ const ContentBlocks = () => {
         <h1 className="text-2xl font-bold">Content Blocks</h1>
         <Button 
           onClick={handleAddClick}
-          className="bg-purple-600 hover:bg-purple-700 text-white"
+          className="bg-[#9b87f5] hover:bg-[#7E69AB] text-white"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Content Block
