@@ -15,7 +15,7 @@ const App = () => {
         {/* Portal Routes */}
         <Route path="/portal/*" element={<PortalRoutes />} />
 
-        {/* Admin Routes with nested content blocks */}
+        {/* Admin Routes */}
         <Route path="/" element={<AdminLayout />}>
           <Route path="content-blocks/*" element={<ContentBlockRoutes />} />
           <Route path="*" element={<AdminRoutes />} />

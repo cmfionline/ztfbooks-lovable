@@ -1,17 +1,29 @@
 import { Routes, Route } from "react-router-dom";
 import ContentBlocks from "@/pages/ContentBlocks";
 import { ContentBlockForm } from "@/components/content-blocks/ContentBlockForm";
-import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-// Separate component for edit form
-const EditContentBlock = () => {
-  const { id } = useParams();
-  return <ContentBlockForm initialData={{ id }} onSuccess={() => {}} />;
+const AddContentBlock = () => {
+  const navigate = useNavigate();
+  return (
+    <ContentBlockForm 
+      onSuccess={() => {
+        navigate("/content-blocks");
+      }} 
+    />
+  );
 };
 
-// Separate component for add form
-const AddContentBlock = () => {
-  return <ContentBlockForm onSuccess={() => {}} />;
+const EditContentBlock = () => {
+  const navigate = useNavigate();
+  return (
+    <ContentBlockForm 
+      initialData={{ id: "" }} 
+      onSuccess={() => {
+        navigate("/content-blocks");
+      }}
+    />
+  );
 };
 
 export const ContentBlockRoutes = () => {
