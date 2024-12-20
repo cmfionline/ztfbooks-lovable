@@ -2,8 +2,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -11,11 +9,15 @@ import { BasicInfoFields } from "./form/BasicInfoFields";
 import { ButtonFields } from "./form/ButtonFields";
 import { ConfigFields } from "./form/ConfigFields";
 import { contentBlockSchema, ContentBlockFormProps, ContentBlockFormValues } from "./types";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
+import { useContentBlockMutation } from "./hooks/useContentBlockMutation";
 
 export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
+  const mutation = useContentBlockMutation(initialData?.id);
   
   useEffect(() => {
     const checkAdminAccess = async () => {
@@ -59,49 +61,17 @@ export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormPro
   });
 
   const onSubmit = async (values: ContentBlockFormValues) => {
-    try {
-      if (!isAdmin) {
-        toast({
-          title: "Access denied",
-          description: "You need admin privileges to manage content blocks",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      if (initialData?.id) {
-        const { error } = await supabase
-          .from("content_blocks")
-          .update(values)
-          .eq("id", initialData.id);
-
-        if (error) throw error;
-
-        toast({
-          title: "Success",
-          description: "Content block updated successfully",
-        });
-      } else {
-        const { error } = await supabase
-          .from("content_blocks")
-          .insert([values]);
-
-        if (error) throw error;
-
-        toast({
-          title: "Success",
-          description: "Content block created successfully",
-        });
-      }
-
-      navigate("/content-blocks");
-    } catch (error: any) {
+    if (!isAdmin) {
       toast({
-        title: "Error",
-        description: error.message,
+        title: "Access denied",
+        description: "You need admin privileges to manage content blocks",
         variant: "destructive",
       });
+      return;
     }
+
+    await mutation.mutateAsync(values);
+    onSuccess?.();
   };
 
   if (!isAdmin) {
@@ -120,9 +90,9 @@ export const ContentBlockForm = ({ initialData, onSuccess }: ContentBlockFormPro
         <Button 
           type="submit" 
           className="w-full bg-[#9b87f5] hover:bg-[#7E69AB] text-white"
-          disabled={form.formState.isSubmitting}
+          disabled={mutation.isPending}
         >
-          {form.formState.isSubmitting && (
+          {mutation.isPending && (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           )}
           {initialData ? "Update" : "Create"} Content Block
