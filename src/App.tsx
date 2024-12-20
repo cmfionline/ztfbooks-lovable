@@ -1,24 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
-import Navigation from "@/components/Navigation";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AdminLayout } from "@/layouts/AdminLayout";
 import LoginPage from "@/pages/auth/Login";
 import { AdminRoutes } from "@/routes/AdminRoutes";
 import { ContentBlockRoutes } from "@/routes/ContentBlockRoutes";
 import { PortalRoutes } from "@/routes/PortalRoutes";
-
-const AdminLayout = () => {
-  return (
-    <div className="flex min-h-screen bg-background">
-      <Sidebar />
-      <div className="flex-1 ml-64">
-        <Navigation />
-        <main className="p-8 pt-20">
-          <Outlet />
-        </main>
-      </div>
-    </div>
-  );
-};
 
 const App = () => {
   return (
@@ -28,15 +13,15 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         
         {/* Portal Routes */}
-        <PortalRoutes />
+        <Route path="/portal/*" element={<PortalRoutes />} />
 
         {/* Admin Routes */}
         <Route path="/" element={<AdminLayout />}>
-          {/* Content Blocks Routes - Must be first to prevent index route from catching */}
-          <ContentBlockRoutes />
+          {/* Content Blocks Routes - Must be first */}
+          <Route path="content-blocks/*" element={<ContentBlockRoutes />} />
           
           {/* Other Admin Routes */}
-          <AdminRoutes />
+          <Route path="*" element={<AdminRoutes />} />
         </Route>
       </Routes>
     </Router>
