@@ -7,10 +7,12 @@ import { supabase } from "@/lib/supabase";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ContentBlockForm } from "@/components/content-blocks/ContentBlockForm";
 import { ContentBlocksTable } from "@/components/content-blocks/table/ContentBlocksTable";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ContentBlocks = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [selectedBlock, setSelectedBlock] = useState<any>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const { data: contentBlocks, refetch } = useQuery({
     queryKey: ["content-blocks"],
@@ -26,24 +28,18 @@ const ContentBlocks = () => {
   });
 
   const handleAddClick = () => {
-    setSelectedBlock(null);
-    setIsFormOpen(true);
-  };
-
-  const handleEditClick = (block: any) => {
-    setSelectedBlock(block);
     setIsFormOpen(true);
   };
 
   const handleFormClose = () => {
     setIsFormOpen(false);
-    setSelectedBlock(null);
+    navigate("/content-blocks");
   };
 
   const handleFormSuccess = () => {
     setIsFormOpen(false);
-    setSelectedBlock(null);
     refetch();
+    navigate("/content-blocks");
   };
 
   return (
@@ -62,7 +58,7 @@ const ContentBlocks = () => {
       <Card className="p-6">
         <ContentBlocksTable 
           contentBlocks={contentBlocks || []} 
-          onEditClick={handleEditClick}
+          onEditClick={(block) => navigate(`/content-blocks/${block.id}/edit`)}
         />
       </Card>
 
@@ -70,11 +66,10 @@ const ContentBlocks = () => {
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>
-              {selectedBlock ? 'Edit Content Block' : 'Add Content Block'}
+              Add Content Block
             </DialogTitle>
           </DialogHeader>
           <ContentBlockForm 
-            initialData={selectedBlock}
             onSuccess={handleFormSuccess}
           />
         </DialogContent>

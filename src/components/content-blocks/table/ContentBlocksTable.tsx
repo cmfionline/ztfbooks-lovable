@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { DeleteContentBlockDialog } from "./DeleteContentBlockDialog";
+import { useNavigate } from "react-router-dom";
 
 interface ContentBlocksTableProps {
   contentBlocks: any[];
@@ -17,6 +18,8 @@ interface ContentBlocksTableProps {
 }
 
 export const ContentBlocksTable = ({ contentBlocks, onEditClick }: ContentBlocksTableProps) => {
+  const navigate = useNavigate();
+
   return (
     <Table>
       <TableHeader>
@@ -53,7 +56,7 @@ export const ContentBlocksTable = ({ contentBlocks, onEditClick }: ContentBlocks
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 p-0 hover:bg-purple-100"
-                  onClick={() => window.open(`/content-blocks/${block.id}`, '_blank')}
+                  onClick={() => navigate(`/content-blocks/${block.id}`)}
                 >
                   <Eye className="h-4 w-4" />
                 </Button>
@@ -61,7 +64,7 @@ export const ContentBlocksTable = ({ contentBlocks, onEditClick }: ContentBlocks
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 p-0 hover:bg-purple-100"
-                  onClick={() => onEditClick(block)}
+                  onClick={() => navigate(`/content-blocks/${block.id}/edit`)}
                 >
                   <Pencil className="h-4 w-4" />
                 </Button>
