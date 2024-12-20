@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ContentBlocks = () => {
   const [selectedBlock, setSelectedBlock] = useState<any>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const { data: contentBlocks, refetch } = useQuery({
     queryKey: ["content-blocks"],
@@ -52,11 +53,9 @@ const ContentBlocks = () => {
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Content Blocks</h1>
-        <Button asChild>
-          <Link to="/content-blocks/add">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Content Block
-          </Link>
+        <Button onClick={() => navigate("/content-blocks/add")}>
+          <Plus className="w-4 h-4 mr-2" />
+          Add Content Block
         </Button>
       </div>
 
