@@ -94,6 +94,11 @@ const EditAuthor = () => {
 
       if (error) throw error;
 
+      toast({
+        title: "Success",
+        description: "Author updated successfully",
+      });
+
       navigate("/books/authors");
     } catch (error: any) {
       console.error("Error updating author:", error);

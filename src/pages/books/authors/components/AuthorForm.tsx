@@ -8,7 +8,6 @@ import { SocialMediaFields } from "./SocialMediaFields";
 import { authorFormSchema, AuthorFormValues } from "../schema";
 import { Author } from "../types";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 
 interface AuthorFormProps {
   author?: Author;
@@ -18,7 +17,6 @@ interface AuthorFormProps {
 
 export const AuthorForm = ({ author, onSubmit, isSubmitting = false }: AuthorFormProps) => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   
   const form = useForm<AuthorFormValues>({
     resolver: zodResolver(authorFormSchema),
@@ -40,26 +38,9 @@ export const AuthorForm = ({ author, onSubmit, isSubmitting = false }: AuthorFor
     },
   });
 
-  const handleSubmit = async (values: AuthorFormValues) => {
-    try {
-      await onSubmit(values);
-      toast({
-        title: "Success",
-        description: `Author ${author ? "updated" : "created"} successfully`,
-      });
-    } catch (error) {
-      console.error("Form submission error:", error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to save author",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <BasicInfoFields control={form.control} currentPhoto={author?.photoUrl} />
         <SocialMediaFields control={form.control} />
 
