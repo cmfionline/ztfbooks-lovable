@@ -47,24 +47,26 @@ export const ContentBlocksTable = ({ contentBlocks, onEditClick }: ContentBlocks
               </Badge>
             </TableCell>
             <TableCell>{block.order_index}</TableCell>
-            <TableCell className="text-right space-x-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hover:bg-purple-100"
-                onClick={() => window.open(`/content-blocks/${block.id}`, '_blank')}
-              >
-                <Eye className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hover:bg-purple-100"
-                onClick={() => onEditClick(block)}
-              >
-                <Pencil className="h-4 w-4" />
-              </Button>
-              <DeleteContentBlockDialog block={block} />
+            <TableCell className="text-right">
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 p-0 hover:bg-purple-100"
+                  onClick={() => window.open(`/content-blocks/${block.id}`, '_blank')}
+                >
+                  <Eye className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 p-0 hover:bg-purple-100"
+                  onClick={() => onEditClick(block)}
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
+                <DeleteContentBlockDialog block={block} />
+              </div>
             </TableCell>
           </TableRow>
         ))}
