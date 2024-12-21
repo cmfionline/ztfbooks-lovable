@@ -1,4 +1,4 @@
-import { FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -33,6 +33,7 @@ export const TagSelectionField = ({ form, tags }: TagSelectionFieldProps) => {
               ))}
             </SelectContent>
           </Select>
+          <FormMessage />
         </FormItem>
       )}
     />
