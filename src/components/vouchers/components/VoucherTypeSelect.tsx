@@ -1,7 +1,6 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
-import { voucherFormSchema } from "../schema";
 
 interface VoucherTypeSelectProps {
   form: UseFormReturn<any>;
@@ -16,14 +15,14 @@ export const VoucherTypeSelect = ({ form }: VoucherTypeSelectProps) => {
         <FormItem>
           <FormLabel>Voucher Type</FormLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select a voucher type" />
-            </SelectTrigger>
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder="Select voucher type" />
+              </SelectTrigger>
+            </FormControl>
             <SelectContent>
               <SelectItem value="single_book">Single Book</SelectItem>
-              <SelectItem value="multiple_books">Multiple Books</SelectItem>
-              <SelectItem value="series">Series</SelectItem>
-              <SelectItem value="book_tag">Book Tag</SelectItem>
+              <SelectItem value="series">Book Series</SelectItem>
               <SelectItem value="all_books">All Books</SelectItem>
             </SelectContent>
           </Select>

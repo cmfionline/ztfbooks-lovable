@@ -19,18 +19,14 @@ export const BookSelectionField = ({ form, books }: BookSelectionFieldProps) => 
           <FormLabel>Select Book</FormLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>
-              <SelectTrigger className="bg-white border-purple-light focus:border-purple">
-                <SelectValue placeholder="Select a book" className="text-foreground" />
+              <SelectTrigger>
+                <SelectValue placeholder="Select a book" />
               </SelectTrigger>
             </FormControl>
-            <SelectContent className="bg-white">
+            <SelectContent>
               {books?.map((book) => (
-                <SelectItem 
-                  key={book.id} 
-                  value={book.id}
-                  className="hover:bg-purple-light/10"
-                >
-                  {book.title} - ${book.price}
+                <SelectItem key={book.id} value={book.id}>
+                  {book.title}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -19,11 +19,11 @@ export const SeriesSelectionField = ({ form, series }: SeriesSelectionFieldProps
           <FormLabel>Select Series</FormLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>
-              <SelectTrigger className="bg-white border-purple-light focus:border-purple">
-                <SelectValue placeholder="Select a series" className="text-foreground" />
+              <SelectTrigger>
+                <SelectValue placeholder="Select a series" />
               </SelectTrigger>
             </FormControl>
-            <SelectContent className="bg-white">
+            <SelectContent>
               {series?.map((s) => (
                 <SelectItem key={s.id} value={s.id}>
                   {s.name}

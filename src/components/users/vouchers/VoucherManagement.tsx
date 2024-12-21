@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Check, X, TicketPlus } from "lucide-react";
-import CreateVoucherDialog from "./CreateVoucherDialog";
+import CreateVoucherDialog from "@/components/vouchers/CreateVoucherDialog";
 
 interface VoucherManagementProps {
   clientId: string;
