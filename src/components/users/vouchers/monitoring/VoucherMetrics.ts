@@ -1,5 +1,3 @@
-import { Voucher } from '../types';
-
 export const trackVoucherPerformance = (operation: string, startTime: number) => {
   const endTime = performance.now();
   const duration = endTime - startTime;
