@@ -13,36 +13,43 @@ vi.mock('@/hooks/use-toast', () => ({
   }),
 }));
 
-// Create a more complete mock for Supabase
+// Create a complete mock implementation of PostgrestFilterBuilder
+const createPostgrestMock = () => ({
+  eq: vi.fn(() => ({
+    maybeSingle: vi.fn(() => ({
+      data: { id: '1', name: 'Test Tag' },
+      error: null,
+    })),
+  })),
+  neq: vi.fn(() => createPostgrestMock()),
+  gt: vi.fn(() => createPostgrestMock()),
+  gte: vi.fn(() => createPostgrestMock()),
+  lt: vi.fn(() => createPostgrestMock()),
+  lte: vi.fn(() => createPostgrestMock()),
+  like: vi.fn(() => createPostgrestMock()),
+  ilike: vi.fn(() => createPostgrestMock()),
+  is: vi.fn(() => createPostgrestMock()),
+  in: vi.fn(() => createPostgrestMock()),
+  contains: vi.fn(() => createPostgrestMock()),
+  containedBy: vi.fn(() => createPostgrestMock()),
+  rangeLt: vi.fn(() => createPostgrestMock()),
+  rangeGt: vi.fn(() => createPostgrestMock()),
+  rangeGte: vi.fn(() => createPostgrestMock()),
+  rangeLte: vi.fn(() => createPostgrestMock()),
+  rangeAdjacent: vi.fn(() => createPostgrestMock()),
+  overlaps: vi.fn(() => createPostgrestMock()),
+  match: vi.fn(() => createPostgrestMock()),
+  not: vi.fn(() => createPostgrestMock()),
+  filter: vi.fn(() => createPostgrestMock()),
+  or: vi.fn(() => createPostgrestMock()),
+  and: vi.fn(() => createPostgrestMock()),
+});
+
+// Mock Supabase client
 vi.mock('@/lib/supabase', () => ({
   supabase: {
     from: vi.fn(() => ({
-      select: vi.fn(() => ({
-        eq: vi.fn(() => ({
-          maybeSingle: vi.fn(() => ({
-            data: { id: '1', name: 'Test Tag' },
-            error: null,
-          })),
-        })),
-        neq: vi.fn(),
-        gt: vi.fn(),
-        gte: vi.fn(),
-        lt: vi.fn(),
-        lte: vi.fn(),
-        like: vi.fn(),
-        ilike: vi.fn(),
-        is: vi.fn(),
-        in: vi.fn(),
-        contains: vi.fn(),
-        containedBy: vi.fn(),
-        rangeLt: vi.fn(),
-        rangeGt: vi.fn(),
-        rangeGte: vi.fn(),
-        rangeLte: vi.fn(),
-        rangeAdjacent: vi.fn(),
-        overlaps: vi.fn(),
-        match: vi.fn(),
-      })),
+      select: vi.fn(() => createPostgrestMock()),
       update: vi.fn(() => ({
         eq: vi.fn(() => ({
           select: vi.fn(() => ({
