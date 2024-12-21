@@ -26,8 +26,7 @@ export const DeleteVoucherDialog = ({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete the voucher
-            and remove it from our servers.
+            This action cannot be undone. This will permanently delete the voucher.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
