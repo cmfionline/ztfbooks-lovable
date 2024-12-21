@@ -5,7 +5,9 @@ export const voucherFormSchema = z.object({
   bookId: z.string().optional(),
   seriesId: z.string().optional(),
   tagId: z.string().optional(),
-  clientId: z.string(),
+  clientId: z.string().optional(),
+  clientName: z.string().min(1, "Client name is required"),
+  clientEmail: z.string().email("Invalid email address"),
   number_of_downloads: z.string().min(1, "Number of downloads is required"),
 }).refine((data) => {
   if (data.type === 'single_book' && !data.bookId) {

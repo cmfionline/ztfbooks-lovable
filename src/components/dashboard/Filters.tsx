@@ -17,13 +17,13 @@ export const Filters = ({ onSearch, onExport }: {
   return (
     <div className="flex flex-col gap-4 mb-8 bg-gradient-to-r from-purple-light/50 to-white p-4 rounded-lg">
       <div className="flex flex-wrap gap-4 items-center">
-        <div className="flex-1 min-w-[200px]">
+        <div className="flex-1 min-w-[200px] relative">
           <Input
             placeholder="Search vouchers..."
             onChange={(e) => onSearch?.(e.target.value)}
             className="w-full bg-white/95 border-purple-light/50"
-            icon={<Search className="h-4 w-4 text-gray-500" />}
           />
+          <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
         </div>
         
         <TimeFilter value="this_week" onValueChange={(value) => console.log(value)} />

@@ -12,10 +12,45 @@ import { TagSelectionField } from "./TagSelectionField";
 import { useVoucherSubmit } from "../hooks/useVoucherSubmit";
 import { Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export const VoucherForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const { toast } = useToast();
   const { handleSubmit, isLoading } = useVoucherSubmit(onSuccess);
+
+  const { data: books } = useQuery({
+    queryKey: ['books'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('books')
+        .select('id, title');
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  const { data: series } = useQuery({
+    queryKey: ['series'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('series')
+        .select('id, name');
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  const { data: tags } = useQuery({
+    queryKey: ['tags'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('tags')
+        .select('id, name');
+      if (error) throw error;
+      return data;
+    }
+  });
 
   const form = useForm<VoucherFormValues>({
     resolver: zodResolver(voucherFormSchema),
@@ -29,7 +64,7 @@ export const VoucherForm = ({ onSuccess }: { onSuccess: () => void }) => {
       clientEmail: "",
       number_of_downloads: "1",
     },
-    mode: "onChange" // Enable real-time validation
+    mode: "onChange"
   });
 
   const onSubmit = async (values: VoucherFormValues) => {
@@ -116,15 +151,15 @@ export const VoucherForm = ({ onSuccess }: { onSuccess: () => void }) => {
         />
 
         {form.watch("type") === "single_book" && (
-          <BookSelectionField form={form} />
+          <BookSelectionField form={form} books={books || []} />
         )}
 
         {form.watch("type") === "series" && (
-          <SeriesSelectionField form={form} />
+          <SeriesSelectionField form={form} series={series || []} />
         )}
 
         {form.watch("type") === "book_tag" && (
-          <TagSelectionField form={form} />
+          <TagSelectionField form={form} tags={tags || []} />
         )}
 
         <FormField

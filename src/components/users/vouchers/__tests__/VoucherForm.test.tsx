@@ -41,7 +41,7 @@ describe('VoucherForm', () => {
       delete: vi.fn(),
     }));
 
-    render(<VoucherForm clientId="test-client" onSuccess={mockOnSuccess} />);
+    render(<VoucherForm onSuccess={mockOnSuccess} />);
 
     fireEvent.change(screen.getByLabelText('Number of Downloads'), {
       target: { value: '1' },
@@ -56,7 +56,7 @@ describe('VoucherForm', () => {
   });
 
   it('displays validation errors', async () => {
-    render(<VoucherForm clientId="test-client" onSuccess={mockOnSuccess} />);
+    render(<VoucherForm onSuccess={mockOnSuccess} />);
     
     fireEvent.click(screen.getByText('Create Voucher'));
     
