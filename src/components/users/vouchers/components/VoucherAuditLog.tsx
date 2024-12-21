@@ -34,7 +34,7 @@ export const VoucherAuditLog = ({ voucherId }: VoucherAuditLogProps) => {
           id,
           action_type,
           created_at,
-          performed_by:profiles(full_name)
+          performed_by:profiles!left(full_name)
         `)
         .order('created_at', { ascending: false });
 
