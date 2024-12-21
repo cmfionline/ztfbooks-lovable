@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { VoucherForm } from '@/components/vouchers/VoucherForm';
+import { VoucherForm } from '../components/VoucherForm';
 import { supabase } from '@/integrations/supabase/client';
 
 vi.mock('@/integrations/supabase/client', () => ({
@@ -19,45 +19,48 @@ vi.mock('@/integrations/supabase/client', () => ({
 describe('VoucherForm', () => {
   const mockOnSuccess = vi.fn();
 
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('renders form fields correctly', () => {
     render(<VoucherForm clientId="test-client" onSuccess={mockOnSuccess} />);
     
     expect(screen.getByText('Voucher Type')).toBeInTheDocument();
-    expect(screen.getByText('Client Name')).toBeInTheDocument();
-    expect(screen.getByText('Client Email')).toBeInTheDocument();
-    expect(screen.getByText('Amount')).toBeInTheDocument();
+    expect(screen.getByText('Number of Downloads')).toBeInTheDocument();
   });
 
   it('handles form submission correctly', async () => {
+    const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
+    vi.mocked(supabase.from).mockImplementation(() => ({
+      insert: mockInsert,
+      select: vi.fn().mockReturnThis(),
+      single: vi.fn(),
+    }));
+
     render(<VoucherForm clientId="test-client" onSuccess={mockOnSuccess} />);
-    
-    fireEvent.change(screen.getByLabelText('Client Name'), {
-      target: { value: 'Test Client' },
+
+    // Fill form fields
+    fireEvent.change(screen.getByLabelText('Number of Downloads'), {
+      target: { value: '1' },
     });
-    
-    fireEvent.change(screen.getByLabelText('Client Email'), {
-      target: { value: 'test@example.com' },
-    });
-    
-    fireEvent.change(screen.getByLabelText('Amount'), {
-      target: { value: '100' },
-    });
-    
+
     fireEvent.click(screen.getByText('Create Voucher'));
-    
+
     await waitFor(() => {
-      expect(supabase.from).toHaveBeenCalledWith('vouchers');
+      expect(mockInsert).toHaveBeenCalled();
+      expect(mockOnSuccess).toHaveBeenCalled();
     });
   });
 
   it('displays validation errors', async () => {
     render(<VoucherForm clientId="test-client" onSuccess={mockOnSuccess} />);
     
+    // Submit without filling required fields
     fireEvent.click(screen.getByText('Create Voucher'));
     
     await waitFor(() => {
-      expect(screen.getByText('Client name is required')).toBeInTheDocument();
-      expect(screen.getByText('Amount is required')).toBeInTheDocument();
+      expect(screen.getByText('Number of downloads is required')).toBeInTheDocument();
     });
   });
 });
