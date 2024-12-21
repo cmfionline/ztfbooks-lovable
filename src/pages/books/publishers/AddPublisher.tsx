@@ -10,10 +10,12 @@ import { supabase } from "@/lib/supabase";
 import { PublisherBasicInfo } from "./components/PublisherBasicInfo";
 import { PublisherAddress } from "./components/PublisherAddress";
 import { PublisherOnline } from "./components/PublisherOnline";
-import { Loader2 } from "lucide-react";
+import { Loader2, Building2 } from "lucide-react";
 
 const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(255, "Name must be less than 255 characters"),
+  name: z.string()
+    .min(2, "Name must be at least 2 characters")
+    .max(255, "Name must be less than 255 characters"),
   address: z.string().optional(),
   email: z.string().email("Invalid email format").optional().or(z.literal("")),
   phone: z.string().optional(),
@@ -94,7 +96,10 @@ const AddPublisher = () => {
     <div className="container max-w-2xl mx-auto py-8 px-4">
       <Card className="bg-white/50 backdrop-blur-sm border border-purple-light">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-primary">Add New Publisher</CardTitle>
+          <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
+            <Building2 className="w-6 h-6" />
+            Add New Publisher
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
