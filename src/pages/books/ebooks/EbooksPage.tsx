@@ -6,10 +6,11 @@ import { EbooksTable } from "./components/EbooksTable";
 import { useEbooksData } from "./hooks/useEbooksData";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
+import { BookLoadingState } from "@/components/books/BookLoadingState";
 
 const EbooksPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: books, isLoading, refetch } = useEbooksData();
+  const { data: books, isLoading, error, refetch } = useEbooksData();
   const { toast } = useToast();
 
   const handleDelete = async (id: string) => {
@@ -54,6 +55,16 @@ const EbooksPage = () => {
     refetch();
   };
 
+  if (error) {
+    return (
+      <div className="p-6">
+        <div className="bg-destructive/10 text-destructive p-4 rounded-lg">
+          <p>Error loading books: {error.message}</p>
+        </div>
+      </div>
+    );
+  }
+
   const filteredBooks = books?.filter(book => 
     book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     book.authors?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -63,25 +74,23 @@ const EbooksPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
-      <div className="max-w-7xl mx-auto">
-        <EbooksHeader />
-        <EbooksSearch value={searchQuery} onChange={setSearchQuery} />
-        <Card className="p-6">
-          {isLoading ? (
-            <div className="text-center py-4">Loading...</div>
-          ) : (
-            <EbooksTable
-              books={filteredBooks || []}
-              onToggleTopSelling={(id, status) => {
-                console.log('Toggle top selling', id, status);
-              }}
-              onToggleFeatured={handleFeaturedToggle}
-              onDelete={handleDelete}
-            />
-          )}
-        </Card>
-      </div>
+    <div>
+      <EbooksHeader />
+      <EbooksSearch value={searchQuery} onChange={setSearchQuery} />
+      <Card className="p-6">
+        {isLoading ? (
+          <BookLoadingState />
+        ) : (
+          <EbooksTable
+            books={filteredBooks || []}
+            onToggleTopSelling={(id, status) => {
+              console.log('Toggle top selling', id, status);
+            }}
+            onToggleFeatured={handleFeaturedToggle}
+            onDelete={handleDelete}
+          />
+        )}
+      </Card>
     </div>
   );
 };
