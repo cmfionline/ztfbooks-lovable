@@ -1,30 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Check, X, Edit, Trash2, Ban } from "lucide-react";
-import { VoucherForm } from "./components/VoucherForm";
 import { useState } from "react";
 import { toast } from "sonner";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { VoucherForm } from "./components/VoucherForm";
+import { VoucherList } from "./components/VoucherList";
+import { DeleteVoucherDialog } from "./components/DeleteVoucherDialog";
+import type { Voucher } from "./types";
 
 interface VoucherManagementProps {
   clientId: string;
@@ -32,7 +15,7 @@ interface VoucherManagementProps {
 
 const VoucherManagement = ({ clientId }: VoucherManagementProps) => {
   const [showForm, setShowForm] = useState(false);
-  const [selectedVoucher, setSelectedVoucher] = useState<any>(null);
+  const [selectedVoucher, setSelectedVoucher] = useState<Voucher | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const queryClient = useQueryClient();
 
@@ -57,7 +40,7 @@ const VoucherManagement = ({ clientId }: VoucherManagementProps) => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data;
+      return data as Voucher[];
     }
   });
 
@@ -96,7 +79,7 @@ const VoucherManagement = ({ clientId }: VoucherManagementProps) => {
     }
   });
 
-  const handleDelete = (voucher: any) => {
+  const handleDelete = (voucher: Voucher) => {
     setSelectedVoucher(voucher);
     setShowDeleteDialog(true);
   };
@@ -107,7 +90,7 @@ const VoucherManagement = ({ clientId }: VoucherManagementProps) => {
     }
   };
 
-  const toggleStatus = (voucher: any) => {
+  const toggleStatus = (voucher: Voucher) => {
     const newStatus = voucher.status === 'active' ? 'inactive' : 'active';
     toggleVoucherStatusMutation.mutate({ id: voucher.id, status: newStatus });
   };
@@ -131,91 +114,17 @@ const VoucherManagement = ({ clientId }: VoucherManagementProps) => {
         </div>
       )}
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Code</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Item</TableHead>
-            <TableHead>Downloads</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {vouchers?.map((voucher) => (
-            <TableRow key={voucher.id}>
-              <TableCell className="font-mono">{voucher.code}</TableCell>
-              <TableCell className="capitalize">
-                {voucher.type.replace(/_/g, ' ')}
-              </TableCell>
-              <TableCell>
-                {voucher.type === 'single_book' && voucher.books?.[0]?.book?.title}
-                {voucher.type === 'series' && voucher.series?.[0]?.series?.name}
-                {voucher.type === 'book_tag' && voucher.tags?.[0]?.tag?.name}
-                {voucher.type === 'all_books' && 'All Books'}
-              </TableCell>
-              <TableCell>{voucher.number_of_downloads}</TableCell>
-              <TableCell>
-                <Badge 
-                  variant={voucher.status === 'active' ? "default" : "secondary"}
-                  className="capitalize"
-                >
-                  {voucher.status === 'active' ? (
-                    <Check className="w-3 h-3 mr-1" />
-                  ) : (
-                    <X className="w-3 h-3 mr-1" />
-                  )}
-                  {voucher.status}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => toggleStatus(voucher)}
-                    title={voucher.status === 'active' ? 'Deactivate' : 'Activate'}
-                  >
-                    <Ban className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDelete(voucher)}
-                    title="Delete"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-          {vouchers?.length === 0 && (
-            <TableRow>
-              <TableCell colSpan={6} className="text-center text-muted-foreground">
-                No vouchers found
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+      <VoucherList 
+        vouchers={vouchers || []}
+        onToggleStatus={toggleStatus}
+        onDelete={handleDelete}
+      />
 
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the voucher
-              and remove it from our servers.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete}>Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteVoucherDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 };

@@ -2265,6 +2265,7 @@ export type Database = {
           payment_received: boolean | null
           redeemed: boolean | null
           redeemed_at: string | null
+          status: string | null
           total_amount: number
           type: Database["public"]["Enums"]["voucher_type"]
           updated_at: string
@@ -2281,6 +2282,7 @@ export type Database = {
           payment_received?: boolean | null
           redeemed?: boolean | null
           redeemed_at?: string | null
+          status?: string | null
           total_amount: number
           type: Database["public"]["Enums"]["voucher_type"]
           updated_at?: string
@@ -2297,6 +2299,7 @@ export type Database = {
           payment_received?: boolean | null
           redeemed?: boolean | null
           redeemed_at?: string | null
+          status?: string | null
           total_amount?: number
           type?: Database["public"]["Enums"]["voucher_type"]
           updated_at?: string
