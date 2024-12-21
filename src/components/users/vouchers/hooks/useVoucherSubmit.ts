@@ -12,26 +12,6 @@ export const useVoucherSubmit = (onSuccess: () => void) => {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) throw new Error("Not authenticated");
 
-      // First, ensure the client exists in profiles or create them
-      const { data: existingProfile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', values.clientId)
-        .single();
-
-      if (!existingProfile) {
-        const { data: newProfile, error: profileError } = await supabase
-          .from('profiles')
-          .insert({
-            id: values.clientId,
-            full_name: values.clientName,
-          })
-          .select()
-          .single();
-
-        if (profileError) throw profileError;
-      }
-
       // Generate a random voucher code
       const voucherCode = Math.random().toString(36).substring(2, 10).toUpperCase();
 
@@ -78,6 +58,16 @@ export const useVoucherSubmit = (onSuccess: () => void) => {
           });
         if (tagError) throw tagError;
       }
+
+      // Create or update profile
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: values.clientId,
+          full_name: values.clientName,
+        });
+
+      if (profileError) throw profileError;
 
       toast.success("Voucher created successfully");
       onSuccess();
