@@ -1,4 +1,4 @@
-import { FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
 
@@ -18,6 +18,7 @@ export const ClientInfoFields = ({ form }: ClientInfoFieldsProps) => {
             <FormControl>
               <Input {...field} placeholder="Enter client name" />
             </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -30,6 +31,7 @@ export const ClientInfoFields = ({ form }: ClientInfoFieldsProps) => {
             <FormControl>
               <Input {...field} type="email" placeholder="client@example.com" />
             </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />

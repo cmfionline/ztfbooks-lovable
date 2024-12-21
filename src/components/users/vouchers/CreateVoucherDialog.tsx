@@ -1,5 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { VoucherForm } from "./components/VoucherForm";
+import { VoucherErrorBoundary } from "./components/VoucherErrorBoundary";
 
 interface CreateVoucherDialogProps {
   open: boolean;
@@ -14,10 +15,12 @@ const CreateVoucherDialog = ({ open, onOpenChange, clientId }: CreateVoucherDial
         <DialogHeader>
           <DialogTitle>Create New Voucher</DialogTitle>
         </DialogHeader>
-        <VoucherForm 
-          clientId={clientId} 
-          onSuccess={() => onOpenChange(false)} 
-        />
+        <VoucherErrorBoundary>
+          <VoucherForm 
+            clientId={clientId} 
+            onSuccess={() => onOpenChange(false)} 
+          />
+        </VoucherErrorBoundary>
       </DialogContent>
     </Dialog>
   );
