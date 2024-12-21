@@ -21,7 +21,7 @@ export const VoucherTypeSelect = ({ form }: VoucherTypeSelectProps) => {
         <FormItem>
           <FormLabel>Voucher Type</FormLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <SelectTrigger>
+            <SelectTrigger className="bg-white border-purple-light focus:border-purple">
               <SelectValue placeholder="Select voucher type" />
             </SelectTrigger>
             <SelectContent>
