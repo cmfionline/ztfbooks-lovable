@@ -7,7 +7,6 @@ import { ClientInfoFields } from "./components/ClientInfoFields";
 import { VoucherTypeSelect } from "./components/VoucherTypeSelect";
 import { BookMultiSelect } from "./components/BookMultiSelect";
 import { SeriesSelectionField } from "./components/SeriesSelectionField";
-import { VoucherAmountField } from "./components/VoucherAmountField";
 import { TagSelectionField } from "./components/TagSelectionField";
 import { BookSelectionField } from "./components/BookSelectionField";
 import { useQuery } from "@tanstack/react-query";
@@ -15,6 +14,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { voucherFormSchema, type VoucherFormValues } from "./schema";
 import { useVoucherSubmit } from "./hooks/useVoucherSubmit";
 import { Loader2 } from "lucide-react";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 interface VoucherFormProps {
   clientId?: string;
@@ -35,7 +36,7 @@ export const VoucherForm = ({ clientId, onSuccess }: VoucherFormProps) => {
       clientId: clientId || "",
       clientName: "",
       clientEmail: "",
-      amount: "",
+      number_of_downloads: "1",
     }
   });
 
@@ -113,7 +114,19 @@ export const VoucherForm = ({ clientId, onSuccess }: VoucherFormProps) => {
           <TagSelectionField form={form} tags={tags || []} />
         )}
 
-        <VoucherAmountField form={form} />
+        <FormField
+          control={form.control}
+          name="number_of_downloads"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Number of Downloads</FormLabel>
+              <FormControl>
+                <Input {...field} type="number" min="1" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <Button 
           type="submit" 

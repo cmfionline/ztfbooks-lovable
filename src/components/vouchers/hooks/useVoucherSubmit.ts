@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { VoucherFormValues } from "../schema";
 
 export const useVoucherSubmit = (onSuccess: () => void) => {
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (values: VoucherFormValues, selectedBooks: string[]) => {
     setIsLoading(true);
@@ -23,6 +21,7 @@ export const useVoucherSubmit = (onSuccess: () => void) => {
           client_id: values.clientId,
           created_by: "00000000-0000-0000-0000-000000000000", // Temporary placeholder until user system is implemented
           number_of_downloads: Number(values.number_of_downloads),
+          total_amount: 0, // Set to 0 since we're not using amount anymore
         })
         .select()
         .single();
