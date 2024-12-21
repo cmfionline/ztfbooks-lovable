@@ -15,6 +15,8 @@ interface BookSelectionFieldProps {
 export const BookSelectionField = ({ form, books }: BookSelectionFieldProps) => {
   const [open, setOpen] = useState(false);
 
+  if (form.watch("type") !== "single_book") return null;
+
   return (
     <FormField
       control={form.control}
