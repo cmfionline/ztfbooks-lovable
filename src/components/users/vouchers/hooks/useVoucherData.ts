@@ -42,6 +42,6 @@ export const useVoucherData = (clientId: string, page: number = 1) => {
       };
     },
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
-    keepPreviousData: true // Keep old data while fetching new page
+    placeholderData: (previousData) => previousData // Use this instead of keepPreviousData
   });
 };

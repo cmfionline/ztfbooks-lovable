@@ -27,15 +27,15 @@ describe('VoucherList', () => {
     },
   ];
 
-  const mockOnToggleStatus = vi.fn();
-  const mockOnDelete = vi.fn();
-
   it('renders vouchers correctly', () => {
     render(
       <VoucherList
         vouchers={mockVouchers}
-        onToggleStatus={mockOnToggleStatus}
-        onDelete={mockOnDelete}
+        currentPage={1}
+        totalPages={1}
+        onPageChange={() => {}}
+        onDownload={() => {}}
+        onPrint={() => {}}
       />
     );
 
@@ -43,41 +43,52 @@ describe('VoucherList', () => {
     expect(screen.getByText('Single Book')).toBeInTheDocument();
   });
 
-  it('handles status toggle', () => {
+  it('handles download action', () => {
+    const mockOnDownload = vi.fn();
     render(
       <VoucherList
         vouchers={mockVouchers}
-        onToggleStatus={mockOnToggleStatus}
-        onDelete={mockOnDelete}
+        currentPage={1}
+        totalPages={1}
+        onPageChange={() => {}}
+        onDownload={mockOnDownload}
+        onPrint={() => {}}
       />
     );
 
-    fireEvent.click(screen.getByTitle('Deactivate'));
-    expect(mockOnToggleStatus).toHaveBeenCalledWith(mockVouchers[0]);
+    fireEvent.click(screen.getByTitle('Download'));
+    expect(mockOnDownload).toHaveBeenCalledWith(mockVouchers[0].id);
   });
 
-  it('handles delete action', () => {
+  it('handles print action', () => {
+    const mockOnPrint = vi.fn();
     render(
       <VoucherList
         vouchers={mockVouchers}
-        onToggleStatus={mockOnToggleStatus}
-        onDelete={mockOnDelete}
+        currentPage={1}
+        totalPages={1}
+        onPageChange={() => {}}
+        onDownload={() => {}}
+        onPrint={mockOnPrint}
       />
     );
 
-    fireEvent.click(screen.getByTitle('Delete'));
-    expect(mockOnDelete).toHaveBeenCalledWith(mockVouchers[0]);
+    fireEvent.click(screen.getByTitle('Print'));
+    expect(mockOnPrint).toHaveBeenCalledWith(mockVouchers[0].id);
   });
 
   it('displays empty state when no vouchers', () => {
     render(
       <VoucherList
         vouchers={[]}
-        onToggleStatus={mockOnToggleStatus}
-        onDelete={mockOnDelete}
+        currentPage={1}
+        totalPages={1}
+        onPageChange={() => {}}
+        onDownload={() => {}}
+        onPrint={() => {}}
       />
     );
 
-    expect(screen.getByText('No vouchers found')).toBeInTheDocument();
+    expect(screen.getByText('No vouchers found for this client')).toBeInTheDocument();
   });
 });
