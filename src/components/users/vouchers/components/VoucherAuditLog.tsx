@@ -19,7 +19,7 @@ interface AuditLogEntry {
   id: string;
   action_type: string;
   performed_by: {
-    full_name: string;
+    full_name: string | null;
   } | null;
   created_at: string;
 }
@@ -34,7 +34,7 @@ export const VoucherAuditLog = ({ voucherId }: VoucherAuditLogProps) => {
           id,
           action_type,
           created_at,
-          performed_by:profiles!left(full_name)
+          performed_by:profiles(full_name)
         `)
         .order('created_at', { ascending: false });
 
@@ -46,7 +46,7 @@ export const VoucherAuditLog = ({ voucherId }: VoucherAuditLogProps) => {
       
       if (error) throw error;
       
-      return data as AuditLogEntry[];
+      return data as unknown as AuditLogEntry[];
     },
   });
 
@@ -69,7 +69,7 @@ export const VoucherAuditLog = ({ voucherId }: VoucherAuditLogProps) => {
           {logs?.map((log) => (
             <TableRow key={log.id}>
               <TableCell className="font-medium">{log.action_type}</TableCell>
-              <TableCell>{log.performed_by?.full_name}</TableCell>
+              <TableCell>{log.performed_by?.full_name || 'System'}</TableCell>
               <TableCell>
                 {formatDistanceToNow(new Date(log.created_at), { addSuffix: true })}
               </TableCell>
