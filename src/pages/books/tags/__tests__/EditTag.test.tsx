@@ -13,6 +13,7 @@ vi.mock('@/hooks/use-toast', () => ({
   }),
 }));
 
+// Create a more complete mock for Supabase
 vi.mock('@/lib/supabase', () => ({
   supabase: {
     from: vi.fn(() => ({
@@ -23,6 +24,24 @@ vi.mock('@/lib/supabase', () => ({
             error: null,
           })),
         })),
+        neq: vi.fn(),
+        gt: vi.fn(),
+        gte: vi.fn(),
+        lt: vi.fn(),
+        lte: vi.fn(),
+        like: vi.fn(),
+        ilike: vi.fn(),
+        is: vi.fn(),
+        in: vi.fn(),
+        contains: vi.fn(),
+        containedBy: vi.fn(),
+        rangeLt: vi.fn(),
+        rangeGt: vi.fn(),
+        rangeGte: vi.fn(),
+        rangeLte: vi.fn(),
+        rangeAdjacent: vi.fn(),
+        overlaps: vi.fn(),
+        match: vi.fn(),
       })),
       update: vi.fn(() => ({
         eq: vi.fn(() => ({
