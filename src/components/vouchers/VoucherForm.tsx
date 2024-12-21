@@ -17,7 +17,7 @@ import { useVoucherSubmit } from "./hooks/useVoucherSubmit";
 import { Loader2 } from "lucide-react";
 
 interface VoucherFormProps {
-  clientId: string;
+  clientId?: string;
   onSuccess: () => void;
 }
 
@@ -32,7 +32,7 @@ export const VoucherForm = ({ clientId, onSuccess }: VoucherFormProps) => {
       bookId: "",
       seriesId: "",
       tagId: "",
-      clientId,
+      clientId: clientId || "",
       clientName: "",
       clientEmail: "",
       amount: "",

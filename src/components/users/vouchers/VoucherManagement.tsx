@@ -105,7 +105,6 @@ const VoucherManagement = ({ clientId }: VoucherManagementProps) => {
       <CreateVoucherDialog
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
-        clientId={clientId}
       />
     </div>
   );
