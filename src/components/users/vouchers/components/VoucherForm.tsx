@@ -1,23 +1,20 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { VoucherTypeSelect } from "./VoucherTypeSelect";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { voucherFormSchema, type VoucherFormValues } from "../schema";
 import { BookSelectionField } from "./BookSelectionField";
 import { SeriesSelectionField } from "./SeriesSelectionField";
 import { TagSelectionField } from "./TagSelectionField";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useVoucherSubmit } from "../hooks/useVoucherSubmit";
-import { voucherFormSchema, type VoucherFormValues } from "../schema";
 import { Loader2 } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
-interface VoucherFormProps {
-  clientId: string;
-  onSuccess: () => void;
-}
-
-export const VoucherForm = ({ clientId, onSuccess }: VoucherFormProps) => {
+export const VoucherForm = ({ onSuccess }: { onSuccess: () => void }) => {
+  const { toast } = useToast();
   const { handleSubmit, isLoading } = useVoucherSubmit(onSuccess);
 
   const form = useForm<VoucherFormValues>({
@@ -27,73 +24,132 @@ export const VoucherForm = ({ clientId, onSuccess }: VoucherFormProps) => {
       bookId: "",
       seriesId: "",
       tagId: "",
-      clientId,
+      clientId: "",
+      clientName: "",
+      clientEmail: "",
       number_of_downloads: "1",
-    }
+    },
+    mode: "onChange" // Enable real-time validation
   });
 
-  const { data: books, isLoading: isBooksLoading } = useQuery({
-    queryKey: ['books'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('books')
-        .select('id, title')
-        .order('title');
-      if (error) throw error;
-      return data;
+  const onSubmit = async (values: VoucherFormValues) => {
+    try {
+      await handleSubmit(values);
+      toast({
+        title: "Success",
+        description: "Voucher created successfully",
+        className: "bg-green-50 border-green-200",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create voucher",
+        variant: "destructive",
+      });
     }
-  });
-
-  const { data: series, isLoading: isSeriesLoading } = useQuery({
-    queryKey: ['series'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('series')
-        .select('id, name')
-        .order('name');
-      if (error) throw error;
-      return data;
-    }
-  });
-
-  const { data: tags, isLoading: isTagsLoading } = useQuery({
-    queryKey: ['tags'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('tags')
-        .select('id, name')
-        .order('name');
-      if (error) throw error;
-      return data;
-    }
-  });
-
-  const onSubmit = (values: VoucherFormValues) => {
-    handleSubmit(values);
   };
 
-  const isFormLoading = isBooksLoading || isSeriesLoading || isTagsLoading;
-
-  if (isFormLoading) {
-    return (
-      <div className="flex items-center justify-center p-6">
-        <Loader2 className="h-6 w-6 animate-spin text-purple" />
-      </div>
-    );
-  }
+  const hasFormErrors = Object.keys(form.formState.errors).length > 0;
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <VoucherTypeSelect form={form} />
-        <BookSelectionField form={form} books={books || []} />
-        <SeriesSelectionField form={form} series={series || []} />
-        <TagSelectionField form={form} tags={tags || []} />
+        {hasFormErrors && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertDescription>
+              Please fix the highlighted errors before submitting the form.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <FormField
+          control={form.control}
+          name="clientName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Client Name</FormLabel>
+              <FormControl>
+                <Input {...field} className="border-purple-light focus:border-purple" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="clientEmail"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Client Email</FormLabel>
+              <FormControl>
+                <Input {...field} type="email" className="border-purple-light focus:border-purple" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Voucher Type</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger className="border-purple-light focus:border-purple">
+                    <SelectValue placeholder="Select voucher type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="single_book">Single Book</SelectItem>
+                  <SelectItem value="multiple_books">Multiple Books</SelectItem>
+                  <SelectItem value="series">Book Series</SelectItem>
+                  <SelectItem value="book_tag">Book Tag</SelectItem>
+                  <SelectItem value="all_books">All Books</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {form.watch("type") === "single_book" && (
+          <BookSelectionField form={form} />
+        )}
+
+        {form.watch("type") === "series" && (
+          <SeriesSelectionField form={form} />
+        )}
+
+        {form.watch("type") === "book_tag" && (
+          <TagSelectionField form={form} />
+        )}
+
+        <FormField
+          control={form.control}
+          name="number_of_downloads"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Number of Downloads</FormLabel>
+              <FormControl>
+                <Input 
+                  {...field} 
+                  type="number" 
+                  min="1"
+                  className="border-purple-light focus:border-purple" 
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <Button 
           type="submit" 
-          className="w-full bg-purple hover:bg-purple/90 text-white" 
-          disabled={isLoading}
+          className="w-full bg-purple hover:bg-purple/90"
+          disabled={isLoading || hasFormErrors}
         >
           {isLoading ? (
             <>
