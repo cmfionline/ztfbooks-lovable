@@ -1,8 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import NotificationSettings from "@/components/settings/NotificationSettings";
-import ReportSettings from "@/components/settings/ReportSettings";
-import SecuritySettings from "@/components/settings/SecuritySettings";
-import { SystemSettings } from "@/components/settings/system/GlobalSettings";
+import { NotificationSettings } from "@/components/settings/NotificationSettings";
+import { ReportSettings } from "@/components/settings/ReportSettings";
+import { SecuritySettings } from "@/components/settings/SecuritySettings";
+import { GlobalSettings } from "@/components/settings/system/GlobalSettings";
 
 const Settings = () => {
   return (
@@ -18,7 +18,7 @@ const Settings = () => {
         </TabsList>
 
         <TabsContent value="system">
-          <SystemSettings />
+          <GlobalSettings />
         </TabsContent>
 
         <TabsContent value="notifications">
