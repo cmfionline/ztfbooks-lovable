@@ -13,7 +13,7 @@ import { PublisherOnline } from "./components/PublisherOnline";
 import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(2, "Name must be at least 2 characters").max(255, "Name must be less than 255 characters"),
   address: z.string().optional(),
   email: z.string().email("Invalid email format").optional().or(z.literal("")),
   phone: z.string().optional(),
@@ -45,18 +45,20 @@ const AddPublisher = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      console.log("Submitting publisher data:", values);
+      
       const { data: publisher, error } = await supabase
         .from("publishers")
         .insert({
           name: values.name.trim(),
-          address: values.address || null,
-          email: values.email || null,
-          phone: values.phone || null,
-          city: values.city || null,
-          country: values.country || null,
-          postcode: values.postcode || null,
-          website: values.website || null,
-          social_media_url: values.socialMediaUrl || null,
+          address: values.address?.trim() || null,
+          email: values.email?.trim() || null,
+          phone: values.phone?.trim() || null,
+          city: values.city?.trim() || null,
+          country: values.country?.trim() || null,
+          postcode: values.postcode?.trim() || null,
+          website: values.website?.trim() || null,
+          social_media_url: values.socialMediaUrl?.trim() || null,
         })
         .select()
         .single();
@@ -69,6 +71,8 @@ const AddPublisher = () => {
       if (!publisher) {
         throw new Error("Failed to create publisher - no data returned");
       }
+
+      console.log("Publisher created successfully:", publisher);
 
       toast({
         title: "Success",
