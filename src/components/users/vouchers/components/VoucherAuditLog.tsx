@@ -15,6 +15,15 @@ interface VoucherAuditLogProps {
   voucherId?: string;
 }
 
+interface AuditLogEntry {
+  id: string;
+  action_type: string;
+  performed_by: {
+    full_name: string;
+  } | null;
+  created_at: string;
+}
+
 export const VoucherAuditLog = ({ voucherId }: VoucherAuditLogProps) => {
   const { data: logs, isLoading } = useQuery({
     queryKey: ['voucher-audit-logs', voucherId],
@@ -23,7 +32,7 @@ export const VoucherAuditLog = ({ voucherId }: VoucherAuditLogProps) => {
         .from('voucher_audit_logs')
         .select(`
           *,
-          performer:performed_by(full_name)
+          performed_by:profiles!inner(full_name)
         `)
         .order('created_at', { ascending: false });
 
@@ -33,9 +42,8 @@ export const VoucherAuditLog = ({ voucherId }: VoucherAuditLogProps) => {
 
       const { data, error } = await query.limit(50);
       if (error) throw error;
-      return data;
+      return data as AuditLogEntry[];
     },
-    enabled: true,
   });
 
   if (isLoading) {
@@ -57,7 +65,7 @@ export const VoucherAuditLog = ({ voucherId }: VoucherAuditLogProps) => {
           {logs?.map((log) => (
             <TableRow key={log.id}>
               <TableCell className="font-medium">{log.action_type}</TableCell>
-              <TableCell>{log.performer?.full_name}</TableCell>
+              <TableCell>{log.performed_by?.full_name}</TableCell>
               <TableCell>
                 {formatDistanceToNow(new Date(log.created_at), { addSuffix: true })}
               </TableCell>

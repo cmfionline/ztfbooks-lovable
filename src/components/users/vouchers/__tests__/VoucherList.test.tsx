@@ -21,9 +21,6 @@ describe('VoucherList', () => {
       updated_at: new Date().toISOString(),
       number_of_downloads: 1,
       status: 'active',
-      books: [],
-      series: [],
-      tags: [],
     },
   ];
 
@@ -34,8 +31,8 @@ describe('VoucherList', () => {
         currentPage={1}
         totalPages={1}
         onPageChange={() => {}}
-        onDownload={() => {}}
-        onPrint={() => {}}
+        selectedVouchers={[]}
+        onSelectionChange={() => {}}
       />
     );
 
@@ -43,38 +40,21 @@ describe('VoucherList', () => {
     expect(screen.getByText('Single Book')).toBeInTheDocument();
   });
 
-  it('handles download action', () => {
-    const mockOnDownload = vi.fn();
+  it('handles selection', () => {
+    const mockOnSelectionChange = vi.fn();
     render(
       <VoucherList
         vouchers={mockVouchers}
         currentPage={1}
         totalPages={1}
         onPageChange={() => {}}
-        onDownload={mockOnDownload}
-        onPrint={() => {}}
+        selectedVouchers={[]}
+        onSelectionChange={mockOnSelectionChange}
       />
     );
 
-    fireEvent.click(screen.getByTitle('Download'));
-    expect(mockOnDownload).toHaveBeenCalledWith(mockVouchers[0].id);
-  });
-
-  it('handles print action', () => {
-    const mockOnPrint = vi.fn();
-    render(
-      <VoucherList
-        vouchers={mockVouchers}
-        currentPage={1}
-        totalPages={1}
-        onPageChange={() => {}}
-        onDownload={() => {}}
-        onPrint={mockOnPrint}
-      />
-    );
-
-    fireEvent.click(screen.getByTitle('Print'));
-    expect(mockOnPrint).toHaveBeenCalledWith(mockVouchers[0].id);
+    fireEvent.click(screen.getByRole('checkbox'));
+    expect(mockOnSelectionChange).toHaveBeenCalledWith(['1']);
   });
 
   it('displays empty state when no vouchers', () => {
@@ -84,8 +64,8 @@ describe('VoucherList', () => {
         currentPage={1}
         totalPages={1}
         onPageChange={() => {}}
-        onDownload={() => {}}
-        onPrint={() => {}}
+        selectedVouchers={[]}
+        onSelectionChange={() => {}}
       />
     );
 

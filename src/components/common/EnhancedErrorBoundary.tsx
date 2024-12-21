@@ -1,4 +1,4 @@
-import { ErrorBoundary } from "react-error-boundary";
+import { ErrorBoundary, type ErrorBoundaryProps } from "react-error-boundary";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, RefreshCcw } from "lucide-react";
@@ -81,7 +81,7 @@ const ErrorFallback = ({
 
 interface EnhancedErrorBoundaryProps {
   children: React.ReactNode;
-  onError?: (error: Error, componentStack: string) => void;
+  onError?: ErrorBoundaryProps['onError'];
   fallbackComponent?: React.ComponentType<ErrorFallbackProps>;
 }
 
@@ -90,10 +90,10 @@ export const EnhancedErrorBoundary = ({
   onError,
   fallbackComponent: FallbackComponent = ErrorFallback
 }: EnhancedErrorBoundaryProps) => {
-  const handleError = (error: Error, componentStack: string) => {
+  const handleError: ErrorBoundaryProps['onError'] = (error, info) => {
     const eventId = Math.random().toString(36).substring(7);
-    console.error("Error caught by boundary:", { error, componentStack, eventId });
-    onError?.(error, componentStack);
+    console.error("Error caught by boundary:", { error, info, eventId });
+    onError?.(error, info);
   };
 
   return (

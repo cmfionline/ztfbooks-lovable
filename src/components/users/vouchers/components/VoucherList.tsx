@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Voucher } from "../types";
 
-interface VoucherListProps {
+export interface VoucherListProps {
   vouchers: Voucher[];
   currentPage: number;
   totalPages: number;
