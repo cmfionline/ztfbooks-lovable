@@ -11,9 +11,9 @@ export const useVoucherSubmit = (onSuccess: () => void) => {
   const handleSubmit = async (values: VoucherFormValues, selectedBooks: string[]) => {
     setIsLoading(true);
     try {
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
-      if (authError || !user) {
+      if (sessionError || !session) {
         toast.error("You must be logged in to create vouchers");
         navigate("/login");
         return;
@@ -28,7 +28,7 @@ export const useVoucherSubmit = (onSuccess: () => void) => {
           code: voucherCode,
           type: values.type,
           client_id: values.clientId,
-          created_by: user.id,
+          created_by: session.user.id,
           total_amount: Number(values.amount),
           number_of_downloads: 1,
         })
