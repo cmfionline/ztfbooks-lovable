@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { VoucherForm } from "./VoucherForm";
-import { VoucherErrorBoundary } from "./components/VoucherErrorBoundary";
+import { VoucherForm } from "@/components/users/vouchers/components/VoucherForm";
+import { VoucherErrorBoundary } from "@/components/users/vouchers/components/VoucherErrorBoundary";
 
 interface CreateVoucherDialogProps {
   open: boolean;

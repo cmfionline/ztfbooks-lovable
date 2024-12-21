@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -12,10 +13,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Check, X, Plus, Download, Printer } from "lucide-react";
-import { useState } from "react";
 import CreateVoucherDialog from "./CreateVoucherDialog";
 import { Filters } from "@/components/dashboard/Filters";
 import { toast } from "sonner";
+import type { Voucher } from "@/types/voucher";
 
 const VouchersList = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
