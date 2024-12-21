@@ -12,8 +12,8 @@ import { TagSelectionField } from "./TagSelectionField";
 import { BookSelectionField } from "./BookSelectionField";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { voucherFormSchema, type VoucherFormValues } from "../schema";
-import { useVoucherSubmit } from "../hooks/useVoucherSubmit";
+import { voucherFormSchema, type VoucherFormValues } from "./schema";
+import { useVoucherSubmit } from "./hooks/useVoucherSubmit";
 import { Loader2 } from "lucide-react";
 
 interface VoucherFormProps {
