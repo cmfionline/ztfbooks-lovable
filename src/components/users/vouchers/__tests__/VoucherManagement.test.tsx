@@ -12,7 +12,7 @@ vi.mock('@/integrations/supabase/client', () => ({
       delete: vi.fn().mockReturnThis(),
       update: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
-      order: vi.fn(),
+      order: vi.fn().mockReturnThis(),
       single: vi.fn(),
       url: new URL('http://localhost'),
       headers: {},
@@ -61,11 +61,17 @@ describe('VoucherManagement', () => {
     const mockSelect = vi.fn().mockResolvedValue({ data: [], error: null });
     const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
 
-    vi.mocked(supabase.from).mockImplementation((table) => ({
+    vi.mocked(supabase.from).mockImplementation(() => ({
       select: mockSelect,
       insert: mockInsert,
+      delete: vi.fn().mockReturnThis(),
+      update: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
       order: vi.fn().mockReturnThis(),
+      url: new URL('http://localhost'),
+      headers: {},
+      upsert: vi.fn(),
+      single: vi.fn(),
     }));
 
     renderWithProviders(<VoucherManagement clientId="test-client" />);
@@ -79,13 +85,20 @@ describe('VoucherManagement', () => {
     const mockDelete = vi.fn().mockResolvedValue({ error: null });
     vi.mocked(supabase.from).mockImplementation(() => ({
       delete: mockDelete,
+      select: vi.fn().mockReturnThis(),
+      insert: vi.fn().mockReturnThis(),
+      update: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
+      order: vi.fn().mockReturnThis(),
+      url: new URL('http://localhost'),
+      headers: {},
+      upsert: vi.fn(),
+      single: vi.fn(),
     }));
 
     renderWithProviders(<VoucherManagement clientId="test-client" />);
     
     // Simulate delete action
-    // Note: This test might need adjustment based on your UI implementation
     const deleteButtons = await screen.findAllByTitle('Delete');
     fireEvent.click(deleteButtons[0]);
     
