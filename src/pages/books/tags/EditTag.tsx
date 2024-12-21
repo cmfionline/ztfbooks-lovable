@@ -1,31 +1,11 @@
-import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
-import { Tag, Loader2 } from "lucide-react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Tag } from "lucide-react";
 import { QueryErrorBoundary } from "@/components/common/QueryErrorBoundary";
-
-const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { TagForm } from "./components/TagForm";
 
 const EditTag = () => {
   const { id } = useParams();
@@ -33,19 +13,12 @@ const EditTag = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  console.log("EditTag mounted with id:", id); // Debug log
-
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-    },
-  });
+  console.log("EditTag mounted with id:", id);
 
   const { data: tag, isLoading, error } = useQuery({
     queryKey: ["tag", id],
     queryFn: async () => {
-      console.log("Fetching tag data for id:", id); // Debug log
+      console.log("Fetching tag data for id:", id);
       const { data, error } = await supabase
         .from("tags")
         .select("*")
@@ -53,18 +26,18 @@ const EditTag = () => {
         .maybeSingle();
 
       if (error) {
-        console.error("Error fetching tag:", error); // Debug log
+        console.error("Error fetching tag:", error);
         throw error;
       }
       
-      console.log("Fetched tag data:", data); // Debug log
+      console.log("Fetched tag data:", data);
       return data;
     },
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (values: FormValues) => {
-      console.log("Updating tag with values:", values); // Debug log
+    mutationFn: async (values: { name: string }) => {
+      console.log("Updating tag with values:", values);
       const { data, error } = await supabase
         .from("tags")
         .update({ name: values.name })
@@ -73,7 +46,7 @@ const EditTag = () => {
         .single();
 
       if (error) {
-        console.error("Error updating tag:", error); // Debug log
+        console.error("Error updating tag:", error);
         throw error;
       }
       return data;
@@ -87,7 +60,7 @@ const EditTag = () => {
       navigate("/books/tags");
     },
     onError: (error: any) => {
-      console.error("Mutation error:", error); // Debug log
+      console.error("Mutation error:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to update tag. Please try again.",
@@ -96,22 +69,8 @@ const EditTag = () => {
     },
   });
 
-  useEffect(() => {
-    if (tag) {
-      console.log("Setting form values with tag:", tag); // Debug log
-      form.reset({
-        name: tag.name,
-      });
-    }
-  }, [tag, form]);
-
-  const onSubmit = async (values: FormValues) => {
-    console.log("Form submitted with values:", values); // Debug log
-    updateMutation.mutate(values);
-  };
-
   if (error) {
-    console.error("Query error:", error); // Debug log
+    console.error("Query error:", error);
     return (
       <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
         <div className="max-w-2xl mx-auto">
@@ -132,23 +91,6 @@ const EditTag = () => {
     );
   }
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
-        <div className="max-w-2xl mx-auto">
-          <Card>
-            <CardContent className="p-6">
-              <div className="space-y-4">
-                <Skeleton className="h-8 w-1/3" />
-                <Skeleton className="h-12 w-full" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
       <div className="max-w-2xl mx-auto">
@@ -161,48 +103,18 @@ const EditTag = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-primary">Name</FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            className="border-purple-light focus:border-purple focus:ring-purple"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="flex gap-4">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="flex-1"
-                      onClick={() => navigate("/books/tags")}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      className="flex-1 bg-purple hover:bg-purple/90 text-white"
-                      disabled={updateMutation.isPending}
-                    >
-                      {updateMutation.isPending ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        "Update Tag"
-                      )}
-                    </Button>
-                  </div>
-                </form>
-              </Form>
+              {isLoading ? (
+                <div className="flex justify-center p-4">
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                </div>
+              ) : (
+                <TagForm
+                  defaultValues={tag}
+                  onSubmit={updateMutation.mutate}
+                  onCancel={() => navigate("/books/tags")}
+                  isLoading={updateMutation.isPending}
+                />
+              )}
             </CardContent>
           </Card>
         </QueryErrorBoundary>
