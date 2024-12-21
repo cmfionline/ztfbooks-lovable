@@ -4,9 +4,6 @@ import { Button } from "@/components/ui/button";
 import { FileDown, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-const authors = ["All Authors", "Zacharias T. Fomum", "Other Contributors"];
-const series = ["All Series", "Christian Living", "Prayer", "Leadership", "Discipleship"];
-const tags = ["All Tags", "Prayer", "Fasting", "Holy Spirit", "Leadership", "Discipleship"];
 const voucherTypes = ["All Types", "Single Book", "Multiple Books", "Series", "Book Tag", "All Books"];
 const voucherStatus = ["All Status", "Active", "Redeemed", "Expired"];
 

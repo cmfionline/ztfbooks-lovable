@@ -11,16 +11,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Check, X, Plus } from "lucide-react";
+import { Check, X, Plus, Download, Printer } from "lucide-react";
 import { useState } from "react";
 import CreateVoucherDialog from "./CreateVoucherDialog";
+import { Filters } from "@/components/dashboard/Filters";
+import { toast } from "sonner";
 
 const VouchersList = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const { data: vouchers, isLoading } = useQuery({
-    queryKey: ['vouchers'],
+    queryKey: ['vouchers', searchQuery],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('vouchers')
         .select(`
           *,
@@ -32,11 +36,25 @@ const VouchersList = () => {
             series:series(name)
           )
         `);
+
+      if (searchQuery) {
+        query = query.ilike('code', `%${searchQuery}%`);
+      }
       
-      if (error) throw error;
+      const { data, error } = await query;
+      
+      if (error) {
+        toast.error("Error loading vouchers: " + error.message);
+        throw error;
+      }
       return data;
     }
   });
+
+  const handleExport = (format: 'pdf' | 'excel') => {
+    toast.success(`Exporting vouchers as ${format.toUpperCase()}`);
+    // Implement export logic here
+  };
 
   if (isLoading) {
     return <Skeleton className="w-full h-[400px]" />;
@@ -55,6 +73,11 @@ const VouchersList = () => {
         </Button>
       </div>
 
+      <Filters 
+        onSearch={setSearchQuery}
+        onExport={handleExport}
+      />
+
       <Table>
         <TableHeader>
           <TableRow>
@@ -64,6 +87,7 @@ const VouchersList = () => {
             <TableHead>Item</TableHead>
             <TableHead>Amount</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -90,8 +114,37 @@ const VouchersList = () => {
                   {voucher.redeemed ? 'Redeemed' : 'Active'}
                 </Badge>
               </TableCell>
+              <TableCell className="space-x-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    toast.success("Downloading voucher...");
+                  }}
+                  title="Download"
+                >
+                  <Download className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    toast.success("Preparing voucher for printing...");
+                  }}
+                  title="Print"
+                >
+                  <Printer className="w-4 h-4" />
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
+          {(!vouchers || vouchers.length === 0) && (
+            <TableRow>
+              <TableCell colSpan={7} className="text-center text-muted-foreground">
+                No vouchers found
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
 
