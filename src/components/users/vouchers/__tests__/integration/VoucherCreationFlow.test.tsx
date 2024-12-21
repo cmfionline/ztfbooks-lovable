@@ -1,10 +1,9 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import VoucherManagement from '../../VoucherManagement';
 import { supabase } from '@/integrations/supabase/client';
 
-// Mock Supabase client
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     from: vi.fn(() => ({
@@ -15,7 +14,7 @@ vi.mock('@/integrations/supabase/client', () => ({
       eq: vi.fn().mockReturnThis(),
       order: vi.fn(),
       single: vi.fn(),
-      url: '',
+      url: new URL('http://localhost'),
       headers: {},
       upsert: vi.fn(),
     })),
@@ -62,7 +61,7 @@ describe('Voucher Creation Flow', () => {
       insert: mockInsert,
       eq: vi.fn().mockReturnThis(),
       order: vi.fn().mockReturnThis(),
-      url: '',
+      url: new URL('http://localhost'),
       headers: {},
       upsert: vi.fn(),
       update: vi.fn(),
@@ -95,7 +94,7 @@ describe('Voucher Creation Flow', () => {
       insert: vi.fn().mockRejectedValue(mockError),
       eq: vi.fn().mockReturnThis(),
       order: vi.fn().mockReturnThis(),
-      url: '',
+      url: new URL('http://localhost'),
       headers: {},
       upsert: vi.fn(),
       update: vi.fn(),

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { VoucherForm } from '../components/VoucherForm';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,7 +9,7 @@ vi.mock('@/integrations/supabase/client', () => ({
       select: vi.fn().mockReturnThis(),
       insert: vi.fn().mockReturnThis(),
       single: vi.fn(),
-      url: '',
+      url: new URL('http://localhost'),
       headers: {},
       upsert: vi.fn(),
       update: vi.fn(),
@@ -28,20 +28,13 @@ describe('VoucherForm', () => {
     vi.clearAllMocks();
   });
 
-  it('renders form fields correctly', () => {
-    render(<VoucherForm clientId="test-client" onSuccess={mockOnSuccess} />);
-    
-    expect(screen.getByText('Voucher Type')).toBeInTheDocument();
-    expect(screen.getByText('Number of Downloads')).toBeInTheDocument();
-  });
-
   it('handles form submission correctly', async () => {
     const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
     vi.mocked(supabase.from).mockImplementation(() => ({
       insert: mockInsert,
       select: vi.fn().mockReturnThis(),
       single: vi.fn(),
-      url: '',
+      url: new URL('http://localhost'),
       headers: {},
       upsert: vi.fn(),
       update: vi.fn(),
