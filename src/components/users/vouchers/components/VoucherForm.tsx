@@ -14,6 +14,7 @@ import { Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { v4 as uuidv4 } from 'uuid';
 
 export const VoucherForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const { toast } = useToast();
@@ -59,7 +60,7 @@ export const VoucherForm = ({ onSuccess }: { onSuccess: () => void }) => {
       bookId: "",
       seriesId: "",
       tagId: "",
-      clientId: "",
+      clientId: uuidv4(), // Generate a new UUID for the client
       clientName: "",
       clientEmail: "",
       number_of_downloads: "1",
