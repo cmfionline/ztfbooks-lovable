@@ -20,8 +20,15 @@ const EditPublisher = () => {
         .eq("id", id)
         .maybeSingle();
 
-      if (error) throw error;
-      if (!data) throw new Error("Publisher not found");
+      if (error) {
+        console.error("Error fetching publisher:", error);
+        throw error;
+      }
+      
+      if (!data) {
+        console.error("Publisher not found");
+        throw new Error("Publisher not found");
+      }
 
       // If there's a photo, get its public URL
       if (data.photo) {

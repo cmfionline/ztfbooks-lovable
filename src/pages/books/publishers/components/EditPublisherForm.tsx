@@ -12,7 +12,7 @@ import { PublisherAddress } from "./PublisherAddress";
 import { PublisherOnline } from "./PublisherOnline";
 
 const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
+  name: z.string().min(2, "Name must be at least 2 characters").max(255, "Name must be less than 255 characters"),
   email: z.string().email().optional().or(z.literal("")),
   phone: z.string().optional(),
   address: z.string().optional(),
@@ -53,6 +53,8 @@ export const EditPublisherForm = ({ initialData, id }: EditPublisherFormProps) =
 
   const onSubmit = async (values: FormValues) => {
     try {
+      console.log("Updating publisher with data:", values);
+      
       let photoPath = initialData?.photo;
 
       if (values.photo instanceof File) {
@@ -65,27 +67,36 @@ export const EditPublisherForm = ({ initialData, id }: EditPublisherFormProps) =
             upsert: true
           });
 
-        if (uploadError) throw uploadError;
+        if (uploadError) {
+          console.error("Error uploading photo:", uploadError);
+          throw uploadError;
+        }
+        
         photoPath = fileName;
       }
 
       const { error } = await supabase
         .from("publishers")
         .update({
-          name: values.name,
-          email: values.email || null,
-          phone: values.phone || null,
-          address: values.address || null,
-          city: values.city || null,
-          country: values.country || null,
-          postcode: values.postcode || null,
-          website: values.website || null,
-          social_media_url: values.social_media_url || null,
+          name: values.name.trim(),
+          email: values.email?.trim() || null,
+          phone: values.phone?.trim() || null,
+          address: values.address?.trim() || null,
+          city: values.city?.trim() || null,
+          country: values.country?.trim() || null,
+          postcode: values.postcode?.trim() || null,
+          website: values.website?.trim() || null,
+          social_media_url: values.social_media_url?.trim() || null,
           photo: photoPath,
         })
         .eq("id", id);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error updating publisher:", error);
+        throw error;
+      }
+
+      console.log("Publisher updated successfully");
 
       toast({
         title: "Success",
