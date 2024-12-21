@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { voucherFormSchema, type VoucherFormValues } from "../schema";
 import { useVoucherSubmit } from "../hooks/useVoucherSubmit";
+import { Loader2 } from "lucide-react";
 
 interface VoucherFormProps {
   clientId: string;
@@ -38,7 +39,7 @@ export const VoucherForm = ({ clientId, onSuccess }: VoucherFormProps) => {
     }
   });
 
-  const { data: books } = useQuery({
+  const { data: books, isLoading: isBooksLoading } = useQuery({
     queryKey: ['books'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -49,7 +50,7 @@ export const VoucherForm = ({ clientId, onSuccess }: VoucherFormProps) => {
     }
   });
 
-  const { data: series } = useQuery({
+  const { data: series, isLoading: isSeriesLoading } = useQuery({
     queryKey: ['series'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -60,7 +61,7 @@ export const VoucherForm = ({ clientId, onSuccess }: VoucherFormProps) => {
     }
   });
 
-  const { data: tags } = useQuery({
+  const { data: tags, isLoading: isTagsLoading } = useQuery({
     queryKey: ['tags'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -74,6 +75,16 @@ export const VoucherForm = ({ clientId, onSuccess }: VoucherFormProps) => {
   const onSubmit = (values: VoucherFormValues) => {
     handleSubmit(values, selectedBooks);
   };
+
+  const isFormLoading = isBooksLoading || isSeriesLoading || isTagsLoading;
+
+  if (isFormLoading) {
+    return (
+      <div className="flex items-center justify-center p-6">
+        <Loader2 className="h-6 w-6 animate-spin text-purple" />
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>
@@ -109,7 +120,14 @@ export const VoucherForm = ({ clientId, onSuccess }: VoucherFormProps) => {
           className="w-full bg-purple hover:bg-purple/90 text-white" 
           disabled={isLoading}
         >
-          {isLoading ? "Creating..." : "Create Voucher"}
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Creating...
+            </>
+          ) : (
+            "Create Voucher"
+          )}
         </Button>
       </form>
     </Form>
