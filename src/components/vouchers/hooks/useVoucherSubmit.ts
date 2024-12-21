@@ -1,8 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { VoucherFormValues } from "../schema";
-import { useNavigate } from "react-router-dom";
 
 export const useVoucherSubmit = (onSuccess: () => void) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -11,14 +11,6 @@ export const useVoucherSubmit = (onSuccess: () => void) => {
   const handleSubmit = async (values: VoucherFormValues, selectedBooks: string[]) => {
     setIsLoading(true);
     try {
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError || !session) {
-        toast.error("You must be logged in to create vouchers");
-        navigate("/login");
-        return;
-      }
-
       // Generate a random voucher code
       const voucherCode = Math.random().toString(36).substring(2, 10).toUpperCase();
 
@@ -28,7 +20,7 @@ export const useVoucherSubmit = (onSuccess: () => void) => {
           code: voucherCode,
           type: values.type,
           client_id: values.clientId,
-          created_by: session.user.id,
+          created_by: "00000000-0000-0000-0000-000000000000", // Temporary placeholder until user system is implemented
           total_amount: Number(values.amount),
           number_of_downloads: 1,
         })
