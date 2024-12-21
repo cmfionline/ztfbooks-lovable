@@ -1,85 +1,119 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Check, X, Ban, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Download, Printer, Check, X } from "lucide-react";
 import type { Voucher } from "../types";
+import { 
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface VoucherListProps {
   vouchers: Voucher[];
-  onToggleStatus: (voucher: Voucher) => void;
-  onDelete: (voucher: Voucher) => void;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  onDownload: (voucherId: string) => void;
+  onPrint: (voucherId: string) => void;
 }
 
-export const VoucherList = ({ vouchers, onToggleStatus, onDelete }: VoucherListProps) => {
+export const VoucherList = ({
+  vouchers,
+  currentPage,
+  totalPages,
+  onPageChange,
+  onDownload,
+  onPrint
+}: VoucherListProps) => {
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Code</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead>Item</TableHead>
-          <TableHead>Downloads</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {vouchers?.map((voucher) => (
-          <TableRow key={voucher.id}>
-            <TableCell className="font-mono">{voucher.code}</TableCell>
-            <TableCell className="capitalize">
-              {voucher.type.replace(/_/g, ' ')}
-            </TableCell>
-            <TableCell>
-              {voucher.type === 'single_book' && voucher.books?.[0]?.book?.title}
-              {voucher.type === 'series' && voucher.series?.[0]?.series?.name}
-              {voucher.type === 'book_tag' && voucher.tags?.[0]?.tag?.name}
-              {voucher.type === 'all_books' && 'All Books'}
-            </TableCell>
-            <TableCell>{voucher.number_of_downloads}</TableCell>
-            <TableCell>
-              <Badge 
-                variant={voucher.status === 'active' ? "default" : "secondary"}
-                className="capitalize"
-              >
-                {voucher.status === 'active' ? (
-                  <Check className="w-3 h-3 mr-1" />
-                ) : (
-                  <X className="w-3 h-3 mr-1" />
-                )}
-                {voucher.status}
-              </Badge>
-            </TableCell>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onToggleStatus(voucher)}
-                  title={voucher.status === 'active' ? 'Deactivate' : 'Activate'}
-                >
-                  <Ban className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onDelete(voucher)}
-                  title="Delete"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
-        {vouchers?.length === 0 && (
+    <div className="space-y-4">
+      <Table>
+        <TableHeader>
           <TableRow>
-            <TableCell colSpan={6} className="text-center text-muted-foreground">
-              No vouchers found
-            </TableCell>
+            <TableHead>Code</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Amount</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
-        )}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {vouchers?.map((voucher) => (
+            <TableRow key={voucher.id}>
+              <TableCell className="font-mono">{voucher.code}</TableCell>
+              <TableCell className="capitalize">{voucher.type.replace(/_/g, ' ')}</TableCell>
+              <TableCell>
+                <Badge variant={voucher.redeemed ? "secondary" : "default"}>
+                  {voucher.redeemed ? (
+                    <Check className="w-3 h-3 mr-1" />
+                  ) : (
+                    <X className="w-3 h-3 mr-1" />
+                  )}
+                  {voucher.redeemed ? 'Redeemed' : 'Active'}
+                </Badge>
+              </TableCell>
+              <TableCell>${voucher.total_amount}</TableCell>
+              <TableCell className="space-x-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onDownload(voucher.id)}
+                >
+                  <Download className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onPrint(voucher.id)}
+                >
+                  <Printer className="w-4 h-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+          {vouchers?.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center text-muted-foreground">
+                No vouchers found for this client
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious 
+              onClick={() => onPageChange(currentPage - 1)}
+              className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+            />
+          </PaginationItem>
+          
+          {[...Array(totalPages)].map((_, i) => (
+            <PaginationItem key={i + 1}>
+              <PaginationLink
+                onClick={() => onPageChange(i + 1)}
+                isActive={currentPage === i + 1}
+              >
+                {i + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+
+          <PaginationItem>
+            <PaginationNext
+              onClick={() => onPageChange(currentPage + 1)}
+              className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    </div>
   );
 };
