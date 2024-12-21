@@ -15,6 +15,7 @@ import {
   Tags,
   Building2,
   LayoutTemplate,
+  Receipt,
 } from "lucide-react";
 
 export const menuItems = [
@@ -93,6 +94,12 @@ export const menuItems = [
   {
     title: "Settings",
     icon: <Settings className="w-4 h-4" />,
-    path: "/settings",
+    submenu: [
+      { title: "Global Settings", path: "/settings" },
+      { title: "Notifications", path: "/settings/notifications" },
+      { title: "Reports", path: "/settings/reports" },
+      { title: "Security", path: "/settings/security" },
+      { title: "Vouchers", icon: <Receipt className="w-4 h-4" />, path: "/settings/vouchers" },
+    ],
   },
 ];
