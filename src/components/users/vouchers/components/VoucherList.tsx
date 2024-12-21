@@ -14,6 +14,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface VoucherListProps {
   vouchers: Voucher[];
@@ -144,7 +145,7 @@ export const VoucherList = ({
           {vouchers?.length === 0 && (
             <TableRow>
               <TableCell colSpan={6} className="text-center text-muted-foreground">
-                No vouchers found for this client
+                No vouchers found
               </TableCell>
             </TableRow>
           )}

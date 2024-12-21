@@ -24,7 +24,7 @@ export const useVoucherSubmit = (onSuccess: () => void) => {
           client_id: values.clientId,
           created_by: userData.user.id,
           number_of_downloads: Number(values.number_of_downloads),
-          total_amount: 0,
+          total_amount: 0, // Set based on your pricing logic
           status: 'active'
         })
         .select()
