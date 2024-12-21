@@ -6,7 +6,7 @@ import { Form } from "@/components/ui/form";
 import { ClientInfoFields } from "./ClientInfoFields";
 import { VoucherTypeSelect } from "./VoucherTypeSelect";
 import { BookMultiSelect } from "./BookMultiSelect";
-import { SeriesSelectionField } from "@/components/vouchers/components/SeriesSelectionField";
+import { SeriesSelectionField } from "./SeriesSelectionField";
 import { VoucherAmountField } from "./VoucherAmountField";
 import { TagSelectionField } from "./TagSelectionField";
 import { BookSelectionField } from "./BookSelectionField";
