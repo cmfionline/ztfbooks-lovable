@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -12,15 +11,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Check, X, TicketPlus } from "lucide-react";
-import CreateVoucherDialog from "@/components/vouchers/CreateVoucherDialog";
+import { Check, X } from "lucide-react";
+import { VoucherForm } from "@/components/vouchers/VoucherForm";
+import { useState } from "react";
 
 interface VoucherManagementProps {
   clientId: string;
 }
 
 const VoucherManagement = ({ clientId }: VoucherManagementProps) => {
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
   const { data: vouchers, isLoading } = useQuery({
     queryKey: ['vouchers', clientId],
@@ -51,11 +51,16 @@ const VoucherManagement = ({ clientId }: VoucherManagementProps) => {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Vouchers</h2>
-        <Button onClick={() => setIsCreateDialogOpen(true)}>
-          <TicketPlus className="w-4 h-4 mr-2" />
-          Create Voucher
+        <Button onClick={() => setShowForm(!showForm)}>
+          {showForm ? 'Cancel' : 'Create Voucher'}
         </Button>
       </div>
+
+      {showForm && (
+        <div className="bg-background p-4 rounded-lg border mb-4">
+          <VoucherForm onSuccess={() => setShowForm(false)} />
+        </div>
+      )}
 
       <Table>
         <TableHeader>
@@ -63,7 +68,7 @@ const VoucherManagement = ({ clientId }: VoucherManagementProps) => {
             <TableHead>Code</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Item</TableHead>
-            <TableHead>Amount</TableHead>
+            <TableHead>Downloads</TableHead>
             <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
@@ -79,7 +84,7 @@ const VoucherManagement = ({ clientId }: VoucherManagementProps) => {
                 {voucher.type === 'series' && voucher.series?.[0]?.series?.name}
                 {voucher.type === 'all_books' && 'All Books'}
               </TableCell>
-              <TableCell>${voucher.total_amount}</TableCell>
+              <TableCell>{voucher.number_of_downloads}</TableCell>
               <TableCell>
                 <Badge variant={voucher.redeemed ? "secondary" : "default"}>
                   {voucher.redeemed ? (
@@ -101,11 +106,6 @@ const VoucherManagement = ({ clientId }: VoucherManagementProps) => {
           )}
         </TableBody>
       </Table>
-
-      <CreateVoucherDialog
-        open={isCreateDialogOpen}
-        onOpenChange={setIsCreateDialogOpen}
-      />
     </div>
   );
 };

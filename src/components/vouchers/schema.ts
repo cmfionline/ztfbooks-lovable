@@ -8,7 +8,7 @@ export const voucherFormSchema = z.object({
   clientId: z.string().optional(),
   clientName: z.string().min(1, "Client name is required"),
   clientEmail: z.string().email("Invalid email address"),
-  amount: z.string().min(1, "Amount is required"),
+  number_of_downloads: z.string().min(1, "Number of downloads is required"),
 });
 
 export type VoucherFormValues = z.infer<typeof voucherFormSchema>;

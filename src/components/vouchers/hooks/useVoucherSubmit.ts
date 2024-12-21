@@ -14,6 +14,7 @@ export const useVoucherSubmit = (onSuccess: () => void) => {
       // Generate a random voucher code
       const voucherCode = Math.random().toString(36).substring(2, 10).toUpperCase();
 
+      // Create the voucher
       const { data: voucher, error: voucherError } = await supabase
         .from('vouchers')
         .insert({
@@ -21,14 +22,14 @@ export const useVoucherSubmit = (onSuccess: () => void) => {
           type: values.type,
           client_id: values.clientId,
           created_by: "00000000-0000-0000-0000-000000000000", // Temporary placeholder until user system is implemented
-          total_amount: Number(values.amount),
-          number_of_downloads: 1,
+          number_of_downloads: Number(values.number_of_downloads),
         })
         .select()
         .single();
 
       if (voucherError) throw voucherError;
 
+      // Link books or series based on type
       if (values.type === 'single_book' && values.bookId) {
         const { error: bookError } = await supabase
           .from('voucher_books')
