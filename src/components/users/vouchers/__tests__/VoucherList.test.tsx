@@ -13,6 +13,7 @@ describe('VoucherList', () => {
       client_id: 'client1',
       payment_received: false,
       redeemed: false,
+      redeemed_at: null,
       commission_rate: 10,
       commission_paid: false,
       total_amount: 0,

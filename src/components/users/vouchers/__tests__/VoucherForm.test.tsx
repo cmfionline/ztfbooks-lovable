@@ -9,6 +9,11 @@ vi.mock('@/integrations/supabase/client', () => ({
       select: vi.fn().mockReturnThis(),
       insert: vi.fn().mockReturnThis(),
       single: vi.fn(),
+      url: '',
+      headers: {},
+      upsert: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
     })),
     auth: {
       getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'test-user' } } }),
@@ -36,11 +41,15 @@ describe('VoucherForm', () => {
       insert: mockInsert,
       select: vi.fn().mockReturnThis(),
       single: vi.fn(),
+      url: '',
+      headers: {},
+      upsert: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
     }));
 
     render(<VoucherForm clientId="test-client" onSuccess={mockOnSuccess} />);
 
-    // Fill form fields
     fireEvent.change(screen.getByLabelText('Number of Downloads'), {
       target: { value: '1' },
     });
@@ -56,7 +65,6 @@ describe('VoucherForm', () => {
   it('displays validation errors', async () => {
     render(<VoucherForm clientId="test-client" onSuccess={mockOnSuccess} />);
     
-    // Submit without filling required fields
     fireEvent.click(screen.getByText('Create Voucher'));
     
     await waitFor(() => {

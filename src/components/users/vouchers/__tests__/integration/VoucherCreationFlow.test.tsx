@@ -15,6 +15,9 @@ vi.mock('@/integrations/supabase/client', () => ({
       eq: vi.fn().mockReturnThis(),
       order: vi.fn(),
       single: vi.fn(),
+      url: '',
+      headers: {},
+      upsert: vi.fn(),
     })),
     auth: {
       getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'test-user' } } }),
@@ -59,6 +62,11 @@ describe('Voucher Creation Flow', () => {
       insert: mockInsert,
       eq: vi.fn().mockReturnThis(),
       order: vi.fn().mockReturnThis(),
+      url: '',
+      headers: {},
+      upsert: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
     }));
 
     renderWithProviders(<VoucherManagement clientId="test-client" />);
@@ -87,6 +95,11 @@ describe('Voucher Creation Flow', () => {
       insert: vi.fn().mockRejectedValue(mockError),
       eq: vi.fn().mockReturnThis(),
       order: vi.fn().mockReturnThis(),
+      url: '',
+      headers: {},
+      upsert: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
     }));
 
     renderWithProviders(<VoucherManagement clientId="test-client" />);
