@@ -8,9 +8,9 @@ const Vouchers = () => {
     <div className="min-h-screen bg-background pt-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         <Routes>
-          <Route path="/" element={<VouchersList />} />
-          <Route path="/create" element={<CreateVoucher />} />
-          <Route path="/analytics" element={<VoucherAnalytics />} />
+          <Route index element={<VouchersList />} />
+          <Route path="create" element={<CreateVoucher />} />
+          <Route path="analytics" element={<VoucherAnalytics />} />
         </Routes>
       </div>
     </div>

@@ -50,8 +50,8 @@ export const AdminRoutes = () => {
       <Route path="reviews" element={<Reviews />} />
       <Route path="faqs" element={<Faqs />} />
       <Route path="notifications" element={<Notifications />} />
-      <Route path="settings" element={<Settings />} />
-      <Route path="vouchers" element={<Vouchers />} />
+      <Route path="settings/*" element={<Settings />} />
+      <Route path="vouchers/*" element={<Vouchers />} />
     </Routes>
   );
 };
