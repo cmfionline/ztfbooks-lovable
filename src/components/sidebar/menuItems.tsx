@@ -16,6 +16,11 @@ import {
   Building2,
   LayoutTemplate,
   Receipt,
+  List,
+  FilePlus,
+  Archive,
+  FileBarChart,
+  History,
 } from "lucide-react";
 
 export const menuItems = [
@@ -79,7 +84,13 @@ export const menuItems = [
   {
     title: "Vouchers",
     icon: <Receipt className="w-4 h-4" />,
-    path: "/vouchers",
+    submenu: [
+      { title: "All Vouchers", icon: <List className="w-4 h-4" />, path: "/vouchers" },
+      { title: "Create Voucher", icon: <FilePlus className="w-4 h-4" />, path: "/vouchers/create" },
+      { title: "Archived Vouchers", icon: <Archive className="w-4 h-4" />, path: "/vouchers/archived" },
+      { title: "Analytics", icon: <FileBarChart className="w-4 h-4" />, path: "/vouchers/analytics" },
+      { title: "Audit Log", icon: <History className="w-4 h-4" />, path: "/vouchers/audit" },
+    ],
   },
   {
     title: "Book Reviews",
