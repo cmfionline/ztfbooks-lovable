@@ -2,16 +2,24 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { VoucherFormValues } from "../schema";
+import { useNavigate } from "react-router-dom";
 
 export const useVoucherSubmit = (onSuccess: () => void) => {
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (values: VoucherFormValues, selectedBooks: string[]) => {
     setIsLoading(true);
     try {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) throw new Error("Not authenticated");
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      
+      if (authError || !user) {
+        toast.error("You must be logged in to create vouchers");
+        navigate("/login");
+        return;
+      }
 
+      // Generate a random voucher code
       const voucherCode = Math.random().toString(36).substring(2, 10).toUpperCase();
 
       const { data: voucher, error: voucherError } = await supabase
@@ -20,8 +28,9 @@ export const useVoucherSubmit = (onSuccess: () => void) => {
           code: voucherCode,
           type: values.type,
           client_id: values.clientId,
-          created_by: userData.user.id,
+          created_by: user.id,
           total_amount: Number(values.amount),
+          number_of_downloads: 1,
         })
         .select()
         .single();
@@ -66,8 +75,8 @@ export const useVoucherSubmit = (onSuccess: () => void) => {
       toast.success("Voucher created successfully");
       onSuccess();
     } catch (error: any) {
-      toast.error(error.message);
-      throw error; // Re-throw to trigger error boundary
+      console.error("Error creating voucher:", error);
+      toast.error(error.message || "Failed to create voucher");
     } finally {
       setIsLoading(false);
     }
