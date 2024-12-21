@@ -20,6 +20,9 @@ const createPostgrestMock = () => ({
       data: { id: '1', name: 'Test Tag' },
       error: null,
     })),
+    select: vi.fn(() => ({
+      single: vi.fn(() => ({ data: {}, error: null })),
+    })),
   })),
   neq: vi.fn(() => createPostgrestMock()),
   gt: vi.fn(() => createPostgrestMock()),
@@ -50,13 +53,7 @@ vi.mock('@/lib/supabase', () => ({
   supabase: {
     from: vi.fn(() => ({
       select: vi.fn(() => createPostgrestMock()),
-      update: vi.fn(() => ({
-        eq: vi.fn(() => ({
-          select: vi.fn(() => ({
-            single: vi.fn(() => ({ data: {}, error: null })),
-          })),
-        })),
-      })),
+      update: vi.fn(() => createPostgrestMock()),
     })),
   },
 }));
