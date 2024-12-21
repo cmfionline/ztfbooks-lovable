@@ -58,7 +58,7 @@ const VoucherManagement = ({ clientId }: VoucherManagementProps) => {
 
       {showForm && (
         <div className="bg-background p-4 rounded-lg border mb-4">
-          <VoucherForm onSuccess={() => setShowForm(false)} />
+          <VoucherForm clientId={clientId} onSuccess={() => setShowForm(false)} />
         </div>
       )}
 

@@ -22,7 +22,9 @@ export const VoucherTypeSelect = ({ form }: VoucherTypeSelectProps) => {
             </FormControl>
             <SelectContent>
               <SelectItem value="single_book">Single Book</SelectItem>
+              <SelectItem value="multiple_books">Multiple Books</SelectItem>
               <SelectItem value="series">Book Series</SelectItem>
+              <SelectItem value="book_tag">Book Tag</SelectItem>
               <SelectItem value="all_books">All Books</SelectItem>
             </SelectContent>
           </Select>
