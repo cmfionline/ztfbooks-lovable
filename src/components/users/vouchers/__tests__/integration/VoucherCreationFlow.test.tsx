@@ -12,7 +12,7 @@ vi.mock('@/integrations/supabase/client', () => ({
       delete: vi.fn().mockReturnThis(),
       update: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
-      order: vi.fn(),
+      order: vi.fn().mockReturnThis(),
       single: vi.fn(),
       url: new URL('http://localhost'),
       headers: {},
@@ -32,7 +32,7 @@ const queryClient = new QueryClient({
   },
 });
 
-const renderWithProviders = (component: React.ReactNode) => {
+const renderWithProviders = (component: React.ReactElement) => {
   return render(
     <QueryClientProvider client={queryClient}>
       {component}

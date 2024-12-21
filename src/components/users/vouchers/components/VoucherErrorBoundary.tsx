@@ -2,6 +2,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, RefreshCcw } from "lucide-react";
+import { trackVoucherError } from "../monitoring/VoucherMetrics";
 
 interface ErrorFallbackProps {
   error: Error;
@@ -31,7 +32,12 @@ const ErrorFallback = ({ error, resetErrorBoundary }: ErrorFallbackProps) => {
 
 export const VoucherErrorBoundary = ({ children }: { children: React.ReactNode }) => {
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback}>
+    <ErrorBoundary 
+      FallbackComponent={ErrorFallback}
+      onError={(error) => {
+        trackVoucherError(error, { component: "VoucherErrorBoundary" });
+      }}
+    >
       {children}
     </ErrorBoundary>
   );
