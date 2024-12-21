@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import VoucherManagement from '../VoucherManagement';
@@ -26,7 +26,13 @@ vi.mock('@/integrations/supabase/client', () => ({
         ],
         count: 1,
         error: null
-      })
+      }),
+      url: new URL('http://localhost'),
+      headers: {},
+      insert: vi.fn(),
+      upsert: vi.fn(),
+      delete: vi.fn(),
+      update: vi.fn(),
     }))
   }
 }));
@@ -75,7 +81,13 @@ describe('Voucher System Integration Tests', () => {
       range: vi.fn().mockResolvedValue({
         data: null,
         error: new Error('Failed to fetch vouchers')
-      })
+      }),
+      url: new URL('http://localhost'),
+      headers: {},
+      insert: vi.fn(),
+      upsert: vi.fn(),
+      delete: vi.fn(),
+      update: vi.fn(),
     }));
 
     renderWithProviders(<VoucherManagement clientId="client1" />);
