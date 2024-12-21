@@ -20,6 +20,7 @@ import Settings from "@/pages/Settings";
 import ManageHeroSections from "@/pages/portal/hero/ManageHeroSections";
 import Payments from "@/pages/Payments";
 import Index from "@/pages/Index";
+import Vouchers from "@/pages/Vouchers";
 
 export const AdminRoutes = () => {
   return (
@@ -50,6 +51,7 @@ export const AdminRoutes = () => {
       <Route path="faqs" element={<Faqs />} />
       <Route path="notifications" element={<Notifications />} />
       <Route path="settings" element={<Settings />} />
+      <Route path="vouchers" element={<Vouchers />} />
     </Routes>
   );
 };
