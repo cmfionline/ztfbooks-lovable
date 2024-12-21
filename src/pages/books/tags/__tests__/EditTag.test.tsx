@@ -6,7 +6,7 @@ import EditTag from '../EditTag';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
 
-// Mock the hooks and Supabase client
+// Mock the hooks
 vi.mock('@/hooks/use-toast', () => ({
   useToast: () => ({
     toast: vi.fn(),
@@ -14,39 +14,69 @@ vi.mock('@/hooks/use-toast', () => ({
 }));
 
 // Create a complete mock implementation of PostgrestFilterBuilder
-const createPostgrestMock = () => ({
-  eq: vi.fn(() => ({
-    maybeSingle: vi.fn(() => ({
-      data: { id: '1', name: 'Test Tag' },
-      error: null,
-    })),
-    select: vi.fn(() => ({
-      single: vi.fn(() => ({ data: {}, error: null })),
-    })),
-  })),
-  neq: vi.fn(() => createPostgrestMock()),
-  gt: vi.fn(() => createPostgrestMock()),
-  gte: vi.fn(() => createPostgrestMock()),
-  lt: vi.fn(() => createPostgrestMock()),
-  lte: vi.fn(() => createPostgrestMock()),
-  like: vi.fn(() => createPostgrestMock()),
-  ilike: vi.fn(() => createPostgrestMock()),
-  is: vi.fn(() => createPostgrestMock()),
-  in: vi.fn(() => createPostgrestMock()),
-  contains: vi.fn(() => createPostgrestMock()),
-  containedBy: vi.fn(() => createPostgrestMock()),
-  rangeLt: vi.fn(() => createPostgrestMock()),
-  rangeGt: vi.fn(() => createPostgrestMock()),
-  rangeGte: vi.fn(() => createPostgrestMock()),
-  rangeLte: vi.fn(() => createPostgrestMock()),
-  rangeAdjacent: vi.fn(() => createPostgrestMock()),
-  overlaps: vi.fn(() => createPostgrestMock()),
-  match: vi.fn(() => createPostgrestMock()),
-  not: vi.fn(() => createPostgrestMock()),
-  filter: vi.fn(() => createPostgrestMock()),
-  or: vi.fn(() => createPostgrestMock()),
-  and: vi.fn(() => createPostgrestMock()),
-});
+const createPostgrestMock = () => {
+  const mockMethods = {
+    eq: vi.fn(),
+    neq: vi.fn(),
+    gt: vi.fn(),
+    gte: vi.fn(),
+    lt: vi.fn(),
+    lte: vi.fn(),
+    like: vi.fn(),
+    ilike: vi.fn(),
+    is: vi.fn(),
+    in: vi.fn(),
+    contains: vi.fn(),
+    containedBy: vi.fn(),
+    rangeLt: vi.fn(),
+    rangeGt: vi.fn(),
+    rangeGte: vi.fn(),
+    rangeLte: vi.fn(),
+    rangeAdjacent: vi.fn(),
+    overlaps: vi.fn(),
+    textSearch: vi.fn(),
+    match: vi.fn(),
+    not: vi.fn(),
+    filter: vi.fn(),
+    or: vi.fn(),
+    and: vi.fn(),
+    order: vi.fn(),
+    limit: vi.fn(),
+    range: vi.fn(),
+    single: vi.fn(),
+    maybeSingle: vi.fn(),
+    csv: vi.fn(),
+    geojson: vi.fn(),
+    explain: vi.fn(),
+    throwOnError: vi.fn(),
+    select: vi.fn(),
+    insert: vi.fn(),
+    upsert: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
+    execute: vi.fn(),
+  };
+
+  // Make each method return the mock object for chaining
+  Object.keys(mockMethods).forEach(key => {
+    mockMethods[key].mockReturnValue(mockMethods);
+  });
+
+  // Add specific implementations for commonly used methods
+  mockMethods.eq.mockImplementation(() => ({
+    select: vi.fn().mockReturnValue({
+      single: vi.fn().mockResolvedValue({ data: {}, error: null }),
+      maybeSingle: vi.fn().mockResolvedValue({ data: { id: '1', name: 'Test Tag' }, error: null }),
+    }),
+    update: vi.fn().mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        single: vi.fn().mockResolvedValue({ data: {}, error: null }),
+      }),
+    }),
+  }));
+
+  return mockMethods;
+};
 
 // Mock Supabase client
 vi.mock('@/lib/supabase', () => ({
