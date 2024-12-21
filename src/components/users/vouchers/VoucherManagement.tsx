@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { VoucherForm } from "./components/VoucherForm";
 import { VoucherList } from "./components/VoucherList";
 import { DeleteVoucherDialog } from "./components/DeleteVoucherDialog";
-import type { Voucher } from "./types";
+import type { Voucher, VoucherType } from "./types";
 
 interface VoucherManagementProps {
   clientId: string;
@@ -32,42 +32,42 @@ const VoucherManagement = ({ clientId }: VoucherManagementProps) => {
         const demoVouchers = [
           {
             code: 'SINGLE123',
-            type: 'single_book',
+            type: 'single_book' as VoucherType,
             client_id: clientId,
             created_by: clientId, // Using clientId as created_by for demo
             number_of_downloads: 1,
             total_amount: 0,
-            status: 'active',
+            status: 'active' as const,
             commission_rate: 10
           },
           {
             code: 'MULTI456',
-            type: 'multiple_books',
+            type: 'multiple_books' as VoucherType,
             client_id: clientId,
             created_by: clientId,
             number_of_downloads: 2,
             total_amount: 0,
-            status: 'active',
+            status: 'active' as const,
             commission_rate: 10
           },
           {
             code: 'SERIES789',
-            type: 'series',
+            type: 'series' as VoucherType,
             client_id: clientId,
             created_by: clientId,
             number_of_downloads: 3,
             total_amount: 0,
-            status: 'active',
+            status: 'active' as const,
             commission_rate: 10
           },
           {
             code: 'TAG101112',
-            type: 'book_tag',
+            type: 'book_tag' as VoucherType,
             client_id: clientId,
             created_by: clientId,
             number_of_downloads: 4,
             total_amount: 0,
-            status: 'active',
+            status: 'active' as const,
             commission_rate: 10
           }
         ];

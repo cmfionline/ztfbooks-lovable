@@ -1,9 +1,11 @@
 export type VoucherStatus = 'active' | 'inactive';
 
+export type VoucherType = 'single_book' | 'multiple_books' | 'series' | 'book_tag' | 'all_books';
+
 export interface Voucher {
   id: string;
   code: string;
-  type: 'single_book' | 'multiple_books' | 'series' | 'book_tag' | 'all_books';
+  type: VoucherType;
   created_by: string;
   client_id: string;
   payment_received: boolean;
