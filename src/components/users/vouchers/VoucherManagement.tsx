@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { VoucherForm } from "./components/VoucherForm";
 import { VoucherList } from "./components/VoucherList";
@@ -18,6 +18,77 @@ const VoucherManagement = ({ clientId }: VoucherManagementProps) => {
   const [selectedVoucher, setSelectedVoucher] = useState<Voucher | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const queryClient = useQueryClient();
+
+  // Create demo vouchers if none exist
+  useEffect(() => {
+    const createDemoVouchers = async () => {
+      const { data: existingVouchers } = await supabase
+        .from('vouchers')
+        .select('*')
+        .eq('client_id', clientId);
+
+      if (!existingVouchers || existingVouchers.length === 0) {
+        // Create sample vouchers for each type
+        const demoVouchers = [
+          {
+            code: 'SINGLE123',
+            type: 'single_book',
+            client_id: clientId,
+            created_by: clientId, // Using clientId as created_by for demo
+            number_of_downloads: 1,
+            total_amount: 0,
+            status: 'active',
+            commission_rate: 10
+          },
+          {
+            code: 'MULTI456',
+            type: 'multiple_books',
+            client_id: clientId,
+            created_by: clientId,
+            number_of_downloads: 2,
+            total_amount: 0,
+            status: 'active',
+            commission_rate: 10
+          },
+          {
+            code: 'SERIES789',
+            type: 'series',
+            client_id: clientId,
+            created_by: clientId,
+            number_of_downloads: 3,
+            total_amount: 0,
+            status: 'active',
+            commission_rate: 10
+          },
+          {
+            code: 'TAG101112',
+            type: 'book_tag',
+            client_id: clientId,
+            created_by: clientId,
+            number_of_downloads: 4,
+            total_amount: 0,
+            status: 'active',
+            commission_rate: 10
+          }
+        ];
+
+        for (const voucher of demoVouchers) {
+          const { error } = await supabase
+            .from('vouchers')
+            .insert(voucher);
+          
+          if (error) {
+            console.error('Error creating demo voucher:', error);
+          }
+        }
+
+        // Refresh the data
+        queryClient.invalidateQueries({ queryKey: ['vouchers'] });
+      }
+    };
+
+    createDemoVouchers();
+  }, [clientId, queryClient]);
 
   const { data: vouchers, isLoading } = useQuery({
     queryKey: ['vouchers', clientId],
