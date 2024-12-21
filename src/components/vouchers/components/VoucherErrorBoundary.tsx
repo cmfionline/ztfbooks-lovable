@@ -1,8 +1,7 @@
+import { ErrorBoundary } from "react-error-boundary";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, RefreshCcw } from "lucide-react";
-import { ErrorBoundary } from "react-error-boundary";
-import { useToast } from "@/hooks/use-toast";
 
 interface ErrorFallbackProps {
   error: Error;
@@ -31,19 +30,8 @@ const ErrorFallback = ({ error, resetErrorBoundary }: ErrorFallbackProps) => {
 };
 
 export const VoucherErrorBoundary = ({ children }: { children: React.ReactNode }) => {
-  const { toast } = useToast();
-
   return (
-    <ErrorBoundary
-      FallbackComponent={ErrorFallback}
-      onError={(error) => {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: error.message,
-        });
-      }}
-    >
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
       {children}
     </ErrorBoundary>
   );

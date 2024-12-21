@@ -12,11 +12,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Check, X, Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import CreateVoucherDialog from "./CreateVoucherDialog";
 
 const VouchersList = () => {
-  const navigate = useNavigate();
-  
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const { data: vouchers, isLoading } = useQuery({
     queryKey: ['vouchers'],
     queryFn: async () => {
@@ -47,7 +47,7 @@ const VouchersList = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Vouchers</h1>
         <Button 
-          onClick={() => navigate('/vouchers/create')}
+          onClick={() => setIsCreateDialogOpen(true)}
           className="bg-purple hover:bg-purple/90 text-white"
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -94,6 +94,11 @@ const VouchersList = () => {
           ))}
         </TableBody>
       </Table>
+
+      <CreateVoucherDialog 
+        open={isCreateDialogOpen} 
+        onOpenChange={setIsCreateDialogOpen}
+      />
     </div>
   );
 };
