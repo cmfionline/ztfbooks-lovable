@@ -31,8 +31,10 @@ export const VoucherAuditLog = ({ voucherId }: VoucherAuditLogProps) => {
       const query = supabase
         .from('voucher_audit_logs')
         .select(`
-          *,
-          performed_by:profiles!inner(full_name)
+          id,
+          action_type,
+          created_at,
+          performed_by:profiles(full_name)
         `)
         .order('created_at', { ascending: false });
 
@@ -41,7 +43,9 @@ export const VoucherAuditLog = ({ voucherId }: VoucherAuditLogProps) => {
       }
 
       const { data, error } = await query.limit(50);
+      
       if (error) throw error;
+      
       return data as AuditLogEntry[];
     },
   });
