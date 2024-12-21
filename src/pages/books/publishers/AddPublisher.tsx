@@ -2,11 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import { PublisherBasicInfo } from "./components/PublisherBasicInfo";
 import { PublisherAddress } from "./components/PublisherAddress";
 import { PublisherOnline } from "./components/PublisherOnline";
@@ -15,13 +15,13 @@ import { Loader2 } from "lucide-react";
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   address: z.string().optional(),
-  email: z.string().email().optional().or(z.literal("")),
+  email: z.string().email("Invalid email format").optional().or(z.literal("")),
   phone: z.string().optional(),
   city: z.string().optional(),
   country: z.string().optional(),
   postcode: z.string().optional(),
-  website: z.string().url().optional().or(z.literal("")),
-  socialMediaUrl: z.string().url().optional().or(z.literal("")),
+  website: z.string().url("Invalid URL format").optional().or(z.literal("")),
+  socialMediaUrl: z.string().url("Invalid URL format").optional().or(z.literal("")),
 });
 
 const AddPublisher = () => {
@@ -48,7 +48,7 @@ const AddPublisher = () => {
       const { data: publisher, error } = await supabase
         .from("publishers")
         .insert({
-          name: values.name,
+          name: values.name.trim(),
           address: values.address || null,
           email: values.email || null,
           phone: values.phone || null,
@@ -61,7 +61,14 @@ const AddPublisher = () => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error creating publisher:", error);
+        throw error;
+      }
+
+      if (!publisher) {
+        throw new Error("Failed to create publisher - no data returned");
+      }
 
       toast({
         title: "Success",
