@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Form } from "@/components/ui/form";
-import { Control } from "react-hook-form";
+import { Control, UseFormReturn } from "react-hook-form";
 import { AdFormValues } from "../schema";
 import { BasicInfoFields } from "../form/BasicInfoFields";
 import { CreativeFields } from "../form/CreativeFields";
@@ -13,11 +13,12 @@ interface AdFormLayoutProps {
   control: Control<AdFormValues>;
   isSubmitting: boolean;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  form: UseFormReturn<AdFormValues>;
 }
 
-export const AdFormLayout = ({ control, isSubmitting, onSubmit }: AdFormLayoutProps) => {
+export const AdFormLayout = ({ control, isSubmitting, onSubmit, form }: AdFormLayoutProps) => {
   return (
-    <Form>
+    <Form {...form}>
       <form onSubmit={onSubmit} className="space-y-6">
         <Card className="bg-white shadow-sm">
           <CardContent className="grid gap-6 p-6">

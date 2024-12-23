@@ -18,6 +18,7 @@ export const AdForm = ({ onSuccess }: AdFormProps) => {
       control={form.control}
       isSubmitting={form.formState.isSubmitting}
       onSubmit={form.handleSubmit(onSubmit)}
+      form={form}
     />
   );
 };
