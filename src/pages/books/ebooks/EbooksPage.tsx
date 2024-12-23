@@ -7,6 +7,9 @@ import { useEbooksData } from "./hooks/useEbooksData";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { BookLoadingState } from "@/components/books/BookLoadingState";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const EbooksPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -55,13 +58,24 @@ const EbooksPage = () => {
     refetch();
   };
 
+  if (isLoading) {
+    return <BookLoadingState />;
+  }
+
   if (error) {
     return (
-      <div className="p-6">
-        <div className="bg-destructive/10 text-destructive p-4 rounded-lg">
-          <p>Error loading books: {error.message}</p>
-        </div>
-      </div>
+      <Alert variant="destructive" className="m-6">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          Error loading books: {error.message}
+          <button
+            onClick={() => refetch()}
+            className="ml-2 text-sm underline hover:no-underline"
+          >
+            Try again
+          </button>
+        </AlertDescription>
+      </Alert>
     );
   }
 
@@ -74,13 +88,11 @@ const EbooksPage = () => {
   );
 
   return (
-    <div>
-      <EbooksHeader />
-      <EbooksSearch value={searchQuery} onChange={setSearchQuery} />
-      <Card className="p-6">
-        {isLoading ? (
-          <BookLoadingState />
-        ) : (
+    <ErrorBoundary>
+      <div>
+        <EbooksHeader />
+        <EbooksSearch value={searchQuery} onChange={setSearchQuery} />
+        <Card className="p-6">
           <EbooksTable
             books={filteredBooks || []}
             onToggleTopSelling={(id, status) => {
@@ -89,9 +101,9 @@ const EbooksPage = () => {
             onToggleFeatured={handleFeaturedToggle}
             onDelete={handleDelete}
           />
-        )}
-      </Card>
-    </div>
+        </Card>
+      </div>
+    </ErrorBoundary>
   );
 };
 
